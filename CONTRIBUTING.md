@@ -57,9 +57,35 @@ chore: upgrade pnpm to v9
    pnpm test
    ```
 4. Push and open a PR against `main`.
-5. Ensure CI passes.
-6. Request review from at least one maintainer.
-7. Squash and merge after approval.
+5. **Use a conventional commit format for your PR title** (this becomes the commit message on merge):
+   ```
+   feat(backend): add user authentication endpoint
+   fix(frontend): resolve login redirect loop
+   ```
+6. Ensure CI passes (including PR title validation).
+7. Request review from at least one maintainer.
+8. Squash and merge after approval.
+
+### PR Title Format
+
+PR titles **must** follow [Conventional Commits](https://www.conventionalcommits.org/):
+
+```
+<type>(<scope>): <description>
+```
+
+**Types**: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `chore`, `ci`, `build`, `revert`
+
+**Scopes** (optional): `backend`, `frontend`, `sdk`, `plugin`, `iac`, `ci`, `docs`, `deps`
+
+**Examples**:
+
+- `feat(backend): add PR webhook handler`
+- `fix(frontend): resolve dark mode toggle`
+- `docs: update API documentation`
+- `chore(deps): upgrade axios to v1.6`
+
+> **Note**: PR titles are automatically validated by the `pr-title.yml` workflow. Invalid titles will block the PR from merging.
 
 ## Code Style
 

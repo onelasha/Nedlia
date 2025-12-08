@@ -27,7 +27,7 @@
 ## Documentation
 
 - [Architecture](ARCHITECTURE.md) – Clean architecture principles, AWS serverless stack, event-driven design
-- [Contributing](CONTRIBUTING.md) – How to contribute, branch naming, PR workflow
+- [Contributing](CONTRIBUTING.md) – How to contribute, branch naming, PR workflow, conventional commits
 - [Security](SECURITY.md) – Security policy and vulnerability reporting
 - [Changelog](CHANGELOG.md) – Release history and version notes
 - [Code of Conduct](CODE_OF_CONDUCT.md) – Community standards
