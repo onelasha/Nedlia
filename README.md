@@ -1,6 +1,35 @@
-# Nedlia Monorepo
+# Nedlia
 
-Nedlia is a polyglot monorepo that contains all core services, frontends, SDKs, plugins, and infrastructure for the Nedlia platform.
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+[![GitHub](https://img.shields.io/github/stars/onelasha/Nedlia?style=social)](https://github.com/onelasha/Nedlia)
+
+<!-- Uncomment when CI is set up:
+[![Build](https://github.com/onelasha/Nedlia/actions/workflows/ci.yml/badge.svg)](https://github.com/onelasha/Nedlia/actions)
+-->
+
+**AI-powered code review platform** that helps teams ship better code faster through automated PR analysis, intelligent suggestions, and seamless integrations.
+
+---
+
+## Tech Stack
+
+| Layer              | Technologies                               |
+| ------------------ | ------------------------------------------ |
+| **Backend**        | Python, NestJS, PostgreSQL                 |
+| **Frontend**       | React, TypeScript, Vite                    |
+| **Infrastructure** | Terraform / Pulumi, Docker, GitHub Actions |
+| **Plugins**        | SwiftUI (macOS/iOS)                        |
+| **SDKs**           | Python, TypeScript, Swift                  |
+
+---
+
+## Documentation
+
+- [Architecture](ARCHITECTURE.md) – Clean architecture principles and layer structure
+- [Contributing](CONTRIBUTING.md) – How to contribute, branch naming, PR workflow
+
+---
 
 ## Structure
 
@@ -107,8 +136,17 @@ Tooling is configured via `[tool.uv]` sections and can be extended per project.
 
 ## Roadmap
 
-- Add Nx configuration and initial NestJS + React + JS SDK projects.
-- Flesh out Python backend and SDK package layout and tests.
-- Add GitHub Actions workflows for linting, testing, and building all projects.
-- Introduce SwiftUI plugin project(s) and iOS build pipeline.
-- Define infrastructure layout and provisioning workflows in `nedlia-IaC/`.
+- [ ] Add Nx configuration and initial NestJS + React + JS SDK projects
+- [ ] Flesh out Python backend and SDK package layout and tests
+- [ ] Add GitHub Actions workflows for linting, testing, and building all projects
+- [ ] Introduce SwiftUI plugin project(s) and iOS build pipeline
+- [ ] Define infrastructure layout and provisioning workflows in `nedlia-IaC/`
+- [ ] Implement core code review analysis engine
+- [ ] Build PR integration with GitHub/GitLab
+- [ ] Create dashboard for review insights
+
+---
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
