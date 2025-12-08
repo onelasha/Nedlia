@@ -62,6 +62,7 @@ See [Getting Started](docs/getting-started.md) for detailed setup instructions.
 
 - [Architecture](ARCHITECTURE.md) – Clean architecture, AWS serverless, event-driven design
 - [Contributing](CONTRIBUTING.md) – Branch naming, PR workflow, conventional commits
+- [Pull Request Guidelines](docs/pull-request-guidelines.md) – PR title, description, review process
 - [ADRs](docs/adr/) – Architecture Decision Records
 
 ### Policies

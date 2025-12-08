@@ -101,6 +101,8 @@ PR titles **must** follow [Conventional Commits](https://www.conventionalcommits
 
 > **Note**: PR titles are automatically validated by the `pr-title.yml` workflow. Invalid titles will block the PR from merging.
 
+For complete PR guidelines including description format, review process, and examples, see [Pull Request Guidelines](docs/pull-request-guidelines.md).
+
 ## Code Style
 
 - **JS/TS**: ESLint + Prettier (configured per project).
