@@ -129,6 +129,13 @@ nedlia-plugin/
   lumafusion/         LumaFusion plugin
 
 nedlia-IaC/           Terraform + Terragrunt infrastructure
+
+tests/
+  performance/        Performance & load testing
+    k6/               k6 load test scripts
+    consistency/      Eventual consistency tests
+    chaos/            Chaos engineering tests
+    producers/        Event producers for testing
 ```
 
 ---
