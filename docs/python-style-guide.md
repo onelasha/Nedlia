@@ -462,7 +462,27 @@ app.include_router(placements_router, prefix="/api/v1")
 app.include_router(videos_router, prefix="/api/v1")
 ```
 
-### Router Structure
+### Router Pattern (Separate Files + include_router)
+
+Each feature has its own router file. The main app includes all routers:
+
+```python
+# src/main.py
+from fastapi import FastAPI
+
+from src.placements.router import router as placements_router
+from src.videos.router import router as videos_router
+from src.products.router import router as products_router
+
+app = FastAPI(title="Nedlia API")
+
+# Include all feature routers
+app.include_router(placements_router, prefix="/api/v1")
+app.include_router(videos_router, prefix="/api/v1")
+app.include_router(products_router, prefix="/api/v1")
+```
+
+Each router file defines routes for ONE feature:
 
 ```python
 # src/placements/router.py
@@ -472,11 +492,11 @@ from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from pydantic import BaseModel, Field
 
-from src.application.placement_service import PlacementService
-from src.domain.placement import Placement
-from src.interface.dependencies import get_placement_service
+from src.placements.service import PlacementService
+from src.placements.schemas import PlacementCreate, PlacementResponse
+from src.placements.dependencies import get_placement_service
 
-
+# Router for this feature only - prefix set here or in include_router
 router = APIRouter(prefix="/placements", tags=["Placements"])
 
 
