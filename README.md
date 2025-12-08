@@ -54,6 +54,7 @@ See [Getting Started](docs/getting-started.md) for detailed setup instructions.
 
 - [Getting Started](docs/getting-started.md) – Prerequisites, installation, environment setup
 - [Local Development](docs/local-development.md) – Running services locally
+- [Branching Strategy](docs/branching-strategy.md) – Trunk-based development, feature flags (LaunchDarkly)
 - [Testing](docs/testing.md) – Test strategy, running tests, coverage
 - [Deployment](docs/deployment.md) – CI/CD, environments, release process
 

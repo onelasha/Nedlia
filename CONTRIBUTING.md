@@ -13,7 +13,20 @@
    cd nedlia-sdk/python && uv sync
    ```
 
-## Branch Naming
+## Branching Strategy
+
+We use **Trunk-Based Development** with **feature flags** (LaunchDarkly).
+
+See [Branching Strategy](docs/branching-strategy.md) for full details.
+
+### Key Points
+
+- `main` is the only long-lived branch
+- Feature branches should live **1-3 days max**
+- Use feature flags for incomplete work
+- Merge frequently (at least daily)
+
+### Branch Naming
 
 Use prefixes:
 
@@ -21,6 +34,7 @@ Use prefixes:
 - `fix/` – bug fixes
 - `chore/` – maintenance, refactoring, tooling
 - `docs/` – documentation only
+- `experiment/` – spikes, POCs
 
 Example: `feature/user-authentication`
 
