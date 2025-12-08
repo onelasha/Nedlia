@@ -79,6 +79,7 @@ See [Getting Started](docs/getting-started.md) for detailed setup instructions.
 - [Testing Strategy](docs/testing-strategy.md) – Testing pyramid, contract tests, coverage
 - [Deployment](docs/deployment.md) – CI/CD, environments, release process
 - [Deployment Orchestration](docs/deployment-orchestration.md) – Multi-team deployment, change detection
+- [Release Management](docs/release-management.md) – Release trains, sign-offs, production governance
 
 ### Architecture
 

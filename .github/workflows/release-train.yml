@@ -1,0 +1,447 @@
+name: Release Train
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_id:
+        description: 'Release ID (e.g., rel-2024-01-15-001)'
+        required: true
+      action:
+        description: 'Action to perform'
+        required: true
+        type: choice
+        options:
+          - create_release
+          - check_status
+          - request_signoffs
+          - deploy_production
+          - rollback
+      dry_run:
+        description: 'Dry run (no actual deployment)'
+        type: boolean
+        default: true
+
+  # Scheduled release train - every Tuesday at 10am UTC
+  schedule:
+    - cron: '0 10 * * 2'
+
+env:
+  RELEASE_DIR: releases
+
+jobs:
+  # ===========================================================================
+  # Create Release Manifest
+  # ===========================================================================
+  create-release:
+    if: github.event.inputs.action == 'create_release' || github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    outputs:
+      release_id: ${{ steps.release.outputs.id }}
+      components: ${{ steps.components.outputs.list }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Generate release ID
+        id: release
+        run: |
+          if [ -n "${{ github.event.inputs.release_id }}" ]; then
+            RELEASE_ID="${{ github.event.inputs.release_id }}"
+          else
+            RELEASE_ID="rel-$(date +%Y-%m-%d)-$(date +%H%M)"
+          fi
+          echo "id=$RELEASE_ID" >> $GITHUB_OUTPUT
+          echo "Release ID: $RELEASE_ID"
+
+      - name: Get last release tag
+        id: last_release
+        run: |
+          LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+          echo "tag=$LAST_TAG" >> $GITHUB_OUTPUT
+          echo "Last release: $LAST_TAG"
+
+      - name: Detect changed components
+        id: components
+        run: |
+          LAST_TAG="${{ steps.last_release.outputs.tag }}"
+          COMPONENTS=()
+
+          if [ -z "$LAST_TAG" ]; then
+            DIFF_BASE="HEAD~50"
+          else
+            DIFF_BASE="$LAST_TAG"
+          fi
+
+          # Check each component
+          if git diff --name-only $DIFF_BASE..HEAD | grep -q "^nedlia-back-end/api/"; then
+            COMPONENTS+=("api")
+          fi
+          if git diff --name-only $DIFF_BASE..HEAD | grep -q "^nedlia-back-end/workers/"; then
+            COMPONENTS+=("workers")
+          fi
+          if git diff --name-only $DIFF_BASE..HEAD | grep -q "^nedlia-back-end/services/placement-service/"; then
+            COMPONENTS+=("placement-service")
+          fi
+          if git diff --name-only $DIFF_BASE..HEAD | grep -q "^nedlia-back-end/services/validation-service/"; then
+            COMPONENTS+=("validation-service")
+          fi
+          if git diff --name-only $DIFF_BASE..HEAD | grep -q "^nedlia-back-end/services/notification-service/"; then
+            COMPONENTS+=("notification-service")
+          fi
+          if git diff --name-only $DIFF_BASE..HEAD | grep -q "^nedlia-front-end/portal/"; then
+            COMPONENTS+=("portal")
+          fi
+
+          COMPONENT_LIST=$(IFS=,; echo "${COMPONENTS[*]}")
+          echo "list=$COMPONENT_LIST" >> $GITHUB_OUTPUT
+          echo "Changed components: $COMPONENT_LIST"
+
+      - name: Create release manifest
+        run: |
+          mkdir -p ${{ env.RELEASE_DIR }}
+          RELEASE_ID="${{ steps.release.outputs.id }}"
+
+          cat > ${{ env.RELEASE_DIR }}/${RELEASE_ID}.yaml << 'EOF'
+          release:
+            id: ${{ steps.release.outputs.id }}
+            created_at: $(date -u +"%Y-%m-%dT%H:%M:%SZ")
+            created_by: ${{ github.actor }}
+            status: pending_signoffs
+            base_ref: ${{ steps.last_release.outputs.tag || 'initial' }}
+            head_ref: ${{ github.sha }}
+
+          components:
+          EOF
+
+          IFS=',' read -ra COMPS <<< "${{ steps.components.outputs.list }}"
+          for comp in "${COMPS[@]}"; do
+            cat >> ${{ env.RELEASE_DIR }}/${RELEASE_ID}.yaml << EOF
+            - name: $comp
+              sign_off:
+                status: pending
+                approved_by: null
+                approved_at: null
+          EOF
+          done
+
+          cat >> ${{ env.RELEASE_DIR }}/${RELEASE_ID}.yaml << 'EOF'
+
+          validation:
+            staging_deployed: false
+            integration_tests: pending
+            performance_tests: pending
+            security_scan: pending
+
+          checklist:
+            all_signoffs: false
+            staging_validated: false
+            rollback_plan: false
+            oncall_notified: false
+
+          approvals:
+            release_manager: pending
+            tech_lead: pending
+            qa_lead: pending
+          EOF
+
+          echo "Created manifest:"
+          cat ${{ env.RELEASE_DIR }}/${RELEASE_ID}.yaml
+
+      - name: Commit release manifest
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add ${{ env.RELEASE_DIR }}/
+          git commit -m "chore(release): create manifest ${{ steps.release.outputs.id }}" || echo "No changes to commit"
+          git push || echo "Nothing to push"
+
+      - name: Create GitHub Release (Draft)
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const components = '${{ steps.components.outputs.list }}'.split(',').filter(Boolean);
+
+            const body = `## Release: ${{ steps.release.outputs.id }}
+
+            ### Components Included
+            ${components.map(c => `- [ ] ${c}`).join('\n')}
+
+            ### Sign-off Status
+            | Component | Team | Status |
+            |-----------|------|--------|
+            ${components.map(c => `| ${c} | @nedlia/${c}-team | ⏳ Pending |`).join('\n')}
+
+            ### Checklist
+            - [ ] All team sign-offs received
+            - [ ] Staging validation complete
+            - [ ] Integration tests passing
+            - [ ] Performance tests passing
+            - [ ] Security scan clean
+            - [ ] Rollback plan documented
+            - [ ] On-call team notified
+
+            ### Approvals Required
+            - [ ] Release Manager
+            - [ ] Tech Lead
+            - [ ] QA Lead
+
+            ---
+            **To sign off:** Comment \`/signoff [component]\` on this release
+            **To approve:** Comment \`/approve\` (requires all sign-offs first)
+            `;
+
+            await github.rest.repos.createRelease({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              tag_name: '${{ steps.release.outputs.id }}',
+              name: 'Release ${{ steps.release.outputs.id }}',
+              body: body,
+              draft: true,
+              prerelease: false
+            });
+
+      - name: Notify Slack
+        uses: slackapi/slack-github-action@v1
+        with:
+          payload: |
+            {
+              "text": "🚀 Release Train: ${{ steps.release.outputs.id }}",
+              "blocks": [
+                {
+                  "type": "header",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "🚀 New Release Created"
+                  }
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    {"type": "mrkdwn", "text": "*Release ID:*\n`${{ steps.release.outputs.id }}`"},
+                    {"type": "mrkdwn", "text": "*Components:*\n${{ steps.components.outputs.list }}"}
+                  ]
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "Please review and sign off on your components.\n<${{ github.server_url }}/${{ github.repository }}/releases|View Release>"
+                  }
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        continue-on-error: true
+
+  # ===========================================================================
+  # Check Release Status
+  # ===========================================================================
+  check-status:
+    if: github.event.inputs.action == 'check_status'
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Read release manifest
+        id: manifest
+        run: |
+          RELEASE_FILE="${{ env.RELEASE_DIR }}/${{ github.event.inputs.release_id }}.yaml"
+          if [ ! -f "$RELEASE_FILE" ]; then
+            echo "❌ Release manifest not found: $RELEASE_FILE"
+            exit 1
+          fi
+
+          echo "## Release Status: ${{ github.event.inputs.release_id }}"
+          cat "$RELEASE_FILE"
+
+      - name: Check sign-off comments
+        uses: actions/github-script@v7
+        with:
+          script: |
+            // Find the draft release
+            const releases = await github.rest.repos.listReleases({
+              owner: context.repo.owner,
+              repo: context.repo.repo
+            });
+
+            const release = releases.data.find(r => r.tag_name === '${{ github.event.inputs.release_id }}');
+
+            if (!release) {
+              console.log('Release not found');
+              return;
+            }
+
+            console.log('Release found:', release.name);
+            console.log('Status:', release.draft ? 'Draft' : 'Published');
+            console.log('Body:', release.body);
+
+  # ===========================================================================
+  # Deploy to Production
+  # ===========================================================================
+  deploy-production:
+    if: github.event.inputs.action == 'deploy_production'
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate release
+        run: |
+          RELEASE_FILE="${{ env.RELEASE_DIR }}/${{ github.event.inputs.release_id }}.yaml"
+          if [ ! -f "$RELEASE_FILE" ]; then
+            echo "❌ Release manifest not found"
+            exit 1
+          fi
+
+          echo "✅ Release manifest found"
+          cat "$RELEASE_FILE"
+
+      - name: Pre-deployment summary
+        run: |
+          echo "## 🚀 Production Deployment"
+          echo ""
+          echo "Release: ${{ github.event.inputs.release_id }}"
+          echo "Dry Run: ${{ github.event.inputs.dry_run }}"
+          echo "Triggered by: ${{ github.actor }}"
+          echo ""
+          echo "### Components to Deploy"
+          # Parse and list components from manifest
+
+      - name: Confirm deployment
+        if: github.event.inputs.dry_run == 'false'
+        run: |
+          echo "⚠️ PRODUCTION DEPLOYMENT"
+          echo "This will deploy to production environment."
+
+      - name: Deploy components
+        run: |
+          if [ "${{ github.event.inputs.dry_run }}" == "true" ]; then
+            echo "🔍 DRY RUN - Simulating deployment..."
+          else
+            echo "🚀 Deploying to production..."
+          fi
+
+          # In real implementation:
+          # 1. Deploy each component in order
+          # 2. Run health checks after each
+          # 3. Rollback if any fails
+
+      - name: Tag release
+        if: github.event.inputs.dry_run == 'false'
+        run: |
+          git tag -a "${{ github.event.inputs.release_id }}" -m "Production release ${{ github.event.inputs.release_id }}"
+          git push origin "${{ github.event.inputs.release_id }}"
+
+      - name: Publish GitHub Release
+        if: github.event.inputs.dry_run == 'false'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const releases = await github.rest.repos.listReleases({
+              owner: context.repo.owner,
+              repo: context.repo.repo
+            });
+
+            const release = releases.data.find(r => r.tag_name === '${{ github.event.inputs.release_id }}');
+
+            if (release) {
+              await github.rest.repos.updateRelease({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                release_id: release.id,
+                draft: false
+              });
+              console.log('Release published!');
+            }
+
+      - name: Notify completion
+        uses: slackapi/slack-github-action@v1
+        with:
+          payload: |
+            {
+              "text": "✅ Production Deployment Complete",
+              "blocks": [
+                {
+                  "type": "header",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "✅ Production Deployment Complete"
+                  }
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    {"type": "mrkdwn", "text": "*Release:*\n`${{ github.event.inputs.release_id }}`"},
+                    {"type": "mrkdwn", "text": "*Deployed by:*\n${{ github.actor }}"},
+                    {"type": "mrkdwn", "text": "*Dry Run:*\n${{ github.event.inputs.dry_run }}"}
+                  ]
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        continue-on-error: true
+
+  # ===========================================================================
+  # Rollback
+  # ===========================================================================
+  rollback:
+    if: github.event.inputs.action == 'rollback'
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get previous release
+        id: previous
+        run: |
+          CURRENT="${{ github.event.inputs.release_id }}"
+          PREVIOUS=$(git tag --sort=-version:refname | grep -A1 "^$CURRENT$" | tail -1)
+          echo "previous=$PREVIOUS" >> $GITHUB_OUTPUT
+          echo "Rolling back from $CURRENT to $PREVIOUS"
+
+      - name: Execute rollback
+        run: |
+          if [ "${{ github.event.inputs.dry_run }}" == "true" ]; then
+            echo "🔍 DRY RUN - Would rollback to ${{ steps.previous.outputs.previous }}"
+          else
+            echo "⚠️ ROLLBACK EXECUTING"
+            echo "Rolling back to: ${{ steps.previous.outputs.previous }}"
+            # Actual rollback commands here
+          fi
+
+      - name: Notify rollback
+        uses: slackapi/slack-github-action@v1
+        with:
+          payload: |
+            {
+              "text": "⚠️ ROLLBACK EXECUTED",
+              "blocks": [
+                {
+                  "type": "header",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "⚠️ Production Rollback"
+                  }
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    {"type": "mrkdwn", "text": "*From:*\n`${{ github.event.inputs.release_id }}`"},
+                    {"type": "mrkdwn", "text": "*To:*\n`${{ steps.previous.outputs.previous }}`"},
+                    {"type": "mrkdwn", "text": "*Initiated by:*\n${{ github.actor }}"}
+                  ]
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        continue-on-error: true
