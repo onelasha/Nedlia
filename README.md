@@ -10,6 +10,30 @@
 
 **AI-powered code review platform** that helps teams ship better code faster through automated PR analysis, intelligent suggestions, and seamless integrations.
 
+> **Project Status**: 🚧 **Alpha** – Under active development. Not yet production-ready.
+
+---
+
+## Quick Start
+
+```bash
+# Clone
+git clone https://github.com/onelasha/Nedlia.git
+cd Nedlia
+
+# Install dependencies
+pnpm install
+cd nedlia-back-end/python && uv sync && cd ../..
+
+# Set up environment
+cp .env.example .env
+
+# Run linting
+make lint
+```
+
+See [Getting Started](docs/getting-started.md) for detailed setup instructions.
+
 ---
 
 ## Tech Stack
@@ -26,11 +50,24 @@
 
 ## Documentation
 
-- [Architecture](ARCHITECTURE.md) – Clean architecture principles, AWS serverless stack, event-driven design
-- [Contributing](CONTRIBUTING.md) – How to contribute, branch naming, PR workflow, conventional commits
+### Guides
+
+- [Getting Started](docs/getting-started.md) – Prerequisites, installation, environment setup
+- [Local Development](docs/local-development.md) – Running services locally
+- [Testing](docs/testing.md) – Test strategy, running tests, coverage
+- [Deployment](docs/deployment.md) – CI/CD, environments, release process
+
+### Reference
+
+- [Architecture](ARCHITECTURE.md) – Clean architecture, AWS serverless, event-driven design
+- [Contributing](CONTRIBUTING.md) – Branch naming, PR workflow, conventional commits
+- [ADRs](docs/adr/) – Architecture Decision Records
+
+### Policies
+
 - [Security](SECURITY.md) – Security policy and vulnerability reporting
-- [Changelog](CHANGELOG.md) – Release history and version notes
 - [Code of Conduct](CODE_OF_CONDUCT.md) – Community standards
+- [Changelog](CHANGELOG.md) – Release history and version notes
 
 ---
 
