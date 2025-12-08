@@ -2,13 +2,23 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
-[![GitHub](https://img.shields.io/github/stars/onelasha/Nedlia?style=social)](https://github.com/onelasha/Nedlia)
+[![GitHub Stars](https://img.shields.io/github/stars/onelasha/Nedlia?style=social)](https://github.com/onelasha/Nedlia)
 
-<!-- Uncomment when CI/SonarCloud is set up:
-[![Build](https://github.com/onelasha/Nedlia/actions/workflows/ci.yml/badge.svg)](https://github.com/onelasha/Nedlia/actions)
-[![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=onelasha_Nedlia&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=onelasha_Nedlia)
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=onelasha_Nedlia&metric=coverage)](https://sonarcloud.io/summary/new_code?id=onelasha_Nedlia)
--->
+<!-- CI Badge - uncomment when workflows are running -->
+<!-- [![CI](https://github.com/onelasha/Nedlia/actions/workflows/ci.yml/badge.svg)](https://github.com/onelasha/Nedlia/actions/workflows/ci.yml) -->
+
+<!-- SonarCloud Badges - uncomment after SonarCloud project is created -->
+<!-- [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=onelasha_Nedlia&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=onelasha_Nedlia) -->
+<!-- [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=onelasha_Nedlia&metric=coverage)](https://sonarcloud.io/summary/new_code?id=onelasha_Nedlia) -->
+<!-- [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=onelasha_Nedlia&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=onelasha_Nedlia) -->
+<!-- [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=onelasha_Nedlia&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=onelasha_Nedlia) -->
+<!-- [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=onelasha_Nedlia&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=onelasha_Nedlia) -->
+<!-- [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=onelasha_Nedlia&metric=bugs)](https://sonarcloud.io/summary/new_code?id=onelasha_Nedlia) -->
+<!-- [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=onelasha_Nedlia&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=onelasha_Nedlia) -->
+<!-- [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=onelasha_Nedlia&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=onelasha_Nedlia) -->
+<!-- [![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=onelasha_Nedlia&metric=sqale_index)](https://sonarcloud.io/summary/new_code?id=onelasha_Nedlia) -->
+<!-- [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=onelasha_Nedlia&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=onelasha_Nedlia) -->
+<!-- [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=onelasha_Nedlia&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=onelasha_Nedlia) -->
 
 **AI-powered code review platform** that helps teams ship better code faster through automated PR analysis, intelligent suggestions, and seamless integrations.
 
