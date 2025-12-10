@@ -48,6 +48,33 @@ See [Getting Started](docs/getting-started.md) for detailed setup instructions.
 
 ---
 
+## Development Commands
+
+This monorepo uses [Nx](https://nx.dev) for build orchestration.
+
+```bash
+# Run specific project
+nx serve portal                    # Start portal dev server
+nx test api                        # Run API tests
+
+# Run tasks across projects
+nx run-many -t lint                # Lint all projects
+nx run-many -t test                # Test all projects
+nx run-many -t build               # Build all projects
+
+# Run only affected (changed) projects
+nx affected -t test                # Test affected projects
+nx affected -t lint                # Lint affected projects
+
+# Visualize project graph
+nx graph
+
+# See available targets for a project
+nx show project portal
+```
+
+---
+
 ## Components
 
 | Component     | Description                                                       |
