@@ -80,6 +80,7 @@ See [Getting Started](docs/getting-started.md) for detailed setup instructions.
 ### 🏗️ Architecture
 
 - [Architecture Overview](ARCHITECTURE.md) – Clean architecture, AWS serverless, event-driven
+- [Frontend Architecture](docs/frontend-architecture.md) – React Clean Architecture, layers, folder structure
 - [Domain Model](docs/domain-model.md) – Bounded contexts, aggregates, domain events
 - [Data Architecture](docs/data-architecture.md) – Schema design, ACID principles, event registry
 - [API Standards](docs/api-standards.md) – Versioning, errors, pagination, OpenAPI
