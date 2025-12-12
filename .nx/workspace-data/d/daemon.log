@@ -546,3 +546,96 @@ Time for 'build typescript dependencies' 0.019856000319123268
 [NX v22.2.0 Daemon Server] - 2025-12-12T23:50:50.046Z - Established a connection. Number of open connections: 3
 [NX v22.2.0 Daemon Server] - 2025-12-12T23:50:50.046Z - Received raw message of length 157
 [NX v22.2.0 Daemon Server] - 2025-12-12T23:50:50.047Z - Received json message of type REGISTER_FILE_WATCHER
+[NX v22.2.0 Daemon Server] - 2025-12-12T23:58:28.371Z - [WATCHER]: nedlia-front-end/portal/project.json was modified
+[NX v22.2.0 Daemon Server] - 2025-12-12T23:58:28.371Z - Serializing response for FILE-WATCH-CHANGED message in json mode
+[NX v22.2.0 Daemon Server] - 2025-12-12T23:58:28.371Z - Responding to FILE-WATCH-CHANGED message
+[NX v22.2.0 Daemon Server] - 2025-12-12T23:58:28.371Z - [REQUEST]: Responding to the client. File watch changed
+[NX v22.2.0 Daemon Server] - 2025-12-12T23:58:28.371Z - Done responding to the client File watch changed
+[NX v22.2.0 Daemon Server] - 2025-12-12T23:58:28.371Z - Handled json message FILE-WATCH-CHANGED. Handling time: 0. Response time: 0.
+[NX v22.2.0 Daemon Server] - 2025-12-12T23:58:28.371Z - [WATCHER]: Processing file changes in outputs
+[NX v22.2.0 Daemon Server] - 2025-12-12T23:58:28.371Z - Time taken for 'changed-projects' 0.08829399943351746ms
+[NX v22.2.0 Daemon Server] - 2025-12-12T23:58:28.471Z - [REQUEST]: Updated workspace context based on watched changes, recomputing project graph...
+[NX v22.2.0 Daemon Server] - 2025-12-12T23:58:28.471Z - [REQUEST]: nedlia-front-end/portal/project.json
+[NX v22.2.0 Daemon Server] - 2025-12-12T23:58:28.471Z - [REQUEST]: 
+Time for 'daemon-message-serialization-GLOB' 0.013773000799119473
+[NX v22.2.0 Daemon Server] - 2025-12-12T23:58:28.478Z - Received raw message of length 73
+[NX v22.2.0 Daemon Server] - 2025-12-12T23:58:28.478Z - Received json message of type GLOB
+Time for 'nx/core/project-json:createNodes' 0.7030250001698732
+[NX v22.2.0 Daemon Server] - 2025-12-12T23:58:28.479Z - Serializing response for GLOB message in json mode
+[NX v22.2.0 Daemon Server] - 2025-12-12T23:58:28.479Z - Responding to GLOB message
+[NX v22.2.0 Daemon Server] - 2025-12-12T23:58:28.479Z - [REQUEST]: Responding to the client. handleGlob
+[NX v22.2.0 Daemon Server] - 2025-12-12T23:58:28.479Z - Done responding to the client handleGlob
+[NX v22.2.0 Daemon Server] - 2025-12-12T23:58:28.479Z - Handled json message GLOB. Handling time: 1. Response time: 0.
+[NX v22.2.0 Daemon Server] - 2025-12-12T23:58:28.479Z - Time taken for 'hash changed files from watcher' 0.38409500010311604ms
+Time for 'nx/core/package-json:createNodes' 1.8815190000459552
+Time for 'GLOB round trip' 2.143510999158025
+Time for 'deserialize daemon response - GLOB' 0.019324999302625656
+Time for 'daemon-message-serialization-HASH_MULTI_GLOB' 0.01908899936825037
+[NX v22.2.0 Daemon Server] - 2025-12-12T23:58:28.480Z - Received raw message of length 525
+[NX v22.2.0 Daemon Server] - 2025-12-12T23:58:28.480Z - Received json message of type HASH_MULTI_GLOB
+Time for 'nx/js/dependencies-and-lockfile:createNodes' 4.2650770004838705
+[NX v22.2.0 Daemon Server] - 2025-12-12T23:58:28.483Z - Serializing response for HASH_GLOB message in json mode
+[NX v22.2.0 Daemon Server] - 2025-12-12T23:58:28.483Z - Responding to HASH_GLOB message
+[NX v22.2.0 Daemon Server] - 2025-12-12T23:58:28.483Z - [REQUEST]: Responding to the client. handleHashMultiGlob
+[NX v22.2.0 Daemon Server] - 2025-12-12T23:58:28.483Z - Done responding to the client handleHashMultiGlob
+[NX v22.2.0 Daemon Server] - 2025-12-12T23:58:28.483Z - Handled json message HASH_GLOB. Handling time: 3. Response time: 0.
+Time for '@nx/eslint/plugin:createNodes' 7.677614999935031
+Time for 'HASH_MULTI_GLOB round trip' 3.697316000238061
+Time for 'deserialize daemon response - HASH_MULTI_GLOB' 0.024151000194251537
+[NX v22.2.0 Daemon Server] - 2025-12-12T23:58:28.493Z - Time taken for 'build-project-configs' 14.489733000285923ms
+Time for 'build typescript dependencies' 2.388553999364376
+[NX v22.2.0 Daemon Server] - 2025-12-12T23:58:28.506Z - [SYNC]: collect registered sync generators
+[NX v22.2.0 Daemon Server] - 2025-12-12T23:58:28.507Z - [SYNC]: nx.json hash is the same, not collecting global sync generators
+[NX v22.2.0 Daemon Server] - 2025-12-12T23:58:28.507Z - Time taken for 'total execution time for createProjectGraph()' 15.884895999915898ms
+[NX v22.2.0 Daemon Server] - 2025-12-12T23:58:29.375Z - Established a connection. Number of open connections: 4
+[NX v22.2.0 Daemon Server] - 2025-12-12T23:58:29.376Z - Received raw message of length 32
+[NX v22.2.0 Daemon Server] - 2025-12-12T23:58:29.376Z - Received json message of type REQUEST_PROJECT_GRAPH
+[NX v22.2.0 Daemon Server] - 2025-12-12T23:58:29.376Z - [REQUEST]: Client Request for Project Graph Received
+[NX v22.2.0 Daemon Server] - 2025-12-12T23:58:29.376Z - Reusing in-memory cached project graph because no files changed.
+[NX v22.2.0 Daemon Server] - 2025-12-12T23:58:29.381Z - Wrote project graph cache to /Users/one/Documents/ProjectsLocal/Nedlia/.nx/workspace-data/project-graph.json
+[NX v22.2.0 Daemon Server] - 2025-12-12T23:58:29.381Z - Serializing response for REQUEST_PROJECT_GRAPH message in json mode
+[NX v22.2.0 Daemon Server] - 2025-12-12T23:58:29.381Z - Responding to REQUEST_PROJECT_GRAPH message
+[NX v22.2.0 Daemon Server] - 2025-12-12T23:58:29.381Z - [REQUEST]: Responding to the client. project-graph
+[NX v22.2.0 Daemon Server] - 2025-12-12T23:58:29.382Z - Time taken for 'total for creating and serializing project graph' 5.146057000383735ms
+[NX v22.2.0 Daemon Server] - 2025-12-12T23:58:29.382Z - Closed a connection. Number of open connections: 3
+[NX v22.2.0 Daemon Server] - 2025-12-12T23:58:29.383Z - Done responding to the client project-graph
+[NX v22.2.0 Daemon Server] - 2025-12-12T23:58:29.383Z - Handled json message REQUEST_PROJECT_GRAPH. Handling time: 5. Response time: 2.
+[NX v22.2.0 Daemon Server] - 2025-12-12T23:58:29.386Z - Received raw message of length 32
+[NX v22.2.0 Daemon Server] - 2025-12-12T23:58:29.386Z - Received json message of type GET_CONTEXT_FILE_DATA
+[NX v22.2.0 Daemon Server] - 2025-12-12T23:58:29.386Z - Serializing response for GET_CONTEXT_FILE_DATA message in json mode
+[NX v22.2.0 Daemon Server] - 2025-12-12T23:58:29.386Z - Responding to GET_CONTEXT_FILE_DATA message
+[NX v22.2.0 Daemon Server] - 2025-12-12T23:58:29.387Z - [REQUEST]: Responding to the client. handleContextFileData
+[NX v22.2.0 Daemon Server] - 2025-12-12T23:58:29.387Z - Done responding to the client handleContextFileData
+[NX v22.2.0 Daemon Server] - 2025-12-12T23:58:29.387Z - Handled json message GET_CONTEXT_FILE_DATA. Handling time: 0. Response time: 1.
+[NX v22.2.0 Daemon Server] - 2025-12-12T23:58:29.387Z - Closed a connection. Number of open connections: 2
+[NX v22.2.0 Daemon Server] - 2025-12-12T23:58:29.402Z - Closed a connection. Number of open connections: 1
+[NX v22.2.0 Daemon Server] - 2025-12-12T23:58:29.404Z - Established a connection. Number of open connections: 2
+[NX v22.2.0 Daemon Server] - 2025-12-12T23:58:29.404Z - Established a connection. Number of open connections: 3
+[NX v22.2.0 Daemon Server] - 2025-12-12T23:58:29.404Z - Closed a connection. Number of open connections: 2
+[NX v22.2.0 Daemon Server] - 2025-12-12T23:58:29.405Z - Established a connection. Number of open connections: 3
+[NX v22.2.0 Daemon Server] - 2025-12-12T23:58:29.405Z - Closed a connection. Number of open connections: 2
+[NX v22.2.0 Daemon Server] - 2025-12-12T23:58:29.405Z - Received raw message of length 32
+[NX v22.2.0 Daemon Server] - 2025-12-12T23:58:29.405Z - Received json message of type REQUEST_PROJECT_GRAPH
+[NX v22.2.0 Daemon Server] - 2025-12-12T23:58:29.405Z - [REQUEST]: Client Request for Project Graph Received
+[NX v22.2.0 Daemon Server] - 2025-12-12T23:58:29.406Z - Reusing in-memory cached project graph because no files changed.
+[NX v22.2.0 Daemon Server] - 2025-12-12T23:58:29.410Z - Wrote project graph cache to /Users/one/Documents/ProjectsLocal/Nedlia/.nx/workspace-data/project-graph.json
+[NX v22.2.0 Daemon Server] - 2025-12-12T23:58:29.410Z - Serializing response for REQUEST_PROJECT_GRAPH message in json mode
+[NX v22.2.0 Daemon Server] - 2025-12-12T23:58:29.410Z - Responding to REQUEST_PROJECT_GRAPH message
+[NX v22.2.0 Daemon Server] - 2025-12-12T23:58:29.410Z - [REQUEST]: Responding to the client. project-graph
+[NX v22.2.0 Daemon Server] - 2025-12-12T23:58:29.411Z - Time taken for 'total for creating and serializing project graph' 4.6456350004300475ms
+[NX v22.2.0 Daemon Server] - 2025-12-12T23:58:29.426Z - Done responding to the client project-graph
+[NX v22.2.0 Daemon Server] - 2025-12-12T23:58:29.427Z - Handled json message REQUEST_PROJECT_GRAPH. Handling time: 5. Response time: 17.
+[NX v22.2.0 Daemon Server] - 2025-12-12T23:58:29.430Z - Received raw message of length 32
+[NX v22.2.0 Daemon Server] - 2025-12-12T23:58:29.430Z - Received json message of type REQUEST_PROJECT_GRAPH
+[NX v22.2.0 Daemon Server] - 2025-12-12T23:58:29.430Z - [REQUEST]: Client Request for Project Graph Received
+[NX v22.2.0 Daemon Server] - 2025-12-12T23:58:29.431Z - Reusing in-memory cached project graph because no files changed.
+[NX v22.2.0 Daemon Server] - 2025-12-12T23:58:29.436Z - Wrote project graph cache to /Users/one/Documents/ProjectsLocal/Nedlia/.nx/workspace-data/project-graph.json
+[NX v22.2.0 Daemon Server] - 2025-12-12T23:58:29.436Z - Serializing response for REQUEST_PROJECT_GRAPH message in json mode
+[NX v22.2.0 Daemon Server] - 2025-12-12T23:58:29.436Z - Responding to REQUEST_PROJECT_GRAPH message
+[NX v22.2.0 Daemon Server] - 2025-12-12T23:58:29.436Z - [REQUEST]: Responding to the client. project-graph
+[NX v22.2.0 Daemon Server] - 2025-12-12T23:58:29.437Z - Time taken for 'total for creating and serializing project graph' 5.937509999610484ms
+[NX v22.2.0 Daemon Server] - 2025-12-12T23:58:29.438Z - Done responding to the client project-graph
+[NX v22.2.0 Daemon Server] - 2025-12-12T23:58:29.439Z - Handled json message REQUEST_PROJECT_GRAPH. Handling time: 6. Response time: 3.
+[NX v22.2.0 Daemon Server] - 2025-12-12T23:58:29.441Z - Established a connection. Number of open connections: 3
+[NX v22.2.0 Daemon Server] - 2025-12-12T23:58:29.442Z - Received raw message of length 157
+[NX v22.2.0 Daemon Server] - 2025-12-12T23:58:29.442Z - Received json message of type REGISTER_FILE_WATCHER

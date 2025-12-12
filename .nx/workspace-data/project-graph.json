@@ -1,7 +1,7 @@
 {
   "nodes": {
-    "nedlia-fe-portal": {
-      "name": "nedlia-fe-portal",
+    "nedlia-portal": {
+      "name": "nedlia-portal",
       "type": "app",
       "data": {
         "root": "nedlia-front-end/portal",
@@ -179,18 +179,9 @@
             },
             "configurations": {},
             "parallelism": true
-          },
-          "serve": {
-            "dependsOn": [
-              "^build"
-            ],
-            "configurations": {},
-            "options": {},
-            "parallelism": true,
-            "executor": "nx:noop"
           }
         },
-        "name": "nedlia-fe-portal",
+        "name": "nedlia-portal",
         "tags": [
           "npm:private",
           "scope:frontend",
@@ -5032,44 +5023,44 @@
     }
   },
   "dependencies": {
-    "nedlia-fe-portal": [
+    "nedlia-portal": [
       {
-        "source": "nedlia-fe-portal",
+        "source": "nedlia-portal",
         "target": "npm:typescript",
         "type": "static"
       },
       {
-        "source": "nedlia-fe-portal",
+        "source": "nedlia-portal",
         "target": "npm:eslint",
         "type": "static"
       },
       {
-        "source": "nedlia-fe-portal",
+        "source": "nedlia-portal",
         "target": "npm:@eslint/js",
         "type": "static"
       },
       {
-        "source": "nedlia-fe-portal",
+        "source": "nedlia-portal",
         "target": "npm:@typescript-eslint/eslint-plugin",
         "type": "static"
       },
       {
-        "source": "nedlia-fe-portal",
+        "source": "nedlia-portal",
         "target": "npm:@typescript-eslint/parser",
         "type": "static"
       },
       {
-        "source": "nedlia-fe-portal",
+        "source": "nedlia-portal",
         "target": "npm:eslint-plugin-import",
         "type": "static"
       },
       {
-        "source": "nedlia-fe-portal",
+        "source": "nedlia-portal",
         "target": "npm:eslint-import-resolver-typescript",
         "type": "static"
       },
       {
-        "source": "nedlia-fe-portal",
+        "source": "nedlia-portal",
         "target": "npm:axios",
         "type": "static"
       }
@@ -11865,5 +11856,5 @@
   },
   "version": "6.0",
   "errors": [],
-  "computedAt": 1765583450038
+  "computedAt": 1765583909431
 }

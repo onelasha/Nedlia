@@ -1,11 +1,6 @@
 {
-  "name": "nedlia-fe-portal",
+  "name": "nedlia-portal",
   "projectType": "application",
   "sourceRoot": "nedlia-front-end/portal/src",
-  "tags": ["scope:frontend", "type:feature"],
-  "targets": {
-    "serve": {
-      "dependsOn": ["^build"]
-    }
-  }
+  "tags": ["scope:frontend", "type:feature"]
 }
