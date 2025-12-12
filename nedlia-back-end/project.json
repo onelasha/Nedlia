@@ -1,0 +1,6 @@
+{
+  "name": "nedlia-back-end",
+  "projectType": "application",
+  "sourceRoot": "nedlia-back-end",
+  "tags": ["scope:backend"]
+}

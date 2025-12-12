@@ -1,5 +1,9 @@
 {
-  "9721427561469747800": {
+  "4940765265326489034": {},
+  "7702286204290327673": {},
+  "6036506558597095022": {},
+  "2992806037092041156": {},
+  "16717582323532175677": {
     "nedlia-front-end/portal": {
       "targets": {
         "lint": {
@@ -41,53 +45,5 @@
       }
     }
   },
-  "7922413346319158021": {},
-  "639790326153599090": {},
-  "8617051552512753392": {
-    "nedlia-front-end/portal": {
-      "targets": {
-        "lint": {
-          "command": "eslint .",
-          "cache": true,
-          "options": {
-            "cwd": "nedlia-front-end/portal"
-          },
-          "inputs": [
-            "default",
-            "^default",
-            "{workspaceRoot}/.eslintrc.js",
-            "{workspaceRoot}/nedlia-front-end/portal/eslint.config.js",
-            "{workspaceRoot}/tools/eslint-rules/**/*",
-            {
-              "externalDependencies": [
-                "eslint"
-              ]
-            }
-          ],
-          "outputs": [
-            "{options.outputFile}"
-          ],
-          "metadata": {
-            "technologies": [
-              "eslint"
-            ],
-            "description": "Runs ESLint on project",
-            "help": {
-              "command": "pnpm exec eslint --help",
-              "example": {
-                "options": {
-                  "max-warnings": 0
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  },
-  "4163327107782634029": {},
-  "16462019120702672249": {},
-  "18289183375573522321": {},
-  "16670302029113021523": {},
-  "2618620687901445367": {}
+  "12972992775704854058": {}
 }

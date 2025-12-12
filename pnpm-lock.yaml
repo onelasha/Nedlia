@@ -38,6 +38,9 @@ importers:
       nx:
         specifier: ^22.1.3
         version: 22.2.0
+      project:
+        specifier: ^0.1.6
+        version: 0.1.6
 
 packages:
 
@@ -2011,6 +2014,10 @@ packages:
   pretty-format@30.2.0:
     resolution: {integrity: sha512-9uBdv/B4EefsuAL+pWqueZyZS2Ba+LxfFeQ9DN14HU4bN8bhaxKdkpjpB6fs9+pSjIBu+FXQHImEg8j/Lw0+vA==}
     engines: {node: ^18.14.0 || ^20.0.0 || ^22.0.0 || >=24.0.0}
+
+  project@0.1.6:
+    resolution: {integrity: sha512-FwZWeyXMzcyCqd5tYFK/EAbpMfVwZPHpFPvPPyxdJnVu6viLzHehUMX4cTimm/oswMSdnVqY2a1naNM5jBF9qg==}
+    hasBin: true
 
   proxy-from-env@1.1.0:
     resolution: {integrity: sha512-D+zkORCbA9f1tdWRK0RaCR3GPv50cMxcrz4X8k5LTSUD1Dkw47mKJEZQNunItRTkWwgtaUSo1RVFRIG9ZXiFYg==}
@@ -4732,6 +4739,8 @@ snapshots:
       '@jest/schemas': 30.0.5
       ansi-styles: 5.2.0
       react-is: 18.3.1
+
+  project@0.1.6: {}
 
   proxy-from-env@1.1.0: {}
 

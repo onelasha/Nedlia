@@ -485,6 +485,84 @@
       "nx/target-defaults"
     ]
   },
+  "nedlia-IaC": {
+    "root": [
+      "nedlia-IaC/project.json",
+      "nx/core/project-json"
+    ],
+    "name": [
+      "nedlia-IaC/project.json",
+      "nx/core/project-json"
+    ],
+    "projectType": [
+      "nedlia-IaC/project.json",
+      "nx/core/project-json"
+    ],
+    "sourceRoot": [
+      "nedlia-IaC/project.json",
+      "nx/core/project-json"
+    ],
+    "tags": [
+      "nedlia-IaC/project.json",
+      "nx/core/project-json"
+    ],
+    "tags.scope:infra": [
+      "nedlia-IaC/project.json",
+      "nx/core/project-json"
+    ]
+  },
+  "nedlia-back-end": {
+    "root": [
+      "nedlia-back-end/project.json",
+      "nx/core/project-json"
+    ],
+    "name": [
+      "nedlia-back-end/project.json",
+      "nx/core/project-json"
+    ],
+    "projectType": [
+      "nedlia-back-end/project.json",
+      "nx/core/project-json"
+    ],
+    "sourceRoot": [
+      "nedlia-back-end/project.json",
+      "nx/core/project-json"
+    ],
+    "tags": [
+      "nedlia-back-end/project.json",
+      "nx/core/project-json"
+    ],
+    "tags.scope:backend": [
+      "nedlia-back-end/project.json",
+      "nx/core/project-json"
+    ]
+  },
+  "nedlia-plugin": {
+    "root": [
+      "nedlia-plugin/project.json",
+      "nx/core/project-json"
+    ],
+    "name": [
+      "nedlia-plugin/project.json",
+      "nx/core/project-json"
+    ],
+    "projectType": [
+      "nedlia-plugin/project.json",
+      "nx/core/project-json"
+    ],
+    "sourceRoot": [
+      "nedlia-plugin/project.json",
+      "nx/core/project-json"
+    ],
+    "tags": [
+      "nedlia-plugin/project.json",
+      "nx/core/project-json"
+    ],
+    "tags.scope:plugin": [
+      "nedlia-plugin/project.json",
+      "nx/core/project-json"
+    ]
+  },
   "nedlia-sdk/javascript": {
     "root": [
       "nedlia-sdk/javascript/project.json",

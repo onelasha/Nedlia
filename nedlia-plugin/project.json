@@ -1,0 +1,6 @@
+{
+  "name": "nedlia-plugin",
+  "projectType": "library",
+  "sourceRoot": "nedlia-plugin",
+  "tags": ["scope:plugin"]
+}

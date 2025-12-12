@@ -1,0 +1,6 @@
+{
+  "name": "nedlia-iac",
+  "projectType": "application",
+  "sourceRoot": "nedlia-IaC",
+  "tags": ["scope:infra"]
+}

@@ -3924,6 +3924,15 @@
         "hash": "sha512-9uBdv/B4EefsuAL+pWqueZyZS2Ba+LxfFeQ9DN14HU4bN8bhaxKdkpjpB6fs9+pSjIBu+FXQHImEg8j/Lw0+vA=="
       }
     },
+    "npm:project": {
+      "type": "npm",
+      "name": "npm:project",
+      "data": {
+        "version": "0.1.6",
+        "packageName": "project",
+        "hash": "sha512-FwZWeyXMzcyCqd5tYFK/EAbpMfVwZPHpFPvPPyxdJnVu6viLzHehUMX4cTimm/oswMSdnVqY2a1naNM5jBF9qg=="
+      }
+    },
     "npm:proxy-from-env": {
       "type": "npm",
       "name": "npm:proxy-from-env",
@@ -6043,6 +6052,9 @@
     ],
     "pretty-format@30.2.0": [
       "npm:pretty-format"
+    ],
+    "project@0.1.6": [
+      "npm:project"
     ],
     "proxy-from-env@1.1.0": [
       "npm:proxy-from-env"

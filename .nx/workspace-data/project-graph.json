@@ -230,6 +230,51 @@
         "implicitDependencies": [],
         "targets": {}
       }
+    },
+    "nedlia-back-end": {
+      "name": "nedlia-back-end",
+      "type": "app",
+      "data": {
+        "root": "nedlia-back-end",
+        "name": "nedlia-back-end",
+        "projectType": "application",
+        "sourceRoot": "nedlia-back-end",
+        "tags": [
+          "scope:backend"
+        ],
+        "implicitDependencies": [],
+        "targets": {}
+      }
+    },
+    "nedlia-plugin": {
+      "name": "nedlia-plugin",
+      "type": "lib",
+      "data": {
+        "root": "nedlia-plugin",
+        "name": "nedlia-plugin",
+        "projectType": "library",
+        "sourceRoot": "nedlia-plugin",
+        "tags": [
+          "scope:plugin"
+        ],
+        "implicitDependencies": [],
+        "targets": {}
+      }
+    },
+    "nedlia-iac": {
+      "name": "nedlia-iac",
+      "type": "app",
+      "data": {
+        "root": "nedlia-IaC",
+        "name": "nedlia-iac",
+        "projectType": "application",
+        "sourceRoot": "nedlia-IaC",
+        "tags": [
+          "scope:infra"
+        ],
+        "implicitDependencies": [],
+        "targets": {}
+      }
     }
   },
   "externalNodes": {
@@ -4157,6 +4202,15 @@
         "hash": "sha512-9uBdv/B4EefsuAL+pWqueZyZS2Ba+LxfFeQ9DN14HU4bN8bhaxKdkpjpB6fs9+pSjIBu+FXQHImEg8j/Lw0+vA=="
       }
     },
+    "npm:project": {
+      "type": "npm",
+      "name": "npm:project",
+      "data": {
+        "version": "0.1.6",
+        "packageName": "project",
+        "hash": "sha512-FwZWeyXMzcyCqd5tYFK/EAbpMfVwZPHpFPvPPyxdJnVu6viLzHehUMX4cTimm/oswMSdnVqY2a1naNM5jBF9qg=="
+      }
+    },
     "npm:proxy-from-env": {
       "type": "npm",
       "name": "npm:proxy-from-env",
@@ -5012,6 +5066,9 @@
       }
     ],
     "nedlia-sdk-js": [],
+    "nedlia-back-end": [],
+    "nedlia-plugin": [],
+    "nedlia-iac": [],
     "npm:@babel/code-frame": [
       {
         "source": "npm:@babel/code-frame",
@@ -11799,5 +11856,5 @@
   },
   "version": "6.0",
   "errors": [],
-  "computedAt": 1765570561561
+  "computedAt": 1765578312373
 }
