@@ -444,6 +444,14 @@
       "nedlia-front-end/portal/project.json",
       "nx/core/project-json"
     ],
+    "targets.serve": [
+      "nedlia-front-end/portal/project.json",
+      "nx/core/project-json"
+    ],
+    "targets.serve.dependsOn": [
+      "nedlia-front-end/portal/project.json",
+      "nx/core/project-json"
+    ],
     "targets.lint.inputs": [
       "nx.json",
       "nx/target-defaults"
