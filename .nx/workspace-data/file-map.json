@@ -12,6 +12,20 @@
   ],
   "fileMap": {
     "projectFileMap": {
+      "nedlia-sdk-js": [
+        {
+          "file": "nedlia-sdk/javascript/README.md",
+          "hash": "14204487347861576158"
+        },
+        {
+          "file": "nedlia-sdk/javascript/project.json",
+          "hash": "11849506225020386294"
+        },
+        {
+          "file": "nedlia-sdk/javascript/src/.gitkeep",
+          "hash": "3244421341483603138"
+        }
+      ],
       "nedlia-portal": [
         {
           "file": "nedlia-front-end/portal/.prettierrc",
@@ -90,20 +104,6 @@
         {
           "file": "nedlia-front-end/portal/vite.config.ts",
           "hash": "2140907204056496669"
-        }
-      ],
-      "nedlia-sdk-js": [
-        {
-          "file": "nedlia-sdk/javascript/README.md",
-          "hash": "14204487347861576158"
-        },
-        {
-          "file": "nedlia-sdk/javascript/project.json",
-          "hash": "11849506225020386294"
-        },
-        {
-          "file": "nedlia-sdk/javascript/src/.gitkeep",
-          "hash": "3244421341483603138"
         }
       ]
     },
@@ -189,6 +189,10 @@
         "hash": "15541955220390179963"
       },
       {
+        "file": ".sonarlint/connectedMode.json",
+        "hash": "3721768643662824861"
+      },
+      {
         "file": ".swiftlint.yml",
         "hash": "4369867761841491412"
       },
@@ -198,7 +202,7 @@
       },
       {
         "file": ".vscode/settings.json",
-        "hash": "10508755646969600830"
+        "hash": "938050148481476995"
       },
       {
         "file": "ARCHITECTURE.md",
@@ -222,7 +226,7 @@
       },
       {
         "file": "README.md",
-        "hash": "664658175008682189"
+        "hash": "4898783994326155349"
       },
       {
         "file": "SECURITY.md",
@@ -235,6 +239,10 @@
       {
         "file": "docs/SOLID-PRINCIPLES.md",
         "hash": "3464370125795756399"
+      },
+      {
+        "file": "docs/accessibility.md",
+        "hash": "15243912292667557213"
       },
       {
         "file": "docs/adr/001-clean-architecture.md",
@@ -277,12 +285,28 @@
         "hash": "16269569330766295725"
       },
       {
+        "file": "docs/caching-strategy.md",
+        "hash": "12268005133963132839"
+      },
+      {
         "file": "docs/code-quality.md",
         "hash": "1221725760036142219"
       },
       {
         "file": "docs/data-architecture.md",
-        "hash": "6993805344725302039"
+        "hash": "384393390190550226"
+      },
+      {
+        "file": "docs/data-retention.md",
+        "hash": "12430191268976482120"
+      },
+      {
+        "file": "docs/database-migrations.md",
+        "hash": "4932208870925730425"
+      },
+      {
+        "file": "docs/dependency-injection.md",
+        "hash": "6732972201855774101"
       },
       {
         "file": "docs/deployment-orchestration.md",
@@ -297,16 +321,48 @@
         "hash": "1404542295776562558"
       },
       {
+        "file": "docs/dry-principles.md",
+        "hash": "3106148412491392"
+      },
+      {
+        "file": "docs/error-handling.md",
+        "hash": "9374171453102817819"
+      },
+      {
+        "file": "docs/feature-flags.md",
+        "hash": "9177783406329034055"
+      },
+      {
+        "file": "docs/frontend-architecture.md",
+        "hash": "4722470665814391770"
+      },
+      {
         "file": "docs/getting-started.md",
         "hash": "13293997004355845390"
+      },
+      {
+        "file": "docs/incident-response.md",
+        "hash": "6491002405762002151"
+      },
+      {
+        "file": "docs/internationalization.md",
+        "hash": "7264835346587572555"
       },
       {
         "file": "docs/local-development.md",
         "hash": "17663806935972502812"
       },
       {
+        "file": "docs/logging-standards.md",
+        "hash": "15606407958931313643"
+      },
+      {
         "file": "docs/observability.md",
         "hash": "4210848637501890842"
+      },
+      {
+        "file": "docs/performance-guidelines.md",
+        "hash": "9079375217740678832"
       },
       {
         "file": "docs/pull-request-guidelines.md",
@@ -315,6 +371,10 @@
       {
         "file": "docs/python-style-guide.md",
         "hash": "4017786450825719900"
+      },
+      {
+        "file": "docs/rate-limiting.md",
+        "hash": "18367579359802125534"
       },
       {
         "file": "docs/release-management.md",

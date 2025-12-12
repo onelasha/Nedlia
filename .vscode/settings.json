@@ -59,6 +59,6 @@
   },
   "sonarlint.connectedMode.project": {
     "connectionId": "onelasha",
-    "projectKey": "onelasha_Nedlia"
+    "projectKey": "onelasha_nedlia-back-end"
   }
 }
