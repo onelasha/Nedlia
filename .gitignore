@@ -41,3 +41,5 @@ tests/performance/reports/*.md
 coverage/
 *.lcov
 coverage.xml
+
+*.hash
