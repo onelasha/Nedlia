@@ -15,6 +15,14 @@ jobs:
         with:
           fetch-depth: 0 # Full history for accurate blame information
 
+      # Remove any workspace .nx cache so it isn't analyzed or uploaded
+      - name: Clean local Nx cache
+        run: |
+          if [ -d .nx ]; then
+            git rm -r --cached .nx || true
+            rm -rf .nx || true
+          fi
+
       # ------------------------------------------------------------------------
       # Setup Node.js for JS/TS projects
       # ------------------------------------------------------------------------
@@ -61,8 +69,15 @@ jobs:
       # ------------------------------------------------------------------------
       # SonarCloud Scan
       # ------------------------------------------------------------------------
+      - name: Fail if SONAR_TOKEN missing
+        run: |
+          if [ -z "${{ secrets.SONAR_TOKEN }}" ]; then
+            echo "ERROR: SONAR_TOKEN secret is not set. Set repository secret SONAR_TOKEN to run SonarCloud scans." >&2
+            exit 1
+          fi
+
       - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@master
+        uses: SonarSource/sonarqube-scan-action@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
