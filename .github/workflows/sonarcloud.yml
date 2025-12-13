@@ -83,8 +83,15 @@ jobs:
             exit 1
           fi
 
-      - name: Install sonar-scanner
-        run: npm install -g sonarqube-scan
+      - name: Download and install SonarScanner
+        run: |
+          mkdir -p ~/sonar
+          cd ~/sonar
+          SONAR_VERSION="7.0.2.4839"
+          SONAR_SCANNER_URL="https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-${SONAR_VERSION}-linux.zip"
+          curl -L "${SONAR_SCANNER_URL}" -o sonar-scanner.zip
+          unzip sonar-scanner.zip
+          echo "~/sonar/sonar-scanner-${SONAR_VERSION}-linux/bin" >> $GITHUB_PATH
 
       - name: Run SonarCloud Scan
         env:
