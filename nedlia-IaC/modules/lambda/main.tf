@@ -1,36 +1,43 @@
-# Lambda Module
-# Creates Lambda functions with common configuration
+# Lambda Module - Placeholder
+# TODO: Implement Lambda function resources when ready
 
 variable "environment" {
-  type = string
+  type        = string
+  description = "Deployment environment (dev, staging, production)"
 }
 
 variable "function_name" {
-  type = string
+  type        = string
+  description = "Name of the Lambda function"
 }
 
 variable "handler" {
-  type = string
+  type        = string
+  description = "Lambda handler (e.g., index.handler)"
 }
 
 variable "runtime" {
-  type    = string
-  default = "python3.11"
+  type        = string
+  default     = "python3.11"
+  description = "Lambda runtime"
 }
 
 variable "memory_size" {
-  type    = number
-  default = 256
+  type        = number
+  default     = 256
+  description = "Memory allocation in MB"
 }
 
 variable "timeout" {
-  type    = number
-  default = 30
+  type        = number
+  default     = 30
+  description = "Timeout in seconds"
 }
 
 variable "environment_variables" {
-  type    = map(string)
-  default = {}
+  type        = map(string)
+  default     = {}
+  description = "Environment variables for Lambda"
 }
 
 resource "aws_lambda_function" "main" {

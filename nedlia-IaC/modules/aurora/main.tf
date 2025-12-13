@@ -1,53 +1,32 @@
-# Aurora Serverless v2 Module
-# Creates PostgreSQL-compatible Aurora Serverless v2 cluster
+# Aurora Serverless v2 Module - Placeholder
+# TODO: Implement Aurora RDS cluster when ready
 
 variable "environment" {
-  type = string
+  type        = string
+  description = "Deployment environment (dev, staging, production)"
 }
 
 variable "vpc_id" {
-  type = string
+  type        = string
+  description = "VPC ID for database subnet group"
 }
 
 variable "subnet_ids" {
-  type = list(string)
+  type        = list(string)
+  description = "Subnet IDs for database"
 }
 
 variable "min_capacity" {
-  type    = number
-  default = 0.5
+  type        = number
+  default     = 0.5
+  description = "Minimum Aurora Serverless v2 capacity"
 }
 
 variable "max_capacity" {
-  type    = number
-  default = 2
+  type        = number
+  default     = 2
+  description = "Maximum Aurora Serverless v2 capacity"
 }
-
-resource "aws_rds_cluster" "main" {
-  cluster_identifier = "nedlia-${var.environment}"
-  engine             = "aurora-postgresql"
-  engine_mode        = "provisioned"
-  engine_version     = "15.4"
-  database_name      = "nedlia"
-  master_username    = "nedlia_admin"
-  manage_master_user_password = true
-
-  serverlessv2_scaling_configuration {
-    min_capacity = var.min_capacity
-    max_capacity = var.max_capacity
-  }
-
-  skip_final_snapshot = var.environment != "production"
-
-  tags = {
-    Name = "nedlia-${var.environment}-aurora"
-  }
-}
-
-resource "aws_rds_cluster_instance" "main" {
-  cluster_identifier = aws_rds_cluster.main.id
-  instance_class     = "db.serverless"
-  engine             = aws_rds_cluster.main.engine
   engine_version     = aws_rds_cluster.main.engine_version
 }
 
