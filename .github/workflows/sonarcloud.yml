@@ -83,16 +83,18 @@ jobs:
             exit 1
           fi
 
-      - name: SonarCloud Scan
-        uses: SonarSource/sonarqube-scan-action@v1
+      - name: Install sonar-scanner
+        run: npm install -g sonarqube-scan
+
+      - name: Run SonarCloud Scan
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_HOST_URL: https://sonarcloud.io
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           JAVA_HOME: ${{ steps.setup-java.outputs.java-home }}
-          PATH: ${{ steps.setup-java.outputs.java-home }}/bin:${{ env.PATH }}
-        with:
-          args: >
-            -Dsonar.pullrequest.key=${{ github.event.pull_request.number }}
-            -Dsonar.pullrequest.branch=${{ github.head_ref }}
-            -Dsonar.pullrequest.base=${{ github.base_ref }}
+        run: |
+          sonar-scanner \
+            -Dsonar.projectKey=onelasha_Nedlia \
+            -Dsonar.organization=onelasha \
+            -Dsonar.sources=. \
+            -Dsonar.host.url=https://sonarcloud.io
