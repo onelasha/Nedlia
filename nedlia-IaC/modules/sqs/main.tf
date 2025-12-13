@@ -1,60 +1,45 @@
-# SQS Module
-# Creates SQS queue with DLQ
+# SQS Module - Placeholder
+# TODO: Implement SQS queue resources when ready
 
 variable "environment" {
-  type = string
+  type        = string
+  description = "Deployment environment (dev, staging, production)"
 }
 
 variable "queue_name" {
-  type = string
+  type        = string
+  description = "Name of the SQS queue"
 }
 
 variable "visibility_timeout_seconds" {
-  type    = number
-  default = 60
+  type        = number
+  default     = 60
+  description = "Visibility timeout in seconds"
 }
 
 variable "message_retention_seconds" {
-  type    = number
-  default = 1209600 # 14 days
+  type        = number
+  default     = 1209600
+  description = "Message retention period in seconds (default 14 days)"
 }
 
-resource "aws_sqs_queue" "dlq" {
-  name                      = "nedlia-${var.environment}-${var.queue_name}-dlq"
-  message_retention_seconds = var.message_retention_seconds
-
-  tags = {
-    Name = "nedlia-${var.environment}-${var.queue_name}-dlq"
-  }
-}
-
-resource "aws_sqs_queue" "main" {
-  name                       = "nedlia-${var.environment}-${var.queue_name}"
-  visibility_timeout_seconds = var.visibility_timeout_seconds
-  message_retention_seconds  = var.message_retention_seconds
-
-  redrive_policy = jsonencode({
-    deadLetterTargetArn = aws_sqs_queue.dlq.arn
-    maxReceiveCount     = 3
-  })
-
-  tags = {
-    Name = "nedlia-${var.environment}-${var.queue_name}"
-  }
-}
-
-output "queue_url" {
-  value = aws_sqs_queue.main.url
-}
-
-output "queue_arn" {
-  value = aws_sqs_queue.main.arn
-}
-
-output "dlq_url" {
-  value = aws_sqs_queue.dlq.url
-}
-
-output "dlq_arn" {
-  value = aws_sqs_queue.dlq.arn
-}
+# Placeholder: SQS resources will be created here
+# output "queue_url" {
+#   value       = aws_sqs_queue.main.url
+#   description = "SQS queue URL"
+# }
+#
+# output "queue_arn" {
+#   value       = aws_sqs_queue.main.arn
+#   description = "SQS queue ARN"
+# }
+#
+# output "dlq_url" {
+#   value       = aws_sqs_queue.dlq.url
+#   description = "Dead letter queue URL"
+# }
+#
+# output "dlq_arn" {
+#   value       = aws_sqs_queue.dlq.arn
+#   description = "Dead letter queue ARN"
+# }

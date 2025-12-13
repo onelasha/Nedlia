@@ -1,52 +1,23 @@
-# S3 Module
-# Creates S3 bucket with encryption and versioning
+# S3 Module - Placeholder
+# TODO: Implement S3 bucket resources when ready
 
 variable "environment" {
-  type = string
+  type        = string
+  description = "Deployment environment (dev, staging, production)"
 }
 
 variable "bucket_name" {
-  type = string
+  type        = string
+  description = "Name suffix for the S3 bucket"
 }
 
-resource "aws_s3_bucket" "main" {
-  bucket = "nedlia-${var.environment}-${var.bucket_name}"
-
-  tags = {
-    Name = "nedlia-${var.environment}-${var.bucket_name}"
-  }
-}
-
-resource "aws_s3_bucket_versioning" "main" {
-  bucket = aws_s3_bucket.main.id
-  versioning_configuration {
-    status = "Enabled"
-  }
-}
-
-resource "aws_s3_bucket_server_side_encryption_configuration" "main" {
-  bucket = aws_s3_bucket.main.id
-
-  rule {
-    apply_server_side_encryption_by_default {
-      sse_algorithm = "AES256"
-    }
-  }
-}
-
-resource "aws_s3_bucket_public_access_block" "main" {
-  bucket = aws_s3_bucket.main.id
-
-  block_public_acls       = true
-  block_public_policy     = true
-  ignore_public_acls      = true
-  restrict_public_buckets = true
-}
-
-output "bucket_id" {
-  value = aws_s3_bucket.main.id
-}
-
-output "bucket_arn" {
-  value = aws_s3_bucket.main.arn
-}
+# Placeholder: S3 resources will be created here
+# output "bucket_id" {
+#   value       = aws_s3_bucket.main.id
+#   description = "S3 bucket ID"
+# }
+#
+# output "bucket_arn" {
+#   value       = aws_s3_bucket.main.arn
+#   description = "S3 bucket ARN"
+# }
