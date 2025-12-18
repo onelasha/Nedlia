@@ -137,16 +137,24 @@ All responses use a consistent envelope:
   "data": { ... },           // Single resource or array
   "meta": { ... }            // Optional metadata (pagination, etc.)
 }
+```
 
-// Error
+### Error Response Format (RFC 9457)
+
+Errors use **[RFC 9457 Problem Details](https://www.rfc-editor.org/rfc/rfc9457.html)** format with `application/problem+json` content type:
+
+```json
 {
-  "error": {
-    "code": "VALIDATION_ERROR",
-    "message": "Human readable message",
-    "details": [ ... ]       // Optional field-level errors
-  }
+  "type": "https://api.nedlia.com/problems/validation-error",
+  "title": "Validation Error",
+  "status": 422,
+  "detail": "Your request contains invalid fields.",
+  "instance": "/v1/placements",
+  "errors": [{ "pointer": "#/time_range/start_time", "detail": "must be non-negative" }]
 }
 ```
+
+See [Error Handling Strategy](error-handling-strategy.md) for full RFC 9457 implementation details.
 
 ---
 
@@ -216,68 +224,93 @@ Server behavior:
 
 ---
 
-## Error Handling
+## Error Handling (RFC 9457)
+
+Nedlia APIs implement **[RFC 9457 Problem Details for HTTP APIs](https://www.rfc-editor.org/rfc/rfc9457.html)** — the IETF standard for machine-readable error responses.
+
+### Content Type
+
+```
+Content-Type: application/problem+json
+```
 
 ### Error Response Format
 
-```json
-HTTP/1.1 400 Bad Request
+```http
+HTTP/1.1 422 Unprocessable Content
+Content-Type: application/problem+json
 
 {
-  "error": {
-    "code": "VALIDATION_ERROR",
-    "message": "Request validation failed",
-    "request_id": "req_abc123",
-    "details": [
-      {
-        "field": "time_range.start_time",
-        "code": "INVALID_VALUE",
-        "message": "Start time cannot be negative"
-      },
-      {
-        "field": "product_id",
-        "code": "NOT_FOUND",
-        "message": "Product does not exist"
-      }
-    ]
-  }
+  "type": "https://api.nedlia.com/problems/validation-error",
+  "title": "Validation Error",
+  "status": 422,
+  "detail": "Your request contains invalid fields.",
+  "instance": "/v1/placements",
+  "errors": [
+    {
+      "pointer": "#/time_range/start_time",
+      "detail": "must be a non-negative number"
+    },
+    {
+      "pointer": "#/product_id",
+      "detail": "product does not exist"
+    }
+  ]
 }
 ```
 
-### Error Codes
+### Problem Type Registry
 
-| Code               | HTTP Status | Description               |
-| ------------------ | ----------- | ------------------------- |
-| `VALIDATION_ERROR` | 400         | Request validation failed |
-| `INVALID_JSON`     | 400         | Malformed JSON body       |
-| `UNAUTHORIZED`     | 401         | Authentication required   |
-| `FORBIDDEN`        | 403         | Insufficient permissions  |
-| `NOT_FOUND`        | 404         | Resource not found        |
-| `CONFLICT`         | 409         | Business rule conflict    |
-| `RATE_LIMITED`     | 429         | Too many requests         |
-| `INTERNAL_ERROR`   | 500         | Unexpected server error   |
+| Problem Type URI                                    | Title                 | Status |
+| --------------------------------------------------- | --------------------- | ------ |
+| `https://api.nedlia.com/problems/validation-error`  | Validation Error      | 422    |
+| `https://api.nedlia.com/problems/unauthorized`      | Unauthorized          | 401    |
+| `https://api.nedlia.com/problems/forbidden`         | Forbidden             | 403    |
+| `https://api.nedlia.com/problems/not-found`         | Resource Not Found    | 404    |
+| `https://api.nedlia.com/problems/conflict`          | Conflict              | 409    |
+| `https://api.nedlia.com/problems/placement-overlap` | Placement Overlap     | 409    |
+| `https://api.nedlia.com/problems/rate-limited`      | Rate Limit Exceeded   | 429    |
+| `https://api.nedlia.com/problems/internal-error`    | Internal Server Error | 500    |
+| `about:blank`                                       | (HTTP status title)   | varies |
 
 ### Business Rule Errors
 
-```json
+```http
 HTTP/1.1 409 Conflict
+Content-Type: application/problem+json
 
 {
-  "error": {
-    "code": "PLACEMENT_OVERLAP",
-    "message": "Placement overlaps with existing placement",
-    "details": [
-      {
-        "existing_placement_id": "abc123",
-        "overlap_range": {
-          "start_time": 32.0,
-          "end_time": 40.0
-        }
-      }
-    ]
+  "type": "https://api.nedlia.com/problems/placement-overlap",
+  "title": "Placement Overlap",
+  "status": 409,
+  "detail": "Placement overlaps with an existing placement.",
+  "instance": "/v1/placements",
+  "existing_placement_id": "abc123",
+  "overlap_range": {
+    "start_time": 32.0,
+    "end_time": 40.0
   }
 }
 ```
+
+### Validation Errors with JSON Pointer (RFC 6901)
+
+For field-level validation errors, use the `errors` extension with [JSON Pointers](https://www.rfc-editor.org/rfc/rfc6901):
+
+```json
+{
+  "type": "https://api.nedlia.com/problems/validation-error",
+  "title": "Validation Error",
+  "status": 422,
+  "detail": "Your request contains invalid fields.",
+  "errors": [
+    { "pointer": "#/time_range/start_time", "detail": "must be non-negative" },
+    { "pointer": "#/time_range/end_time", "detail": "must be greater than start_time" }
+  ]
+}
+```
+
+See [Error Handling Strategy](error-handling-strategy.md) for complete implementation details.
 
 ---
 

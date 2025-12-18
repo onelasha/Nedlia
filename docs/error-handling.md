@@ -1,79 +1,82 @@
 # Error Handling Guide
 
-Standardized error handling patterns for Nedlia's Python backend (FastAPI, Lambda workers) and TypeScript frontend.
+Standardized error handling patterns for Nedlia's Python backend (FastAPI, Lambda workers) and TypeScript frontend using **industry standards**.
 
 ## Principles
 
 1. **Fail Fast**: Validate early, fail with clear messages
 2. **No Silent Failures**: Always log errors, never swallow exceptions
 3. **User-Friendly Messages**: External errors are human-readable; internal details stay in logs
-4. **Consistent Format**: All APIs return the same error structure
-5. **Traceable**: Every error includes a request/correlation ID
+4. **Standards-Based**: Use RFC 9457 Problem Details for API errors
+5. **Traceable**: Every error includes correlation ID via W3C Trace Context
 
 ---
 
-## Error Response Format
+## Error Response Format (RFC 9457)
 
-All API errors follow this structure (defined in [API Standards](api-standards.md)):
+All API errors follow **[RFC 9457 Problem Details for HTTP APIs](https://www.rfc-editor.org/rfc/rfc9457.html)**:
 
-```json
+```http
+HTTP/1.1 422 Unprocessable Content
+Content-Type: application/problem+json
+
 {
-  "error": {
-    "code": "VALIDATION_ERROR",
-    "message": "Human-readable description",
-    "request_id": "req_abc123",
-    "details": [
-      {
-        "field": "time_range.start_time",
-        "code": "INVALID_VALUE",
-        "message": "Start time cannot be negative"
-      }
-    ]
-  }
+  "type": "https://api.nedlia.com/problems/validation-error",
+  "title": "Validation Error",
+  "status": 422,
+  "detail": "Your request contains invalid fields.",
+  "instance": "/v1/placements",
+  "errors": [
+    {
+      "pointer": "#/time_range/start_time",
+      "detail": "must be a non-negative number"
+    }
+  ]
 }
 ```
 
-| Field        | Type   | Required | Description                          |
-| ------------ | ------ | -------- | ------------------------------------ |
-| `code`       | string | ✅       | Machine-readable error code          |
-| `message`    | string | ✅       | Human-readable description           |
-| `request_id` | string | ✅       | Correlation ID for tracing           |
-| `details`    | array  | ❌       | Field-level errors (validation only) |
+| Field      | Type    | Required | Description                                       |
+| ---------- | ------- | -------- | ------------------------------------------------- |
+| `type`     | URI     | ✅       | URI identifying the problem type                  |
+| `title`    | string  | ✅       | Short, human-readable summary (constant per type) |
+| `status`   | integer | ✅       | HTTP status code                                  |
+| `detail`   | string  | ❌       | Human-readable explanation of this occurrence     |
+| `instance` | URI     | ❌       | URI identifying this specific occurrence          |
 
 ---
 
-## Error Codes
+## Problem Type Registry
 
-### Standard Codes
+Problem types are defined at `https://api.nedlia.com/problems/`:
 
-| Code                  | HTTP | Description                        |
-| --------------------- | ---- | ---------------------------------- |
-| `VALIDATION_ERROR`    | 400  | Request validation failed          |
-| `INVALID_JSON`        | 400  | Malformed JSON body                |
-| `UNAUTHORIZED`        | 401  | Authentication required or invalid |
-| `FORBIDDEN`           | 403  | Insufficient permissions           |
-| `NOT_FOUND`           | 404  | Resource does not exist            |
-| `METHOD_NOT_ALLOWED`  | 405  | HTTP method not supported          |
-| `CONFLICT`            | 409  | Business rule conflict             |
-| `GONE`                | 410  | Resource permanently deleted       |
-| `RATE_LIMITED`        | 429  | Too many requests                  |
-| `INTERNAL_ERROR`      | 500  | Unexpected server error            |
-| `SERVICE_UNAVAILABLE` | 503  | Downstream service unavailable     |
+### Standard Problem Types
 
-### Domain-Specific Codes
+| Problem Type URI                                      | Title                 | Status |
+| ----------------------------------------------------- | --------------------- | ------ |
+| `https://api.nedlia.com/problems/validation-error`    | Validation Error      | 422    |
+| `https://api.nedlia.com/problems/unauthorized`        | Unauthorized          | 401    |
+| `https://api.nedlia.com/problems/forbidden`           | Forbidden             | 403    |
+| `https://api.nedlia.com/problems/not-found`           | Resource Not Found    | 404    |
+| `https://api.nedlia.com/problems/conflict`            | Conflict              | 409    |
+| `https://api.nedlia.com/problems/rate-limited`        | Rate Limit Exceeded   | 429    |
+| `https://api.nedlia.com/problems/internal-error`      | Internal Server Error | 500    |
+| `https://api.nedlia.com/problems/service-unavailable` | Service Unavailable   | 503    |
+| `about:blank`                                         | (HTTP status title)   | varies |
 
-| Code                     | HTTP | Description                          |
-| ------------------------ | ---- | ------------------------------------ |
-| `PLACEMENT_OVERLAP`      | 409  | Placement overlaps with existing one |
-| `VIDEO_NOT_FOUND`        | 404  | Referenced video does not exist      |
-| `PRODUCT_NOT_FOUND`      | 404  | Referenced product does not exist    |
-| `CAMPAIGN_EXPIRED`       | 409  | Campaign has ended                   |
-| `VALIDATION_IN_PROGRESS` | 409  | Video validation already running     |
-| `QUOTA_EXCEEDED`         | 429  | Account quota exceeded               |
+### Domain-Specific Problem Types
+
+| Problem Type URI                                         | Title                  | Status |
+| -------------------------------------------------------- | ---------------------- | ------ |
+| `https://api.nedlia.com/problems/placement-overlap`      | Placement Overlap      | 409    |
+| `https://api.nedlia.com/problems/video-not-found`        | Video Not Found        | 404    |
+| `https://api.nedlia.com/problems/product-not-found`      | Product Not Found      | 404    |
+| `https://api.nedlia.com/problems/campaign-expired`       | Campaign Expired       | 409    |
+| `https://api.nedlia.com/problems/validation-in-progress` | Validation In Progress | 409    |
+| `https://api.nedlia.com/problems/quota-exceeded`         | Quota Exceeded         | 429    |
 
 ---
 
-## Python Exception Hierarchy
+## Python Exception Hierarchy (RFC 9457)
 
 ### Base Exceptions
 
@@ -82,79 +85,96 @@ All API errors follow this structure (defined in [API Standards](api-standards.m
 from dataclasses import dataclass, field
 from typing import Any
 
+# Problem type base URI
+PROBLEM_BASE_URI = "https://api.nedlia.com/problems"
+
 
 @dataclass
-class NedliaError(Exception):
-    """Base exception for all Nedlia errors."""
+class ProblemException(Exception):
+    """Base exception mapping to RFC 9457 Problem Details."""
 
-    message: str
-    code: str = "INTERNAL_ERROR"
-    status_code: int = 500
-    details: list[dict[str, Any]] = field(default_factory=list)
+    type: str
+    title: str
+    status: int
+    detail: str | None = None
+    instance: str | None = None
+    extensions: dict[str, Any] = field(default_factory=dict)
 
     def __str__(self) -> str:
-        return self.message
+        return self.detail or self.title
 
 
 @dataclass
-class ValidationError(NedliaError):
+class ValidationException(ProblemException):
     """Request validation failed."""
 
-    code: str = "VALIDATION_ERROR"
-    status_code: int = 400
+    type: str = f"{PROBLEM_BASE_URI}/validation-error"
+    title: str = "Validation Error"
+    status: int = 422
+    errors: list[dict[str, str]] = field(default_factory=list)
+
+    def __post_init__(self) -> None:
+        if self.errors:
+            self.extensions["errors"] = self.errors
 
 
 @dataclass
-class NotFoundError(NedliaError):
+class NotFoundException(ProblemException):
     """Resource not found."""
 
-    resource: str = ""
+    type: str = f"{PROBLEM_BASE_URI}/not-found"
+    title: str = "Resource Not Found"
+    status: int = 404
+    resource_type: str = ""
     resource_id: str = ""
-    code: str = "NOT_FOUND"
-    status_code: int = 404
 
     def __post_init__(self) -> None:
-        if not self.message and self.resource:
-            self.message = f"{self.resource} '{self.resource_id}' not found"
+        if not self.detail and self.resource_type:
+            self.detail = f"{self.resource_type} '{self.resource_id}' not found"
 
 
 @dataclass
-class ConflictError(NedliaError):
+class ConflictException(ProblemException):
     """Business rule conflict."""
 
-    code: str = "CONFLICT"
-    status_code: int = 409
+    type: str = f"{PROBLEM_BASE_URI}/conflict"
+    title: str = "Conflict"
+    status: int = 409
 
 
 @dataclass
-class UnauthorizedError(NedliaError):
+class UnauthorizedException(ProblemException):
     """Authentication required."""
 
-    message: str = "Authentication required"
-    code: str = "UNAUTHORIZED"
-    status_code: int = 401
+    type: str = f"{PROBLEM_BASE_URI}/unauthorized"
+    title: str = "Unauthorized"
+    status: int = 401
+    detail: str = "Authentication required"
 
 
 @dataclass
-class ForbiddenError(NedliaError):
+class ForbiddenException(ProblemException):
     """Insufficient permissions."""
 
-    message: str = "Insufficient permissions"
-    code: str = "FORBIDDEN"
-    status_code: int = 403
+    type: str = f"{PROBLEM_BASE_URI}/forbidden"
+    title: str = "Forbidden"
+    status: int = 403
+    detail: str = "Insufficient permissions"
 
 
 @dataclass
-class RateLimitError(NedliaError):
+class RateLimitException(ProblemException):
     """Rate limit exceeded."""
 
+    type: str = f"{PROBLEM_BASE_URI}/rate-limited"
+    title: str = "Rate Limit Exceeded"
+    status: int = 429
     retry_after: int = 60
-    code: str = "RATE_LIMITED"
-    status_code: int = 429
 
     def __post_init__(self) -> None:
-        if not self.message:
-            self.message = f"Rate limit exceeded. Retry after {self.retry_after} seconds."
+        if not self.detail:
+            self.detail = f"Rate limit exceeded. Retry after {self.retry_after} seconds."
+        self.extensions["retry_after"] = self.retry_after
 ```
 
 ### Domain Exceptions
@@ -164,59 +184,59 @@ class RateLimitError(NedliaError):
 from dataclasses import dataclass
 from uuid import UUID
 
-from src.core.exceptions import ConflictError, NotFoundError
+from src.core.exceptions import ConflictException, NotFoundException, PROBLEM_BASE_URI
 
 
 @dataclass
-class PlacementOverlapError(ConflictError):
+class PlacementOverlapException(ConflictException):
     """Placement overlaps with existing placement."""
 
+    type: str = f"{PROBLEM_BASE_URI}/placement-overlap"
+    title: str = "Placement Overlap"
     existing_placement_id: UUID | None = None
     overlap_start: float = 0.0
     overlap_end: float = 0.0
-    code: str = "PLACEMENT_OVERLAP"
 
     def __post_init__(self) -> None:
-        self.message = "Placement overlaps with existing placement"
+        self.detail = "Placement overlaps with an existing placement"
         if self.existing_placement_id:
-            self.details = [
-                {
-                    "existing_placement_id": str(self.existing_placement_id),
-                    "overlap_range": {
-                        "start_time": self.overlap_start,
-                        "end_time": self.overlap_end,
-                    },
-                }
-            ]
+            self.extensions["existing_placement_id"] = str(self.existing_placement_id)
+            self.extensions["overlap_range"] = {
+                "start_time": self.overlap_start,
+                "end_time": self.overlap_end,
+            }
 
 
 @dataclass
-class VideoNotFoundError(NotFoundError):
+class VideoNotFoundException(NotFoundException):
     """Video not found."""
 
-    resource: str = "Video"
-    code: str = "VIDEO_NOT_FOUND"
+    type: str = f"{PROBLEM_BASE_URI}/video-not-found"
+    title: str = "Video Not Found"
+    resource_type: str = "Video"
 
 
 @dataclass
-class ProductNotFoundError(NotFoundError):
+class ProductNotFoundException(NotFoundException):
     """Product not found."""
 
-    resource: str = "Product"
-    code: str = "PRODUCT_NOT_FOUND"
+    type: str = f"{PROBLEM_BASE_URI}/product-not-found"
+    title: str = "Product Not Found"
+    resource_type: str = "Product"
 
 
 @dataclass
-class CampaignExpiredError(ConflictError):
+class CampaignExpiredException(ConflictException):
     """Campaign has expired."""
 
-    code: str = "CAMPAIGN_EXPIRED"
-    message: str = "Campaign has ended and cannot be modified"
+    type: str = f"{PROBLEM_BASE_URI}/campaign-expired"
+    title: str = "Campaign Expired"
+    detail: str = "Campaign has ended and cannot be modified"
 ```
 
 ---
 
-## FastAPI Exception Handlers
+## FastAPI Exception Handlers (RFC 9457)
 
 ### Global Exception Handler
 
@@ -228,99 +248,112 @@ from typing import Any
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
-from pydantic import ValidationError as PydanticValidationError
 
-from src.core.exceptions import NedliaError
-from src.middleware.correlation_id import correlation_id_var
+from src.core.exceptions import ProblemException
 
 logger = logging.getLogger(__name__)
 
+PROBLEM_CONTENT_TYPE = "application/problem+json"
 
-def create_error_response(
-    code: str,
-    message: str,
-    status_code: int,
-    details: list[dict[str, Any]] | None = None,
+
+def create_problem_response(
+    type: str,
+    title: str,
+    status: int,
+    detail: str | None = None,
+    instance: str | None = None,
+    extensions: dict[str, Any] | None = None,
 ) -> JSONResponse:
-    """Create standardized error response."""
+    """Create RFC 9457 Problem Details response."""
     body: dict[str, Any] = {
-        "error": {
-            "code": code,
-            "message": message,
-            "request_id": correlation_id_var.get(""),
-        }
+        "type": type,
+        "title": title,
+        "status": status,
     }
-    if details:
-        body["error"]["details"] = details
+    if detail:
+        body["detail"] = detail
+    if instance:
+        body["instance"] = instance
+    if extensions:
+        body.update(extensions)
 
-    return JSONResponse(status_code=status_code, content=body)
+    return JSONResponse(
+        status_code=status,
+        content=body,
+        media_type=PROBLEM_CONTENT_TYPE,
+    )
 
 
-async def nedlia_exception_handler(request: Request, exc: NedliaError) -> JSONResponse:
-    """Handle NedliaError exceptions."""
+async def problem_exception_handler(request: Request, exc: ProblemException) -> JSONResponse:
+    """Handle ProblemException and return RFC 9457 response."""
     logger.warning(
-        "Business error: %s",
-        exc.message,
+        "Problem: %s",
+        exc.title,
         extra={
-            "error_code": exc.code,
-            "status_code": exc.status_code,
-            "details": exc.details,
+            "problem_type": exc.type,
+            "status": exc.status,
+            "detail": exc.detail,
+            "path": str(request.url.path),
         },
     )
-    return create_error_response(
-        code=exc.code,
-        message=exc.message,
-        status_code=exc.status_code,
-        details=exc.details if exc.details else None,
+    return create_problem_response(
+        type=exc.type,
+        title=exc.title,
+        status=exc.status,
+        detail=exc.detail,
+        instance=str(request.url.path),
+        extensions=exc.extensions if exc.extensions else None,
     )
 
 
 async def validation_exception_handler(
     request: Request, exc: RequestValidationError
 ) -> JSONResponse:
-    """Handle Pydantic validation errors."""
-    details = []
+    """Handle Pydantic validation errors as RFC 9457 with JSON Pointers."""
+    errors = []
     for error in exc.errors():
-        field = ".".join(str(loc) for loc in error["loc"] if loc != "body")
-        details.append(
-            {
-                "field": field,
-                "code": error["type"].upper().replace(".", "_"),
-                "message": error["msg"],
-            }
-        )
+        # Convert Pydantic loc to JSON Pointer (RFC 6901)
+        pointer = "#/" + "/".join(str(loc) for loc in error["loc"] if loc != "body")
+        errors.append({
+            "pointer": pointer,
+            "detail": error["msg"],
+        })
 
     logger.info(
         "Validation error",
-        extra={"validation_errors": details},
+        extra={"validation_errors": errors},
     )
 
-    return create_error_response(
-        code="VALIDATION_ERROR",
-        message="Request validation failed",
-        status_code=400,
-        details=details,
+    return create_problem_response(
+        type="https://api.nedlia.com/problems/validation-error",
+        title="Validation Error",
+        status=422,
+        detail="Your request contains invalid fields.",
+        instance=str(request.url.path),
+        extensions={"errors": errors},
     )
 
 
 async def unhandled_exception_handler(request: Request, exc: Exception) -> JSONResponse:
-    """Handle unexpected exceptions."""
+    """Handle unexpected exceptions as RFC 9457."""
     logger.exception(
         "Unhandled exception: %s",
         str(exc),
         extra={"exception_type": type(exc).__name__},
     )
 
-    return create_error_response(
-        code="INTERNAL_ERROR",
-        message="An unexpected error occurred",
-        status_code=500,
+    return create_problem_response(
+        type="https://api.nedlia.com/problems/internal-error",
+        title="Internal Server Error",
+        status=500,
+        detail="An unexpected error occurred.",
+        instance=str(request.url.path),
     )
 
 
 def register_exception_handlers(app: FastAPI) -> None:
     """Register all exception handlers."""
-    app.add_exception_handler(NedliaError, nedlia_exception_handler)
+    app.add_exception_handler(ProblemException, problem_exception_handler)
     app.add_exception_handler(RequestValidationError, validation_exception_handler)
     app.add_exception_handler(Exception, unhandled_exception_handler)
 ```
@@ -349,8 +382,10 @@ register_exception_handlers(app)
 # src/placements/service.py
 from uuid import UUID
 
-from src.core.exceptions import NotFoundError
-from src.domain.exceptions import PlacementOverlapError, VideoNotFoundError
+from src.domain.exceptions import (
+    PlacementOverlapException,
+    VideoNotFoundException,
+)
 
 
 class PlacementService:
@@ -358,7 +393,7 @@ class PlacementService:
         # Validate video exists
         video = await self.video_repo.find_by_id(data.video_id)
         if not video:
-            raise VideoNotFoundError(resource_id=str(data.video_id))
+            raise VideoNotFoundException(resource_id=str(data.video_id))
 
         # Check for overlaps
         existing = await self.repo.find_overlapping(
@@ -367,7 +402,7 @@ class PlacementService:
             end_time=data.end_time,
         )
         if existing:
-            raise PlacementOverlapError(
+            raise PlacementOverlapException(
                 existing_placement_id=existing.id,
                 overlap_start=max(data.start_time, existing.time_range.start_time),
                 overlap_end=min(data.end_time, existing.time_range.end_time),
@@ -413,7 +448,7 @@ async def fetch_video_metadata(video_id: UUID) -> VideoMetadata:
         return VideoMetadata(**response.json())
     except httpx.HTTPStatusError as e:
         if e.response.status_code == 404:
-            raise VideoNotFoundError(resource_id=str(video_id))
+            raise VideoNotFoundException(resource_id=str(video_id))
         raise  # Re-raise other HTTP errors
 
 
@@ -421,13 +456,15 @@ async def fetch_video_metadata(video_id: UUID) -> VideoMetadata:
 async def get_placement(placement_id: UUID) -> Placement:
     try:
         return await self.repo.find_by_id(placement_id)
-    except NotFoundError:
+    except NotFoundException:
         raise  # Pointless - let it bubble up
 ```
 
 ---
 
-## Lambda Worker Error Handling
+## Lambda Worker Error Handling (AWS Standard)
+
+Uses **[AWS Lambda Partial Batch Response](https://docs.aws.amazon.com/lambda/latest/dg/services-sqs-errorhandling.html)** for SQS event sources.
 
 ### SQS Handler Pattern
 
@@ -437,15 +474,19 @@ import json
 import logging
 from typing import Any
 
-from src.core.exceptions import NedliaError
+from src.core.exceptions import ProblemException
 from src.tasks.file_generation import generate_placement_file
 
 logger = logging.getLogger(__name__)
 
 
 def handler(event: dict[str, Any], context: Any) -> dict[str, Any]:
-    """SQS Lambda handler for file generation."""
-    failed_records = []
+    """
+    SQS Lambda handler with AWS Partial Batch Response.
+
+    Returns batchItemFailures - AWS will only retry failed messages.
+    """
+    batch_item_failures: list[dict[str, str]] = []
 
     for record in event.get("Records", []):
         message_id = record["messageId"]
@@ -460,17 +501,17 @@ def handler(event: dict[str, Any], context: Any) -> dict[str, Any]:
 
             generate_placement_file(placement_id)
 
-        except NedliaError as e:
+        except ProblemException as e:
             # Business errors - log and fail the message
             logger.warning(
                 "Business error in file generation",
                 extra={
-                    "error_code": e.code,
-                    "message": e.message,
+                    "problem_type": e.type,
+                    "detail": e.detail,
                     "message_id": message_id,
                 },
             )
-            failed_records.append({"itemIdentifier": message_id})
+            batch_item_failures.append({"itemIdentifier": message_id})
 
         except Exception as e:
             # Unexpected errors - log and fail the message
@@ -478,10 +519,10 @@ def handler(event: dict[str, Any], context: Any) -> dict[str, Any]:
                 "Unexpected error in file generation",
                 extra={"message_id": message_id},
             )
-            failed_records.append({"itemIdentifier": message_id})
+            batch_item_failures.append({"itemIdentifier": message_id})
 
-    # Partial batch failure response
-    return {"batchItemFailures": failed_records}
+    # AWS Lambda Partial Batch Response format
+    return {"batchItemFailures": batch_item_failures}
 ```
 
 ### Idempotency
@@ -505,42 +546,97 @@ async def process_event(event_id: str, payload: dict) -> None:
 
 ---
 
-## TypeScript Error Handling
+## TypeScript Error Handling (RFC 9457)
 
 ### Error Classes
 
 ```typescript
 // src/core/errors.ts
+
+/** RFC 9457 Problem Details structure */
+interface ProblemDetail {
+  type: string;
+  title: string;
+  status: number;
+  detail?: string;
+  instance?: string;
+  [key: string]: unknown; // Extension fields
+}
+
 export class NedliaError extends Error {
   constructor(
-    message: string,
-    public readonly code: string = 'INTERNAL_ERROR',
-    public readonly statusCode: number = 500,
-    public readonly details?: Record<string, unknown>[]
+    public readonly type: string,
+    public readonly title: string,
+    public readonly status: number,
+    public readonly detail?: string,
+    public readonly instance?: string,
+    public readonly extensions?: Record<string, unknown>
   ) {
-    super(message);
+    super(detail ?? title);
     this.name = 'NedliaError';
+  }
+
+  get isRetryable(): boolean {
+    return this.status === 429 || this.status >= 500;
+  }
+
+  static fromProblemDetail(problem: ProblemDetail): NedliaError {
+    const { type, title, status, detail, instance, ...extensions } = problem;
+
+    if (type.includes('validation-error')) {
+      return new ValidationError(problem);
+    }
+    if (type.includes('not-found')) {
+      return new NotFoundError(type, title, status, detail, instance);
+    }
+    if (type.includes('unauthorized')) {
+      return new UnauthorizedError(detail);
+    }
+    if (type.includes('rate-limited')) {
+      return new RateLimitError(problem);
+    }
+
+    return new NedliaError(type, title, status, detail, instance, extensions);
   }
 }
 
 export class ValidationError extends NedliaError {
-  constructor(message: string, details?: Record<string, unknown>[]) {
-    super(message, 'VALIDATION_ERROR', 400, details);
+  readonly errors?: Array<{ pointer: string; detail: string }>;
+
+  constructor(problem: ProblemDetail & { errors?: Array<{ pointer: string; detail: string }> }) {
+    super(problem.type, problem.title, problem.status, problem.detail, problem.instance);
     this.name = 'ValidationError';
+    this.errors = problem.errors;
   }
 }
 
 export class NotFoundError extends NedliaError {
-  constructor(resource: string, resourceId: string) {
-    super(`${resource} '${resourceId}' not found`, 'NOT_FOUND', 404);
+  constructor(
+    type: string = 'https://api.nedlia.com/problems/not-found',
+    title: string = 'Resource Not Found',
+    status: number = 404,
+    detail?: string,
+    instance?: string
+  ) {
+    super(type, title, status, detail, instance);
     this.name = 'NotFoundError';
   }
 }
 
 export class UnauthorizedError extends NedliaError {
-  constructor(message = 'Authentication required') {
-    super(message, 'UNAUTHORIZED', 401);
+  constructor(detail: string = 'Authentication required') {
+    super('https://api.nedlia.com/problems/unauthorized', 'Unauthorized', 401, detail);
     this.name = 'UnauthorizedError';
+  }
+}
+
+export class RateLimitError extends NedliaError {
+  readonly retryAfter: number;
+
+  constructor(problem: ProblemDetail & { retry_after?: number }) {
+    super(problem.type, problem.title, problem.status, problem.detail, problem.instance);
+    this.name = 'RateLimitError';
+    this.retryAfter = problem.retry_after ?? 60;
   }
 }
 ```
@@ -549,29 +645,20 @@ export class UnauthorizedError extends NedliaError {
 
 ```typescript
 // src/infrastructure/api-client.ts
-import { NedliaError, UnauthorizedError, NotFoundError } from '../core/errors';
+import { NedliaError } from '../core/errors';
 
-interface ApiErrorResponse {
-  error: {
-    code: string;
-    message: string;
-    request_id: string;
-    details?: Record<string, unknown>[];
-  };
-}
+const PROBLEM_CONTENT_TYPE = 'application/problem+json';
 
 export async function handleApiError(response: Response): Promise<never> {
-  const body: ApiErrorResponse = await response.json();
-  const { code, message, details } = body.error;
+  const contentType = response.headers.get('content-type') ?? '';
 
-  switch (response.status) {
-    case 401:
-      throw new UnauthorizedError(message);
-    case 404:
-      throw new NotFoundError('Resource', 'unknown');
-    default:
-      throw new NedliaError(message, code, response.status, details);
+  if (contentType.includes(PROBLEM_CONTENT_TYPE) || contentType.includes('application/json')) {
+    const problemDetail = await response.json();
+    throw NedliaError.fromProblemDetail(problemDetail);
   }
+
+  // Fallback for non-JSON errors
+  throw new NedliaError('about:blank', response.statusText, response.status, await response.text());
 }
 ```
 
@@ -643,7 +730,7 @@ logger.warning(f"Placement overlap for video {video_id}")
 import pytest
 from uuid import uuid4
 
-from src.domain.exceptions import PlacementOverlapError, VideoNotFoundError
+from src.domain.exceptions import PlacementOverlapException, VideoNotFoundException
 from src.placements.service import PlacementService
 
 
@@ -659,16 +746,17 @@ class TestPlacementService:
             end_time=10.0,
         )
 
-        with pytest.raises(VideoNotFoundError) as exc_info:
+        with pytest.raises(VideoNotFoundException) as exc_info:
             await service.create(data)
 
-        assert exc_info.value.code == "VIDEO_NOT_FOUND"
-        assert str(data.video_id) in exc_info.value.message
+        error = exc_info.value
+        assert "video-not-found" in error.type
+        assert error.status == 404
 
     async def test_create_raises_overlap_error(
         self, service: PlacementService, existing_placement: Placement
     ) -> None:
-        """Test that overlapping placement raises error with details."""
+        """Test that overlapping placement raises error with RFC 9457 extensions."""
         data = PlacementCreate(
             video_id=existing_placement.video_id,
             product_id=uuid4(),
@@ -676,13 +764,13 @@ class TestPlacementService:
             end_time=15.0,
         )
 
-        with pytest.raises(PlacementOverlapError) as exc_info:
+        with pytest.raises(PlacementOverlapException) as exc_info:
             await service.create(data)
 
         error = exc_info.value
-        assert error.code == "PLACEMENT_OVERLAP"
-        assert error.existing_placement_id == existing_placement.id
-        assert len(error.details) == 1
+        assert "placement-overlap" in error.type
+        assert error.status == 409
+        assert error.extensions["existing_placement_id"] == str(existing_placement.id)
 ```
 
 ---
