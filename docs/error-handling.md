@@ -689,7 +689,9 @@ class TestPlacementService:
 
 ## Related Documentation
 
+- [Error Handling Strategy by Project Type](error-handling-strategy.md) – Project-specific error handling (APIs, Workers, SDKs, Plugins, Frontend)
 - [API Standards](api-standards.md) – Error response format
 - [Logging Standards](logging-standards.md) – Error logging patterns
 - [Testing Strategy](testing-strategy.md) – Testing error cases
 - [Observability](observability.md) – Error monitoring and alerting
+- [Resilience Patterns](resilience-patterns.md) – Circuit breakers, retries, fallbacks

@@ -125,6 +125,7 @@ nx show project portal
 - [TypeScript Style Guide](docs/typescript-style-guide.md) – React, ESLint, Prettier, strict mode
 - [Code Quality](docs/code-quality.md) – SonarCloud, linting, formatting
 - [Error Handling](docs/error-handling.md) – Exception hierarchy, error codes, response formats
+- [Error Handling Strategy](docs/error-handling-strategy.md) – Project-specific strategies (APIs, Workers, SDKs, Plugins, Frontend)
 - [Logging Standards](docs/logging-standards.md) – Structured logging, log levels, PII handling
 - [Dependency Injection](docs/dependency-injection.md) – DI patterns for Python and TypeScript
 
