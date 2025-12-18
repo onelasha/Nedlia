@@ -142,6 +142,7 @@ nx show project portal
 - [Idempotency](docs/idempotency.md) – IETF Idempotency-Key header, safe retries
 - [Resilience Patterns](docs/resilience-patterns.md) – Circuit breakers, retries, fallbacks
 - [Observability](docs/observability.md) – Logging, metrics, tracing, alerting
+- [Distributed Tracing](docs/distributed-tracing.md) – OpenTelemetry, W3C Trace Context, DB query tracing
 
 ### 🧪 Testing & Quality
 
