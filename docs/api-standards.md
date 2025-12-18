@@ -17,6 +17,7 @@ This document defines API design standards for Nedlia services.
 - [Authentication](#authentication)
 - [Rate Limiting](#rate-limiting)
 - [OpenAPI Specification](#openapi-specification)
+- [Optimistic Locking (ETag)](#optimistic-locking-etag)
 - [HATEOAS (Optional)](#hateoas-optional)
 - [Related Documentation](#related-documentation)
 
@@ -600,6 +601,179 @@ npx openapi-generator-cli generate -i openapi.yaml -g typescript-fetch -o sdk/
 # Generate Python client
 openapi-generator generate -i openapi.yaml -g python -o sdk/
 ```
+
+---
+
+## Optimistic Locking (ETag)
+
+Use **ETag** and **If-Match** headers to prevent lost updates when multiple clients modify the same resource concurrently.
+
+### The Problem: Lost Updates
+
+```
+Client A                    Server                    Client B
+   │                          │                          │
+   │── GET /placements/123 ──►│◄── GET /placements/123 ──│
+   │◄─ {version: 1, ...} ─────│───── {version: 1, ...} ─►│
+   │                          │                          │
+   │── PUT (my changes) ─────►│                          │
+   │◄─ 200 OK ────────────────│                          │
+   │                          │                          │
+   │                          │◄── PUT (their changes) ──│
+   │                          │───── 200 OK ────────────►│
+   │                          │                          │
+   │  ❌ Client A's changes are silently overwritten!    │
+```
+
+### The Solution: ETag + If-Match
+
+```
+Client A                    Server                    Client B
+   │                          │                          │
+   │── GET /placements/123 ──►│◄── GET /placements/123 ──│
+   │◄─ ETag: "abc123" ────────│───── ETag: "abc123" ────►│
+   │                          │                          │
+   │── PUT ──────────────────►│                          │
+   │   If-Match: "abc123"     │                          │
+   │◄─ 200 OK, ETag: "def456" │                          │
+   │                          │                          │
+   │                          │◄── PUT ─────────────────│
+   │                          │    If-Match: "abc123"    │
+   │                          │───── 412 Precondition ──►│
+   │                          │         Failed           │
+   │                          │                          │
+   │  ✅ Client B knows to refresh and retry             │
+```
+
+### Response with ETag
+
+```http
+GET /v1/placements/123
+```
+
+```http
+HTTP/1.1 200 OK
+ETag: "a1b2c3d4e5f6"
+Content-Type: application/json
+
+{
+  "data": {
+    "id": "123",
+    "video_id": "456",
+    "status": "active",
+    "updated_at": "2024-01-15T10:30:00Z"
+  }
+}
+```
+
+### Update with If-Match
+
+```http
+PUT /v1/placements/123
+If-Match: "a1b2c3d4e5f6"
+Content-Type: application/json
+
+{
+  "video_id": "456",
+  "status": "archived"
+}
+```
+
+**Success** (ETag matched):
+
+```http
+HTTP/1.1 200 OK
+ETag: "g7h8i9j0k1l2"
+
+{"data": {...}}
+```
+
+**Conflict** (ETag mismatch):
+
+```http
+HTTP/1.1 412 Precondition Failed
+Content-Type: application/problem+json
+
+{
+  "type": "https://api.nedlia.com/problems/precondition-failed",
+  "title": "Precondition Failed",
+  "status": 412,
+  "detail": "Resource has been modified. Refresh and retry.",
+  "instance": "/v1/placements/123"
+}
+```
+
+### ETag Generation
+
+```python
+# src/core/etag.py
+import hashlib
+from datetime import datetime
+
+
+def generate_etag(resource_id: str, updated_at: datetime, version: int = None) -> str:
+    """Generate ETag from resource state."""
+    data = f"{resource_id}:{updated_at.isoformat()}"
+    if version is not None:
+        data += f":{version}"
+    return hashlib.md5(data.encode()).hexdigest()
+
+
+def parse_if_match(header: str | None) -> str | None:
+    """Parse If-Match header value."""
+    if not header:
+        return None
+    # Remove quotes: "abc123" -> abc123
+    return header.strip('"')
+```
+
+### FastAPI Implementation
+
+```python
+# src/placements/router.py
+from fastapi import Header, HTTPException
+
+@router.put("/{placement_id}")
+async def update_placement(
+    placement_id: UUID,
+    data: PlacementUpdate,
+    if_match: str | None = Header(None, alias="If-Match"),
+    service: PlacementServiceDep,
+) -> PlacementResponse:
+    """Update placement with optimistic locking."""
+
+    # Get current resource
+    placement = await service.get(placement_id)
+    current_etag = generate_etag(str(placement.id), placement.updated_at)
+
+    # Check If-Match if provided
+    if if_match:
+        client_etag = parse_if_match(if_match)
+        if client_etag != current_etag:
+            raise HTTPException(
+                status_code=412,
+                detail="Resource has been modified. Refresh and retry.",
+            )
+
+    # Perform update
+    updated = await service.update(placement_id, data)
+    new_etag = generate_etag(str(updated.id), updated.updated_at)
+
+    return PlacementResponse(
+        data=updated,
+        headers={"ETag": f'"{new_etag}"'}
+    )
+```
+
+### When to Use ETag
+
+| Operation             | ETag Required?      | Reason                                         |
+| --------------------- | ------------------- | ---------------------------------------------- |
+| `GET` single resource | ✅ Return ETag      | Enable caching and conditional updates         |
+| `PUT` / `PATCH`       | ✅ Require If-Match | Prevent lost updates                           |
+| `DELETE`              | ⚠️ Optional         | May want to prevent deleting modified resource |
+| `GET` collection      | ❌ Not needed       | Collections change frequently                  |
+| `POST` create         | ❌ Not needed       | New resource, no conflict possible             |
 
 ---
 
