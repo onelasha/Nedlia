@@ -151,6 +151,7 @@ nx show project portal
 
 ### 🚢 Deployment & Operations
 
+- [Versioning Strategy](docs/versioning-strategy.md) – SemVer, CalVer, artifact tagging, changelog
 - [Deployment](docs/deployment.md) – CI/CD, environments, release process
 - [Deployment Orchestration](docs/deployment-orchestration.md) – Multi-team deployment, change detection
 - [Release Management](docs/release-management.md) – Release trains, sign-offs, production governance
