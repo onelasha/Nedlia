@@ -124,8 +124,8 @@ nx show project portal
 - [Python Style Guide](docs/python-style-guide.md) – PEP 8, FastAPI patterns, type hints
 - [TypeScript Style Guide](docs/typescript-style-guide.md) – React, ESLint, Prettier, strict mode
 - [Code Quality](docs/code-quality.md) – SonarCloud, linting, formatting
-- [Error Handling](docs/error-handling.md) – Exception hierarchy, error codes, response formats
-- [Error Handling Strategy](docs/error-handling-strategy.md) – Project-specific strategies (APIs, Workers, SDKs, Plugins, Frontend)
+- [Error Handling](docs/error-handling.md) – RFC 9457 Problem Details, exception hierarchy
+- [Error Handling Strategy](docs/error-handling-strategy.md) – Project-specific strategies (RFC 9457, AWS Lambda, React Error Boundaries)
 - [Logging Standards](docs/logging-standards.md) – Structured logging, log levels, PII handling
 - [Dependency Injection](docs/dependency-injection.md) – DI patterns for Python and TypeScript
 
