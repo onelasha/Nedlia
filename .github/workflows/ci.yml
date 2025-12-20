@@ -11,6 +11,27 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # ==========================================================================
+  # Enforce uv - Block Poetry
+  # ==========================================================================
+  enforce-uv:
+    name: Enforce uv (no Poetry)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Check for Poetry files
+        run: |
+          if [ -f poetry.lock ]; then
+            echo "::error::poetry.lock found. Poetry is not allowed - use uv instead."
+            exit 1
+          fi
+          if grep -rq "\[tool.poetry\]" --include="pyproject.toml" .; then
+            echo "::error::[tool.poetry] section found. Poetry is not allowed - use uv instead."
+            exit 1
+          fi
+          echo "✓ No Poetry detected - uv enforced"
+
   lint-js:
     name: Lint JS/TS
     runs-on: ubuntu-latest

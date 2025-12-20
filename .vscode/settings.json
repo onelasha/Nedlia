@@ -48,6 +48,7 @@
   "typescript.updateImportsOnFileMove.enabled": "always",
 
   "python.analysis.typeCheckingMode": "basic",
+  "python.terminal.activateEnvironment": false,
 
   "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
 

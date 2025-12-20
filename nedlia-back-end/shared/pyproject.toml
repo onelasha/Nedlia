@@ -8,5 +8,6 @@ dependencies = [
     # "pydantic>=2.5.0",
 ]
 
-[tool.uv]
-dev-dependencies = []
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

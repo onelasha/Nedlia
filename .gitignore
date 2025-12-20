@@ -17,6 +17,10 @@ __pycache__/
 .pytest_cache/
 .mypy_cache/
 
+# Poetry (blocked - use uv instead)
+poetry.lock
+poetry.toml
+
 # macOS
 .DS_Store
 

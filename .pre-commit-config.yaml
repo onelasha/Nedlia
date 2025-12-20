@@ -1,4 +1,16 @@
 repos:
+  # ==========================================================================
+  # Poetry Prevention - Enforce uv as the only Python package manager
+  # ==========================================================================
+  - repo: local
+    hooks:
+      - id: no-poetry
+        name: Prevent Poetry usage
+        entry: bash -c 'if [ -f poetry.lock ] || grep -rq "\[tool.poetry\]" --include="pyproject.toml" .; then echo "ERROR: Poetry is not allowed. Use uv instead." && exit 1; fi'
+        language: system
+        pass_filenames: false
+        always_run: true
+
   # General
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.5.0
