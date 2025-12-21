@@ -7,8 +7,8 @@ This guide covers running Nedlia services locally for development.
 ```text
 ┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
 │   Frontend      │────▶│   Backend API   │────▶│   Database      │
-│   (React)       │     │   (NestJS)      │     │   (PostgreSQL)  │
-│   localhost:5173│     │   localhost:3000│     │   localhost:5432│
+│   (React)       │     │   (FastAPI)     │     │   (PostgreSQL)  │
+│   localhost:5173│     │   localhost:8000│     │   localhost:5432│
 └─────────────────┘     └─────────────────┘     └─────────────────┘
                                │
                                ▼
@@ -59,55 +59,90 @@ DATABASE_URL=postgresql://nedlia:nedlia@localhost:5432/nedlia_dev
 
 ## Running Services
 
-### Frontend (React)
+All services are run via **Nx**:
+
+### Frontend Portal (React/Vite)
 
 ```bash
-cd nedlia-front-end/web
-pnpm dev
+nx run portal:serve
 ```
 
 Opens at: http://localhost:5173
 
-### Backend API (NestJS)
+### Backend API (FastAPI)
 
 ```bash
-cd nedlia-back-end/nestjs
-pnpm dev
+nx run api:serve
 ```
 
-API available at: http://localhost:3000
+API available at: http://localhost:8000
 
-### Python Workers
+- Swagger UI: http://localhost:8000/docs
+- Health check: http://localhost:8000/health
+
+### Placement Service (FastAPI)
 
 ```bash
-cd nedlia-back-end/python
-uv run python -m nedlia_backend_py
+nx run placement-service:serve
+```
+
+API available at: http://localhost:8001
+
+- Swagger UI: http://localhost:8001/docs
+
+## Available Nx Targets
+
+| Project               | Targets                                                                   |
+| --------------------- | ------------------------------------------------------------------------- |
+| **portal**            | `serve`, `build`, `preview`, `lint`, `format`, `test`, `typecheck`        |
+| **api**               | `install`, `serve`, `lint`, `format`, `test`, `typecheck`                 |
+| **placement-service** | `install`, `serve`, `lint`, `format`, `test`, `typecheck`, `docker-build` |
+| **workers**           | `install`, `lint`, `format`, `test`, `typecheck`                          |
+| **sdk-js**            | `build`, `lint`, `test`                                                   |
+
+Examples:
+
+```bash
+# Build portal for production
+nx run portal:build
+
+# Run all tests
+nx run-many -t test
+
+# Lint only affected projects
+nx affected -t lint
+
+# Type check everything
+nx run-many -t typecheck
 ```
 
 ## Running Everything Together
 
-From the repo root:
+From the repo root, use multiple terminals:
 
 ```bash
-# Terminal 1: Frontend
-pnpm --filter @nedlia/web dev
+# Terminal 1: Backend API
+nx run api:serve
 
-# Terminal 2: Backend
-pnpm --filter @nedlia/api dev
+# Terminal 2: Placement Service
+nx run placement-service:serve
 
-# Terminal 3: Workers (if needed)
-cd nedlia-back-end/python && uv run python -m nedlia_backend_py
+# Terminal 3: Frontend
+nx run portal:serve
 ```
 
-Or use a process manager like `concurrently` (to be added).
+Or run all affected services:
+
+```bash
+nx run-many -t serve
+```
 
 ## Hot Reloading
 
 All services support hot reloading:
 
 - **Frontend**: Vite HMR (instant updates)
-- **NestJS**: `--watch` mode (auto-restart on changes)
-- **Python**: Use `--reload` flag if using uvicorn/FastAPI
+- **FastAPI**: `--reload` flag (enabled by default in `nx run api:serve`)
 
 ## Environment Variables
 
@@ -186,6 +221,10 @@ pnpm install
 # Python
 find . -type d -name "__pycache__" -exec rm -rf {} +
 find . -type d -name ".pytest_cache" -exec rm -rf {} +
+find . -type d -name ".venv" -exec rm -rf {} +
+
+# Nx cache
+nx reset
 ```
 
 ### Update Dependencies
@@ -194,18 +233,19 @@ find . -type d -name ".pytest_cache" -exec rm -rf {} +
 # JS
 pnpm update
 
-# Python
-cd nedlia-back-end/python && uv lock --upgrade
+# Python (per-project)
+cd nedlia-back-end/api && uv lock --upgrade && uv sync
 ```
 
 ## Ports Reference
 
-| Service     | Port | URL                         |
-| ----------- | ---- | --------------------------- |
-| Frontend    | 5173 | http://localhost:5173       |
-| Backend API | 3000 | http://localhost:3000       |
-| PostgreSQL  | 5432 | postgresql://localhost:5432 |
-| Redis       | 6379 | redis://localhost:6379      |
+| Service           | Port | URL                         |
+| ----------------- | ---- | --------------------------- |
+| Frontend (Portal) | 5173 | http://localhost:5173       |
+| Backend API       | 8000 | http://localhost:8000       |
+| Placement Service | 8001 | http://localhost:8001       |
+| PostgreSQL        | 5432 | postgresql://localhost:5432 |
+| Redis             | 6379 | redis://localhost:6379      |
 
 ## Next Steps
 

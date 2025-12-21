@@ -41,24 +41,23 @@ cd Nedlia
 pnpm install
 ```
 
-### Python
+### Python (via Nx)
+
+Python dependencies are managed per-project via `uv`. Use Nx to install:
 
 ```bash
-# Backend
-cd nedlia-back-end/python
-uv sync
-cd ../..
+# Install API dependencies
+nx run api:install
 
-# SDK
-cd nedlia-sdk/python
-uv sync
-cd ../..
+# Install placement-service dependencies
+nx run placement-service:install
 ```
 
-Or use the Makefile:
+Or install manually:
 
 ```bash
-make install
+cd nedlia-back-end/api && uv sync
+cd nedlia-back-end/services/placement-service && uv sync
 ```
 
 ## Environment Setup
@@ -139,25 +138,16 @@ To install recommended extensions:
 2. Press `Cmd+Shift+P` → "Extensions: Show Recommended Extensions"
 3. Install all workspace recommendations
 
-## Pre-commit Hooks
+## Git Hooks
 
-Install pre-commit hooks to automatically lint and format code:
+Git hooks are managed via **husky** (installed automatically with `pnpm install`):
 
-```bash
-# Install pre-commit (if not already installed)
-pip install pre-commit
+- **pre-commit**: Runs gitleaks (if installed) + `nx affected -t lint`
+- **commit-msg**: Validates conventional commit format
 
-# Install hooks
-pre-commit install
-pre-commit install --hook-type commit-msg
-```
+Hooks are configured in `.husky/` directory.
 
-Now every commit will be automatically checked for:
-
-- Code formatting
-- Linting errors
-- Secrets detection
-- Conventional commit message format
+> **Note**: To temporarily skip hooks, use `git commit --no-verify`
 
 ## Next Steps
 
@@ -182,15 +172,18 @@ pnpm install
 
 ```bash
 # Recreate virtual environment
-cd nedlia-back-end/python
+cd nedlia-back-end/api
 rm -rf .venv
 uv sync
+
+# Or via Nx
+nx run api:install
 ```
 
-### Pre-commit hooks not running
+### Git hooks not running
 
 ```bash
-pre-commit install --force
+pnpm exec husky install
 ```
 
 ### Node version mismatch

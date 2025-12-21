@@ -1,6 +1,30 @@
 {
-  "name": "nedlia-sdk-js",
+  "name": "sdk-js",
   "projectType": "library",
   "sourceRoot": "nedlia-sdk/javascript/src",
-  "tags": ["scope:shared", "type:util"]
+  "tags": ["scope:shared", "type:util", "lang:typescript"],
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm build",
+        "cwd": "nedlia-sdk/javascript"
+      },
+      "outputs": ["{projectRoot}/dist"]
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm lint",
+        "cwd": "nedlia-sdk/javascript"
+      }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm test",
+        "cwd": "nedlia-sdk/javascript"
+      }
+    }
+  }
 }

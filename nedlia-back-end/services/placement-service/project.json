@@ -1,0 +1,59 @@
+{
+  "name": "placement-service",
+  "projectType": "application",
+  "sourceRoot": "nedlia-back-end/services/placement-service/src",
+  "tags": ["scope:backend", "type:app", "lang:python"],
+  "targets": {
+    "install": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "uv sync",
+        "cwd": "nedlia-back-end/services/placement-service"
+      }
+    },
+    "serve": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "uv run uvicorn src.main:app --reload --host 0.0.0.0 --port 8001",
+        "cwd": "nedlia-back-end/services/placement-service"
+      },
+      "dependsOn": ["install"]
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "uv run ruff check src/",
+        "cwd": "nedlia-back-end/services/placement-service"
+      }
+    },
+    "format": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "uv run ruff format src/",
+        "cwd": "nedlia-back-end/services/placement-service"
+      }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "uv run pytest",
+        "cwd": "nedlia-back-end/services/placement-service"
+      },
+      "dependsOn": ["install"]
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "uv run mypy src/",
+        "cwd": "nedlia-back-end/services/placement-service"
+      }
+    },
+    "docker-build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "docker build -t nedlia-placement-service .",
+        "cwd": "nedlia-back-end/services/placement-service"
+      }
+    }
+  }
+}

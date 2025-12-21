@@ -1,0 +1,52 @@
+{
+  "name": "api",
+  "projectType": "application",
+  "sourceRoot": "nedlia-back-end/api/src",
+  "tags": ["scope:backend", "type:app", "lang:python"],
+  "targets": {
+    "install": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "uv sync",
+        "cwd": "nedlia-back-end/api"
+      }
+    },
+    "serve": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "uv run uvicorn src.main:app --reload --host 0.0.0.0 --port 8000",
+        "cwd": "nedlia-back-end/api"
+      },
+      "dependsOn": ["install"]
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "uv run ruff check src/",
+        "cwd": "nedlia-back-end/api"
+      }
+    },
+    "format": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "uv run ruff format src/",
+        "cwd": "nedlia-back-end/api"
+      }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "uv run pytest",
+        "cwd": "nedlia-back-end/api"
+      },
+      "dependsOn": ["install"]
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "uv run mypy src/",
+        "cwd": "nedlia-back-end/api"
+      }
+    }
+  }
+}

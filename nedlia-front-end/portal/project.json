@@ -1,6 +1,59 @@
 {
-  "name": "nedlia-portal",
+  "name": "portal",
   "projectType": "application",
   "sourceRoot": "nedlia-front-end/portal/src",
-  "tags": ["scope:frontend", "type:feature"]
+  "tags": ["scope:frontend", "type:app", "lang:typescript"],
+  "targets": {
+    "serve": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm dev",
+        "cwd": "nedlia-front-end/portal"
+      }
+    },
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm build",
+        "cwd": "nedlia-front-end/portal"
+      },
+      "outputs": ["{projectRoot}/dist"]
+    },
+    "preview": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm preview",
+        "cwd": "nedlia-front-end/portal"
+      },
+      "dependsOn": ["build"]
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm lint",
+        "cwd": "nedlia-front-end/portal"
+      }
+    },
+    "format": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm format",
+        "cwd": "nedlia-front-end/portal"
+      }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm test",
+        "cwd": "nedlia-front-end/portal"
+      }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm typecheck",
+        "cwd": "nedlia-front-end/portal"
+      }
+    }
+  }
 }
