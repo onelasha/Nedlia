@@ -17,7 +17,7 @@ tests/              # Unit and integration tests
 
 ```bash
 cd nedlia-back-end/api
-uv sync
+uv sync --extra dev
 uv run uvicorn src.main:app --reload
 ```
 

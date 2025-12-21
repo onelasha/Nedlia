@@ -1,14 +1,14 @@
 {
   "name": "sdk-js",
   "projectType": "library",
-  "sourceRoot": "nedlia-sdk/javascript/src",
+  "sourceRoot": "nedlia-sdk/js/src",
   "tags": ["scope:shared", "type:util", "lang:typescript"],
   "targets": {
     "build": {
       "executor": "nx:run-commands",
       "options": {
         "command": "pnpm build",
-        "cwd": "nedlia-sdk/javascript"
+        "cwd": "nedlia-sdk/js"
       },
       "outputs": ["{projectRoot}/dist"]
     },
@@ -16,14 +16,14 @@
       "executor": "nx:run-commands",
       "options": {
         "command": "pnpm lint",
-        "cwd": "nedlia-sdk/javascript"
+        "cwd": "nedlia-sdk/js"
       }
     },
     "test": {
       "executor": "nx:run-commands",
       "options": {
         "command": "pnpm test",
-        "cwd": "nedlia-sdk/javascript"
+        "cwd": "nedlia-sdk/js"
       }
     }
   }

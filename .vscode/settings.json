@@ -50,7 +50,12 @@
   "python.analysis.typeCheckingMode": "basic",
   "python.terminal.activateEnvironment": false,
 
-  "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact"
+  ],
 
   "search.exclude": {
     "**/node_modules": true,
@@ -61,7 +66,8 @@
   "sonarlint.connectedMode.project": {
     "connectionId": "onelasha",
     "projectKey": "onelasha_nedlia-back-end"
-  }
+  },
+  "cSpell.words": ["Nedlia"]
   // "python.testing.pytestArgs": ["nedlia-back-end"],
   // "python.testing.unittestEnabled": false,
   // "python.testing.pytestEnabled": false

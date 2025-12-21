@@ -97,9 +97,10 @@ This project uses **[uv](https://docs.astral.sh/uv/)** for Python dependency man
 ### Quick Reference
 
 ```bash
-uv sync              # Install dependencies from lock file
+uv sync --extra dev  # Install all dependencies including dev tools (linter, tests)
 uv add <package>     # Add a dependency
-uv run <command>     # Run command in venv (e.g., uv run pytest)
+uv run ruff check    # Run linter
+uv run pytest        # Run tests
 uv lock              # Update lock file
 ```
 
@@ -107,18 +108,20 @@ uv lock              # Update lock file
 
 ## Setup (Local Development)
 
+For development, ALWAYS use `--extra dev` to ensure linting and testing tools are installed.
+
 ```bash
 # API (Lambda)
-cd api && uv sync && uv run uvicorn src.main:app --reload --port 8000
+cd api && uv sync --extra dev && uv run uvicorn src.main:app --reload --port 8000
 
 # Workers (Lambda - local simulation)
-cd workers && uv sync && uv run python -m src.main
+cd workers && uv sync --extra dev && uv run python -m src.main
 
 # Microservices (Fargate - via Docker)
 cd services && docker-compose up
 
 # Or run individual service
-cd services/placement-service && uv sync && uv run uvicorn src.main:app --reload --port 8001
+cd services/placement-service && uv sync --extra dev && uv run uvicorn src.main:app --reload --port 8001
 ```
 
 ## Docker Compose (Local Services)

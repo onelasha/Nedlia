@@ -4,11 +4,12 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+
 from src.interface.routes import health, placements
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI):
+async def lifespan(_app: FastAPI):
     """Application lifespan handler."""
     # Startup
     # TODO: Initialize database connection pool

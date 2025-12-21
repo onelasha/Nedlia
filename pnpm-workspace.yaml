@@ -1,6 +1,6 @@
 packages:
   - nedlia-back-end/nestjs
-  - nedlia-front-end/web
+  - nedlia-front-end/portal
   - nedlia-sdk/js
 
 ignoredBuiltDependencies:

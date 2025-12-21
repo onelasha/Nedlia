@@ -64,7 +64,7 @@ Failed messages go to DLQ after max retries:
 
 ```bash
 cd nedlia-back-end/workers
-uv sync
+uv sync --extra dev
 
 # Run worker locally (simulates SQS trigger)
 uv run python -m src.main

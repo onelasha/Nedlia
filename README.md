@@ -48,6 +48,8 @@ git clone https://github.com/onelasha/Nedlia.git
 cd Nedlia
 pnpm install
 cp .env.example .env
+
+# Note: For Python projects, always use `uv sync --extra dev` to install linting tools.
 ```
 
 ### 4. Verify Git Hooks ⚠️

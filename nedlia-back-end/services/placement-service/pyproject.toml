@@ -45,3 +45,6 @@ testpaths = ["tests"]
 
 [tool.coverage.run]
 source = ["src"]
+
+[tool.ruff.lint.per-file-ignores]
+"src/interface/routes/placements.py" = ["ARG001"]

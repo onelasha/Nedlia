@@ -24,10 +24,14 @@ src/
 
 ## Setup
 
+Run commands from the workspace root:
+
 ```bash
-cd nedlia-front-end/portal
+# Install dependencies (root)
 pnpm install
-pnpm dev
+
+# Start the portal
+nx run portal:serve
 ```
 
 ## Tech Stack

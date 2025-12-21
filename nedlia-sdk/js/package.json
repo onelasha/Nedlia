@@ -1,0 +1,19 @@
+{
+  "name": "@nedlia/sdk-js",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "lint": "eslint src/ --ext .ts",
+    "test": "vitest run",
+    "build": "tsc"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.0",
+    "eslint": "^9.14.0",
+    "@eslint/js": "^9.14.0",
+    "@typescript-eslint/eslint-plugin": "^8.14.0",
+    "@typescript-eslint/parser": "^8.14.0",
+    "vitest": "^2.1.0"
+  }
+}

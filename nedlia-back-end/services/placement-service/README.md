@@ -78,7 +78,7 @@ EVENTBRIDGE_BUS=nedlia-events
 cd nedlia-back-end/services/placement-service
 
 # Install dependencies
-uv sync
+uv sync --extra dev
 
 # Run locally
 uv run uvicorn src.main:app --reload --port 8001

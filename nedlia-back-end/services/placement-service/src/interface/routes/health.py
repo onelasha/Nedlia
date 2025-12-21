@@ -4,13 +4,13 @@ from datetime import datetime
 
 from fastapi import APIRouter, Response, status
 
+
 router = APIRouter()
 
 
 @router.get("/health/live")
 async def liveness():
-    """
-    Liveness probe - Is the process alive?
+    """Liveness probe - Is the process alive?
 
     Used by ECS/Kubernetes to determine if container should be restarted.
     Should always return 200 if the process is running.
@@ -20,8 +20,7 @@ async def liveness():
 
 @router.get("/health/ready")
 async def readiness():
-    """
-    Readiness probe - Can the service handle requests?
+    """Readiness probe - Can the service handle requests?
 
     Used by load balancer to determine if traffic should be routed.
     Checks all critical dependencies.
