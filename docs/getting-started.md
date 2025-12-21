@@ -138,16 +138,48 @@ To install recommended extensions:
 2. Press `Cmd+Shift+P` → "Extensions: Show Recommended Extensions"
 3. Install all workspace recommendations
 
-## Git Hooks
+## Git Hooks (MANDATORY)
 
-Git hooks are managed via **husky** (installed automatically with `pnpm install`):
+> **⚠️ Git hooks are required for all developers.** They enforce code quality and commit standards.
 
-- **pre-commit**: Runs gitleaks (if installed) + `nx affected -t lint`
-- **commit-msg**: Validates conventional commit format
+Git hooks are managed via **husky** and installed automatically with `pnpm install`.
 
-Hooks are configured in `.husky/` directory.
+### What the hooks do
 
-> **Note**: To temporarily skip hooks, use `git commit --no-verify`
+| Hook           | Purpose                                                                      |
+| -------------- | ---------------------------------------------------------------------------- |
+| **pre-commit** | Runs gitleaks (secrets detection) + `nx affected -t lint`                    |
+| **commit-msg** | Validates [conventional commit](https://www.conventionalcommits.org/) format |
+
+### Verify hooks are installed
+
+```bash
+pnpm verify-hooks
+# Should output: ✅ Git hooks installed
+```
+
+### If hooks are missing
+
+```bash
+pnpm exec husky install
+```
+
+### Commit message format
+
+All commits must follow conventional commits:
+
+```
+<type>(<scope>): <description>
+
+# Examples:
+feat(backend): add user authentication
+fix(portal): resolve login redirect
+chore(deps): upgrade axios
+```
+
+**Types**: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `chore`, `ci`, `build`
+
+> **Note**: To temporarily skip hooks (not recommended), use `git commit --no-verify`
 
 ## Next Steps
 

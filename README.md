@@ -55,7 +55,12 @@ git clone https://github.com/onelasha/Nedlia.git
 cd Nedlia
 pnpm install          # Installs JS deps + sets up git hooks
 cp .env.example .env  # Configure environment
+
+# ⚠️ IMPORTANT: Verify git hooks are installed
+pnpm verify-hooks
 ```
+
+> **🔒 Git Hooks are MANDATORY** – All commits are validated for conventional format and linted automatically. If hooks are missing, run `pnpm exec husky install`.
 
 📖 **Full guide**: [Getting Started](docs/getting-started.md) | [Local Development](docs/local-development.md)
 

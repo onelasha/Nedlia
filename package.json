@@ -8,6 +8,8 @@
     "build": "nx build",
     "format": "nx format",
     "prepare": "husky install",
+    "postinstall": "node -e \"const fs=require('fs'); if(!fs.existsSync('.husky/pre-commit')){console.error('\\x1b[31m❌ Git hooks not installed! Run: pnpm exec husky install\\x1b[0m');process.exit(1)}\"",
+    "verify-hooks": "test -f .husky/pre-commit && test -f .husky/commit-msg && echo '✅ Git hooks installed' || (echo '❌ Git hooks missing! Run: pnpm exec husky install' && exit 1)",
     "affected": "nx affected"
   },
   "commitlint": {
