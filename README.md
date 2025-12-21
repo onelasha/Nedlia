@@ -33,14 +33,16 @@
 git clone https://github.com/onelasha/Nedlia.git
 cd Nedlia
 
-# Install dependencies
+# Install JS dependencies (workspace-wide)
 pnpm install
 
 # Set up environment
 cp .env.example .env
 
-# Run linting
-make lint
+# Run a specific project
+nx run portal:serve              # Frontend (React/Vite) → http://localhost:5173
+nx run api:serve                 # Backend API (FastAPI) → http://localhost:8000
+nx run placement-service:serve   # Placement Service     → http://localhost:8001
 ```
 
 See [Getting Started](docs/getting-started.md) for detailed setup instructions.
