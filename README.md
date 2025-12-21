@@ -26,26 +26,50 @@
 
 ---
 
-## Quick Start
+## 🛠️ Developer Setup
+
+> **First time here?** Complete the setup before running any project.
+
+### Prerequisites
+
+| Tool        | Version | Installation                                                  |
+| ----------- | ------- | ------------------------------------------------------------- |
+| **Node.js** | 20.x    | `nvm install 20` or [nodejs.org](https://nodejs.org/)         |
+| **pnpm**    | 10.x    | `corepack enable && corepack prepare pnpm@latest --activate`  |
+| **Python**  | 3.11+   | `pyenv install 3.11` or [python.org](https://www.python.org/) |
+| **uv**      | latest  | `curl -LsSf https://astral.sh/uv/install.sh \| sh`            |
+
+### Verify Installation
 
 ```bash
-# Clone
+node -v      # v20.x
+pnpm -v      # 10.x
+python -V    # 3.11+
+uv --version
+```
+
+### Initial Setup
+
+```bash
 git clone https://github.com/onelasha/Nedlia.git
 cd Nedlia
+pnpm install          # Installs JS deps + sets up git hooks
+cp .env.example .env  # Configure environment
+```
 
-# Install JS dependencies (workspace-wide)
-pnpm install
+📖 **Full guide**: [Getting Started](docs/getting-started.md) | [Local Development](docs/local-development.md)
 
-# Set up environment
-cp .env.example .env
+---
 
-# Run a specific project
+## Quick Start
+
+After completing the setup above, run any project:
+
+```bash
 nx run portal:serve              # Frontend (React/Vite) → http://localhost:5173
 nx run api:serve                 # Backend API (FastAPI) → http://localhost:8000
 nx run placement-service:serve   # Placement Service     → http://localhost:8001
 ```
-
-See [Getting Started](docs/getting-started.md) for detailed setup instructions.
 
 ---
 

@@ -11,7 +11,7 @@ Before you begin, ensure you have the following installed:
 | Tool        | Version | Installation                                                  |
 | ----------- | ------- | ------------------------------------------------------------- |
 | **Node.js** | 20.x    | [nodejs.org](https://nodejs.org/) or `nvm install 20`         |
-| **pnpm**    | 9.x     | `corepack enable && corepack prepare pnpm@latest --activate`  |
+| **pnpm**    | 10.x    | `corepack enable && corepack prepare pnpm@latest --activate`  |
 | **Python**  | 3.11+   | [python.org](https://www.python.org/) or `pyenv install 3.11` |
 | **uv**      | latest  | `curl -LsSf https://astral.sh/uv/install.sh \| sh`            |
 | **Git**     | 2.x     | [git-scm.com](https://git-scm.com/)                           |
@@ -92,7 +92,7 @@ Run the following to verify everything is set up:
 node --version  # Should be v20.x
 
 # Check pnpm
-pnpm --version  # Should be 9.x
+pnpm --version  # Should be 10.x
 
 # Check Python
 python --version  # Should be 3.11.x
