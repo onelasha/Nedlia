@@ -1,43 +1,35 @@
 {
-  "name": "workers",
-  "projectType": "application",
-  "sourceRoot": "nedlia-back-end/workers/src",
-  "tags": ["scope:backend", "type:app", "lang:python"],
+  "name": "shared",
+  "projectType": "library",
+  "sourceRoot": "nedlia-back-end/shared/src",
+  "tags": ["scope:shared", "type:domain", "lang:python"],
   "targets": {
     "install": {
       "executor": "nx:run-commands",
       "options": {
         "command": "uv sync --extra dev",
-        "cwd": "nedlia-back-end/workers"
+        "cwd": "nedlia-back-end/shared"
       }
     },
     "lint": {
       "executor": "nx:run-commands",
       "options": {
         "command": "uv run ruff check src/",
-        "cwd": "nedlia-back-end/workers"
+        "cwd": "nedlia-back-end/shared"
       }
     },
     "format": {
       "executor": "nx:run-commands",
       "options": {
         "command": "uv run ruff format src/",
-        "cwd": "nedlia-back-end/workers"
+        "cwd": "nedlia-back-end/shared"
       }
-    },
-    "test": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "uv run pytest",
-        "cwd": "nedlia-back-end/workers"
-      },
-      "dependsOn": ["install"]
     },
     "typecheck": {
       "executor": "nx:run-commands",
       "options": {
         "command": "uv run mypy src/",
-        "cwd": "nedlia-back-end/workers"
+        "cwd": "nedlia-back-end/shared"
       }
     }
   }

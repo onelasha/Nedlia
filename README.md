@@ -181,7 +181,7 @@ nedlia/
 │   └── portal/               # React web portal
 │
 ├── nedlia-sdk/
-│   ├── javascript/           # Web SDK
+│   ├── js/                   # Web SDK
 │   ├── python/               # Server SDK
 │   └── swift/                # iOS/macOS SDK
 │

@@ -7,7 +7,7 @@
     "install": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "uv sync",
+        "command": "uv sync --extra dev",
         "cwd": "nedlia-back-end/api"
       }
     },

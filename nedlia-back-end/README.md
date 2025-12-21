@@ -110,7 +110,7 @@ uv lock              # Update lock file
 
 For development, ALWAYS use `--extra dev` to ensure linting and testing tools are installed.
 
-```bash
+````bash
 # API (Lambda)
 cd api && uv sync --extra dev && uv run uvicorn src.main:app --reload --port 8000
 
@@ -122,7 +122,16 @@ cd services && docker-compose up
 
 # Or run individual service
 cd services/placement-service && uv sync --extra dev && uv run uvicorn src.main:app --reload --port 8001
-```
+
+## Initial Project Setup (All Backend Services)
+
+For a fresh install or to ensure all backend tools are ready:
+
+```bash
+pnpm install:python
+````
+
+````
 
 ## Docker Compose (Local Services)
 
@@ -132,7 +141,7 @@ docker-compose -f services/docker-compose.yml up
 
 # Rebuild after changes
 docker-compose -f services/docker-compose.yml up --build
-```
+````
 
 ## Clean Architecture
 
