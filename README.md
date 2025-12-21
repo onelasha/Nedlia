@@ -32,7 +32,7 @@
 | ------- | ------- | ------------------------------------------------------------ |
 | Node.js | 20.x    | `nvm install 20`                                             |
 | pnpm    | 10.x    | `corepack enable && corepack prepare pnpm@latest --activate` |
-| Python  | 3.11+   | `pyenv install 3.11`                                         |
+| Python  | 3.13.5  | `pyenv install 3.13.5`                                       |
 | uv      | latest  | `curl -LsSf https://astral.sh/uv/install.sh \| sh`           |
 
 ### 2. Verify Tools
@@ -58,7 +58,7 @@ cp .env.example .env
 pnpm verify-hooks   # Must show: ✅ Git hooks installed
 ```
 
-> **🔒 Git hooks are MANDATORY.** All commits are linted and validated for [conventional commit](https://www.conventionalcommits.org/) format. If missing, run `pnpm exec husky install`.
+> **🔒 Git hooks are MANDATORY.** All commits are validated with **Shift-Left Parity**: the pre-commit hook runs the exact same linting, type-checking, and tests as the CI. This ensures a green build before you even push.
 
 📖 **Detailed guides:** [Getting Started](docs/getting-started.md) • [Local Development](docs/local-development.md)
 
