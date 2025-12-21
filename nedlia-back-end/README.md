@@ -82,6 +82,29 @@ Backend services for the Nedlia product placement platform.
 - **Validation**: Async - returns `202 Accepted`, poll for result
 - **File Generation**: Async - files available after processing
 
+## Python Package Management (uv)
+
+This project uses **[uv](https://docs.astral.sh/uv/)** for Python dependency management. Poetry is explicitly blocked.
+
+| Aspect          | uv                    | Poetry                      |
+| --------------- | --------------------- | --------------------------- |
+| Install speed   | 10-100x faster (Rust) | Slow resolver               |
+| Lock file       | `uv.lock` (standard)  | `poetry.lock` (proprietary) |
+| Python versions | Built-in management   | Requires pyenv              |
+| PEP compliance  | Full (517/518/621)    | Partial                     |
+| Monorepo        | Native workspaces     | Limited                     |
+
+### Quick Reference
+
+```bash
+uv sync              # Install dependencies from lock file
+uv add <package>     # Add a dependency
+uv run <command>     # Run command in venv (e.g., uv run pytest)
+uv lock              # Update lock file
+```
+
+> ⚠️ **Poetry is blocked** via pre-commit hooks and CI. See root `.pre-commit-config.yaml`.
+
 ## Setup (Local Development)
 
 ```bash
