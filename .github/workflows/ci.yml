@@ -49,7 +49,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Lint
-        run: pnpm lint
+        run: pnpm exec nx run-many -t lint --projects="tag:lang:typescript"
 
       - name: Type check
         run: pnpm exec tsc --noEmit
@@ -64,36 +64,19 @@ jobs:
         with:
           python-version-file: ".python-version"
 
+      - uses: pnpm/action-setup@v4
+
       - name: Install uv
         uses: astral-sh/setup-uv@v7
 
-      - name: Lint API
-        working-directory: nedlia-back-end/api
-        run: |
-          uv sync --extra dev
-          uv run ruff check .
-          uv run ruff format --check .
+      - name: Install dependencies (root)
+        run: pnpm install --frozen-lockfile
 
-      - name: Lint Workers
-        working-directory: nedlia-back-end/workers
-        run: |
-          uv sync --extra dev
-          uv run ruff check .
-          uv run ruff format --check .
+      - name: Install all Python environments
+        run: pnpm install:python
 
-      - name: Lint Python SDK
-        working-directory: nedlia-sdk/python
-        run: |
-          uv sync --extra dev
-          uv run ruff check .
-          uv run ruff format --check .
-
-      - name: Lint Shared Library
-        working-directory: nedlia-back-end/shared
-        run: |
-          uv sync --extra dev
-          uv run ruff check .
-          uv run ruff format --check .
+      - name: Lint all Python projects
+        run: pnpm exec nx run-many -t lint --projects="tag:lang:python"
 
   lint-terraform:
     name: Lint Terraform
@@ -127,7 +110,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Test
-        run: pnpm test
+        run: pnpm exec nx run-many -t test --projects="tag:lang:typescript"
 
   test-python:
     name: Test Python
@@ -140,32 +123,19 @@ jobs:
         with:
           python-version-file: ".python-version"
 
+      - uses: pnpm/action-setup@v4
+
       - name: Install uv
         uses: astral-sh/setup-uv@v7
 
-      - name: Test API
-        working-directory: nedlia-back-end/api
-        run: |
-          uv sync --extra dev
-          uv run pytest --cov || true
+      - name: Install dependencies (root)
+        run: pnpm install --frozen-lockfile
 
-      - name: Test Workers
-        working-directory: nedlia-back-end/workers
-        run: |
-          uv sync --extra dev
-          uv run pytest --cov || true
+      - name: Install all Python environments
+        run: pnpm install:python
 
-      - name: Test Python SDK
-        working-directory: nedlia-sdk/python
-        run: |
-          uv sync --extra dev
-          uv run pytest --cov || true
-
-      - name: Test Shared Library
-        working-directory: nedlia-back-end/shared
-        run: |
-          uv sync --extra dev
-          uv run pytest --cov || true
+      - name: Test all Python projects
+        run: pnpm exec nx run-many -t test --projects="tag:lang:python"
 
   security:
     name: Security Scan
