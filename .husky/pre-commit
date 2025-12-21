@@ -6,5 +6,5 @@ if command -v gitleaks >/dev/null 2>&1; then
   gitleaks protect --staged --config tools/security/.gitleaks.toml
 fi
 
-# Run Nx affected lint on staged files
-pnpm nx affected -t lint --base=HEAD~1
+# Run Nx affected lint and typecheck on staged files
+pnpm nx affected -t lint typecheck --base=HEAD~1
