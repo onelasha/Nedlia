@@ -1,6 +1,65 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
+# =============================================================================
+# Cross-project check: Block commits that touch multiple project directories
+# =============================================================================
+check_single_project() {
+  # Get staged files (excluding deleted files)
+  STAGED_FILES=$(git diff --cached --name-only --diff-filter=d)
+
+  if [ -z "$STAGED_FILES" ]; then
+    return 0
+  fi
+
+  # Project directories to check
+  PROJECTS_TOUCHED=""
+
+  # Check each project area
+  if echo "$STAGED_FILES" | grep -q "^nedlia-back-end/"; then
+    PROJECTS_TOUCHED="${PROJECTS_TOUCHED}backend "
+  fi
+  if echo "$STAGED_FILES" | grep -q "^nedlia-front-end/"; then
+    PROJECTS_TOUCHED="${PROJECTS_TOUCHED}frontend "
+  fi
+  if echo "$STAGED_FILES" | grep -q "^nedlia-sdk/"; then
+    PROJECTS_TOUCHED="${PROJECTS_TOUCHED}sdk "
+  fi
+  if echo "$STAGED_FILES" | grep -q "^nedlia-plugin/"; then
+    PROJECTS_TOUCHED="${PROJECTS_TOUCHED}plugin "
+  fi
+  if echo "$STAGED_FILES" | grep -q "^nedlia-IaC/"; then
+    PROJECTS_TOUCHED="${PROJECTS_TOUCHED}iac "
+  fi
+
+  # Count projects touched
+  PROJECT_COUNT=$(echo "$PROJECTS_TOUCHED" | wc -w | tr -d ' ')
+
+  if [ "$PROJECT_COUNT" -gt 1 ]; then
+    echo ""
+    echo "❌ CROSS-PROJECT COMMIT BLOCKED"
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo ""
+    echo "This commit touches $PROJECT_COUNT projects: $PROJECTS_TOUCHED"
+    echo ""
+    echo "Each commit should only modify files in ONE project area."
+    echo ""
+    echo "How to fix:"
+    echo "  1. Unstage files: git reset HEAD <file>"
+    echo "  2. Create separate commits for each project"
+    echo ""
+    echo "To bypass (not recommended): git commit --no-verify"
+    echo ""
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    return 1
+  fi
+
+  return 0
+}
+
+# Run cross-project check
+check_single_project || exit 1
+
 # Secrets detection (gitleaks)
 if command -v gitleaks >/dev/null 2>&1; then
   gitleaks protect --staged --config tools/security/.gitleaks.toml

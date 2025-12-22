@@ -148,8 +148,17 @@ Git hooks are managed via **husky** and installed automatically with `pnpm insta
 
 | Hook           | Purpose                                                                      |
 | -------------- | ---------------------------------------------------------------------------- |
-| **pre-commit** | Runs gitleaks (secrets detection) + lint-staged (lints only staged files)    |
+| **pre-commit** | Cross-project check + gitleaks + lint-staged                                 |
 | **commit-msg** | Validates [conventional commit](https://www.conventionalcommits.org/) format |
+
+### Cross-project check
+
+Commits are **blocked** if they touch multiple project directories (e.g., `nedlia-back-end/` AND `nedlia-front-end/`). This enforces single-project commits for cleaner history and easier reviews.
+
+To fix a blocked commit:
+
+1. Unstage files: `git reset HEAD <file>`
+2. Create separate commits for each project
 
 ### lint-staged
 
