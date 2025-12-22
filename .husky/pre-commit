@@ -7,4 +7,4 @@ if command -v gitleaks >/dev/null 2>&1; then
 fi
 
 # Run Nx affected lint, typecheck, and test on staged files
-pnpm nx affected -t lint typecheck test --base=HEAD --head=HEAD #--base=HEAD~1
+pnpm nx affected -t lint typecheck test --base=HEAD~1
