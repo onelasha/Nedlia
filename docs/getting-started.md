@@ -6,15 +6,167 @@ This guide will help you set up your local development environment for Nedlia.
 
 Before you begin, ensure you have the following installed:
 
-### Required
+### Required Tools Summary
 
-| Tool        | Version | Installation                                                  |
-| ----------- | ------- | ------------------------------------------------------------- |
-| **Node.js** | 20.x    | [nodejs.org](https://nodejs.org/) or `nvm install 20`         |
-| **pnpm**    | 10.x    | `corepack enable && corepack prepare pnpm@latest --activate`  |
-| **Python**  | 3.11+   | [python.org](https://www.python.org/) or `pyenv install 3.11` |
-| **uv**      | latest  | `curl -LsSf https://astral.sh/uv/install.sh \| sh`            |
-| **Git**     | 2.x     | [git-scm.com](https://git-scm.com/)                           |
+| Tool        | Version | Purpose                |
+| ----------- | ------- | ---------------------- |
+| **Node.js** | 20.x    | JavaScript runtime     |
+| **pnpm**    | 10.x    | Package manager        |
+| **Python**  | 3.13+   | Backend runtime        |
+| **uv**      | latest  | Python package manager |
+| **Git**     | 2.x     | Version control        |
+
+---
+
+## Step-by-Step Installation
+
+### 1. Install Homebrew (macOS only)
+
+Homebrew is the package manager for macOS. Skip this if you're on Linux.
+
+```bash
+# Install Homebrew
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+# Follow the instructions to add Homebrew to your PATH
+# Then verify installation
+brew --version
+```
+
+### 2. Install Git
+
+```bash
+# macOS (via Homebrew)
+brew install git
+
+# Ubuntu/Debian
+sudo apt update && sudo apt install git
+
+# Verify
+git --version
+```
+
+### 3. Install nvm (Node Version Manager)
+
+nvm lets you install and switch between Node.js versions easily.
+
+```bash
+# Install nvm
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
+
+# Restart your terminal or run:
+source ~/.zshrc   # for zsh
+source ~/.bashrc  # for bash
+
+# Verify nvm is installed
+nvm --version
+```
+
+### 4. Install Node.js (via nvm)
+
+```bash
+# Install Node.js 20 (LTS)
+nvm install 20
+
+# Set as default
+nvm alias default 20
+
+# Verify
+node --version   # Should show v20.x.x
+npm --version
+```
+
+### 5. Enable pnpm (via Corepack)
+
+pnpm is our package manager. It's included with Node.js via Corepack.
+
+```bash
+# Enable Corepack (built into Node.js)
+corepack enable
+
+# Prepare pnpm
+corepack prepare pnpm@latest --activate
+
+# Verify
+pnpm --version   # Should show 10.x
+```
+
+### 6. Install pyenv (Python Version Manager)
+
+pyenv lets you install and switch between Python versions.
+
+```bash
+# macOS (via Homebrew)
+brew install pyenv
+
+# Ubuntu/Debian
+curl https://pyenv.run | bash
+
+# Add to your shell config (~/.zshrc or ~/.bashrc):
+echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.zshrc
+echo '[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.zshrc
+echo 'eval "$(pyenv init -)"' >> ~/.zshrc
+
+# Restart terminal or run:
+source ~/.zshrc
+
+# Verify
+pyenv --version
+```
+
+### 7. Install Python (via pyenv)
+
+```bash
+# Install Python 3.13 (or latest 3.x)
+pyenv install 3.13
+
+# Set as global default
+pyenv global 3.13
+
+# Verify
+python --version   # Should show Python 3.13.x
+```
+
+### 8. Install uv (Python Package Manager)
+
+uv is a fast Python package manager we use instead of pip.
+
+```bash
+# Install uv
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Restart terminal or run:
+source ~/.zshrc
+
+# Verify
+uv --version
+```
+
+---
+
+## Quick Verification
+
+Run this to verify all tools are installed:
+
+```bash
+echo "Node: $(node -v)" && \
+echo "pnpm: $(pnpm -v)" && \
+echo "Python: $(python -V)" && \
+echo "uv: $(uv --version)" && \
+echo "Git: $(git --version)"
+```
+
+Expected output:
+
+```
+Node: v20.x.x
+pnpm: 10.x.x
+Python: Python 3.13.x
+uv: uv 0.x.x
+Git: git version 2.x.x
+```
+
+---
 
 ### Optional (for infrastructure work)
 
