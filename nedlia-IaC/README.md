@@ -2,6 +2,11 @@
 
 Terraform + Terragrunt configuration for Nedlia AWS infrastructure.
 
+## 📚 Documentation
+
+- [Naming Conventions](docs/NAMING_CONVENTIONS.md)
+- [Project Organization](docs/ORGANIZATION.md)
+
 ## Structure
 
 ```text
