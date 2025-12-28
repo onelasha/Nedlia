@@ -1,8 +1,14 @@
+<p align="center">
+  <img src="docs/assets/logo.png" alt="Nedlia Logo" width="300px" />
+</p>
+
 # Nedlia
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
-[![GitHub Stars](https://img.shields.io/github/stars/onelasha/Nedlia?style=social)](https://github.com/onelasha/Nedlia)
+<p align="center">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT" /></a>
+  <a href="CONTRIBUTING.md"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="PRs Welcome" /></a>
+  <a href="https://github.com/onelasha/Nedlia"><img src="https://img.shields.io/github/stars/onelasha/Nedlia?style=social" alt="GitHub Stars" /></a>
+</p>
 
 **Product placement validation platform** for video content.
 
