@@ -1,8 +1,10 @@
 <p align="center">
-  <img src="docs/assets/logo.png" alt="Nedlia Logo" width="300px" />
+  <img src="docs/assets/logo.png" alt="Nedlia Logo" width="400px" />
 </p>
 
-# Nedlia
+<p align="center">
+    <em>Product placement validation platform for video content.</em>
+</p>
 
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT" /></a>
@@ -10,7 +12,13 @@
   <a href="https://github.com/onelasha/Nedlia"><img src="https://img.shields.io/github/stars/onelasha/Nedlia?style=social" alt="GitHub Stars" /></a>
 </p>
 
-**Product placement validation platform** for video content.
+---
+
+**Documentation**: <a href="docs/getting-started.md" target="_blank">https://nedlia.io/docs</a>
+
+**Source Code**: <a href="https://github.com/onelasha/Nedlia" target="_blank">https://github.com/onelasha/Nedlia</a>
+
+---
 
 > 🚧 **Alpha** – Under active development
 
