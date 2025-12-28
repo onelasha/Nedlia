@@ -160,6 +160,10 @@ nx run placement-service:serve   # Service     → http://localhost:8001
 
 ## 📚 Documentation
 
+<table width="100%">
+<tr>
+<td width="50%" valign="top">
+
 ### 🚀 Getting Started
 
 - [Getting Started](docs/getting-started.md)
@@ -177,6 +181,9 @@ nx run placement-service:serve   # Service     → http://localhost:8001
 
 - [SOLID Principles](docs/SOLID-PRINCIPLES.md)
 - [DRY Principles](docs/dry-principles.md)
+
+</td>
+<td width="50%" valign="top">
 
 ### 🛠️ Development
 
@@ -197,6 +204,10 @@ nx run placement-service:serve   # Service     → http://localhost:8001
 
 - [Contributing Guide](CONTRIBUTING.md)
 - [Code of Conduct](CODE_OF_CONDUCT.md)
+
+</td>
+</tr>
+</table>
 
 ---
 
