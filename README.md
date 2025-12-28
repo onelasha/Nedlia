@@ -45,6 +45,7 @@ Nedlia provides:
 - **📊 Analytics Dashboard** – Real-time tracking of placement performance across content
 - **🔗 SDK Integration** – Embed placement tracking in video players for live viewership data
 - **📋 Contract Management** – Centralized hub for placement agreements and compliance
+- **🏗️ Infrastructure as Code** – Automated cloud provisioning using Terraform and Terragrunt for consistent, reproducible environments
 
 ### Who It's For
 
@@ -146,14 +147,14 @@ nx run placement-service:serve   # Service     → http://localhost:8001
 
 ## 🔧 Tech Stack
 
-| Layer              | Technologies                                  |
-| ------------------ | --------------------------------------------- |
-| **Frontend**       | React, TypeScript, Vite, TailwindCSS          |
-| **Backend**        | FastAPI (Python), PostgreSQL                  |
-| **Infrastructure** | AWS (Lambda, API Gateway, S3, SQS), Terraform |
-| **Plugins**        | Swift, SwiftUI (macOS/iOS)                    |
-| **Monorepo**       | Nx, pnpm workspaces                           |
-| **Quality**        | ESLint, Ruff, Prettier, Husky                 |
+| Layer              | Technologies                                              |
+| ------------------ | --------------------------------------------------------- |
+| **Frontend**       | React, TypeScript, Vite, TailwindCSS                      |
+| **Backend**        | FastAPI (Python), PostgreSQL                              |
+| **Infrastructure** | AWS (Lambda, API Gateway, S3, SQS), Terraform, Terragrunt |
+| **Plugins**        | Swift, SwiftUI (macOS/iOS)                                |
+| **Monorepo**       | Nx, pnpm workspaces                                       |
+| **Quality**        | ESLint, Ruff, Prettier, Husky                             |
 
 ---
 
@@ -196,6 +197,8 @@ nx run placement-service:serve   # Service     → http://localhost:8001
 - [Deployment](docs/deployment.md)
 - [Branching Strategy](docs/branching-strategy.md)
 - [Testing Strategy](docs/testing-strategy.md)
+- [IaC Naming Conventions](nedlia-IaC/docs/NAMING_CONVENTIONS.md)
+- [IaC Organization](nedlia-IaC/docs/ORGANIZATION.md)
 
 ### Contributing
 
