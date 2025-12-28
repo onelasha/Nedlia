@@ -100,3 +100,10 @@ Standard Terraform file names should be used in every module:
 - `data.tf`: Data source definitions.
 - `versions.tf`: Provider and Terraform version constraints.
 - `locals.tf`: Local value definitions.
+
+## 🔗 References
+
+For more details on industry-standard naming conventions, refer to the official documentation:
+
+- **Azure Cloud Adoption Framework (CAF)**: [Define your naming convention](https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-naming)
+- **Azure Resource Abbreviations**: [Recommended abbreviations for Azure resources](https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations)
