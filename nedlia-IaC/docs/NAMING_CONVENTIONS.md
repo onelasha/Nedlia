@@ -14,31 +14,72 @@ To align with the **Official Azure Cloud Adoption Framework (CAF)**, we use a **
 
 `[type]-[org]-[app]-[env]-[region]-[instance]`
 
-| Segment      | Code       | Examples                               |
-| :----------- | :--------- | :------------------------------------- |
-| **Type**     | 2-4 chars  | `s3`, `iam`, `vpc`, `st`, `kv`, `rg`   |
-| **Org**      | 2-4 chars  | `ndla` (Nedlia)                        |
-| **App**      | 3-6 chars  | `api`, `portal`, `worker`              |
-| **Env**      | 3-4 chars  | `dev`, `qa`, `stg`, `prod`             |
-| **Region**   | 3-4 chars  | `use1` (us-east-1), `euw1` (eu-west-1) |
-| **Instance** | 2-3 digits | `01`, `001` (Optional)                 |
-
-### Examples (CAF Compliant)
-
-- **S3 Bucket**: `s3-ndla-portal-prod-use1-01`
-- **IAM Role**: `iam-ndla-api-dev-use1-lambda`
-- **VPC**: `vpc-ndla-shared-prod-use1`
-- **Azure Storage**: `stndlaprodue01` (Note: Storage accounts omit hyphens)
+| Segment      | Code       | Examples                            |
+| :----------- | :--------- | :---------------------------------- |
+| **Type**     | 2-4 chars  | See Abbreviation Table below        |
+| **Org**      | 2-4 chars  | `ndla` (Nedlia)                     |
+| **App**      | 3-8 chars  | `api`, `portal`, `worker`, `orders` |
+| **Env**      | 3-4 chars  | `dev`, `qa`, `stg`, `prod`          |
+| **Region**   | 3-4 chars  | `use1`, `euw1`, `eastus`            |
+| **Instance** | 2-3 digits | `001`, `01`                         |
 
 ---
 
-## Why Type-Prefix? (HashiCorp vs. Azure CAF)
+## 📖 Official Abbreviations (CAF)
 
-While many Terraform users use suffixes, the **Azure CAF** standard specifically uses **Prefixes** because:
+Use these standard prefixes to ensure resources are logically grouped and easily identifiable.
 
-1.  **Sorting**: In the Portal/Console, resources of the same type group together.
-2.  **Consistency**: It mimics the way we declare resources in code (`resource "aws_s3_bucket" "name"`).
-3.  **Standardization**: It follows the Microsoft-recommended abbreviations list.
+| Category       | Component                    | Abbreviation  |
+| :------------- | :--------------------------- | :------------ |
+| **Compute**    | Virtual Machine              | `vm`          |
+|                | Function App                 | `func`        |
+|                | Container App                | `ca`          |
+|                | AKS Cluster                  | `aks`         |
+| **Networking** | Virtual Network              | `vnet`        |
+|                | Subnet                       | `snet`        |
+|                | Network Security Group       | `nsg`         |
+|                | Load Balancer (Internal/Ext) | `lbi` / `lbe` |
+|                | App Gateway                  | `agw`         |
+| **Databases**  | SQL Server                   | `sql`         |
+|                | SQL Database                 | `sqldb`       |
+|                | Cosmos DB                    | `cosmos`      |
+| **Storage**    | Storage Account              | `st`          |
+|                | Container Registry           | `cr`          |
+| **Security**   | Key Vault                    | `kv`          |
+|                | Managed Identity             | `id`          |
+| **Messaging**  | Service Bus Namespace        | `sbns`        |
+|                | Service Bus Queue            | `sbq`         |
+|                | Event Hub                    | `evh`         |
+
+---
+
+## Real-World Examples
+
+### 1. API & Microservices
+
+- **API Management**: `apim-ndla-api-prod-use1-001`
+- **Container App**: `ca-ndla-orders-dev-use1-001`
+- **Function App**: `func-ndla-notifier-stg-use1-001`
+
+### 2. Networking & Security
+
+- **Virtual Network**: `vnet-ndla-shared-prod-use1-001`
+- **Subnet (App)**: `snet-ndla-api-prod-use1-001`
+- **Key Vault**: `kv-ndla-secrets-prod-001`
+
+### 3. Data & Storage
+
+- **SQL Database**: `sqldb-ndla-orders-prod-use1-001`
+- **Storage Account**: `stndlaprodsue1001` (No hyphens, globally unique)
+- **S3 Bucket**: `s3-ndla-logs-prod-use1-001`
+
+---
+
+## Why this is "1000% Sure" Better
+
+1. **Official CAF Alignment**: Uses the exact abbreviations Microsoft recommends.
+2. **Automatic Grouping**: Resources of the same type (e.g., all `vnet-`) appear together.
+3. **Collision Resistance**: The inclusion of `org` and `instance` prevents naming clashes in large tenants.
 
 ---
 
