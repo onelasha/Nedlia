@@ -162,47 +162,50 @@ nx run placement-service:serve   # Service     → http://localhost:8001
 
 <table>
 <tr>
-<td width="50%" valign="top">
+<td width="33%" valign="top">
 
-### Getting Started
+### 🚀 Getting Started
 
 - [Getting Started](docs/getting-started.md)
 - [Local Development](docs/local-development.md)
 
-### Architecture
+### 🏗️ Architecture
 
-- [Architecture Overview](ARCHITECTURE.md)
-- [Frontend Architecture](docs/frontend-architecture.md)
+- [Overview](ARCHITECTURE.md)
+- [Frontend](docs/frontend-architecture.md)
 - [Domain Model](docs/domain-model.md)
 - [API Standards](docs/api-standards.md)
-- [Security Architecture](docs/security-architecture.md)
+- [Security](docs/security-architecture.md)
 
-### Design Principles
+</td>
+<td width="33%" valign="top">
+
+### 🛠️ Development
+
+- [Python Style](docs/python-style-guide.md)
+- [TS Style](docs/typescript-style-guide.md)
+- [Error Handling](docs/error-handling.md)
+- [Logging](docs/logging-standards.md)
+
+### 📐 Design
 
 - [SOLID Principles](docs/SOLID-PRINCIPLES.md)
 - [DRY Principles](docs/dry-principles.md)
 
 </td>
-<td width="50%" valign="top">
+<td width="33%" valign="top">
 
-### Development
-
-- [Python Style Guide](docs/python-style-guide.md)
-- [TypeScript Style Guide](docs/typescript-style-guide.md)
-- [Error Handling](docs/error-handling.md)
-- [Logging Standards](docs/logging-standards.md)
-
-### Operations
+### ⚙️ Operations
 
 - [Deployment](docs/deployment.md)
 - [Branching Strategy](docs/branching-strategy.md)
 - [Testing Strategy](docs/testing-strategy.md)
-- [IaC Naming Conventions](nedlia-IaC/docs/NAMING_CONVENTIONS.md)
+- [IaC Conventions](nedlia-IaC/docs/NAMING_CONVENTIONS.md)
 - [IaC Organization](nedlia-IaC/docs/ORGANIZATION.md)
 
-### Contributing
+### 🤝 Contributing
 
-- [Contributing Guide](CONTRIBUTING.md)
+- [Contributing](CONTRIBUTING.md)
 - [Code of Conduct](CODE_OF_CONDUCT.md)
 
 </td>
