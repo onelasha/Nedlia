@@ -13,10 +13,10 @@ Terraform + Terragrunt configuration for Nedlia AWS infrastructure.
 nedlia-IaC/
   terragrunt.hcl              # Root config (backend, provider)
   environments/
-    dev/                      # Development environment
-    testing/                  # Testing/CI environment
-    staging/                  # Pre-production
-    production/               # Production
+    dev/                      # Development
+    qa/                       # QA/Testing
+    stg/                      # Staging
+    prod/                     # Production
   modules/
     vpc/                      # VPC, subnets, security groups
     aurora/                   # Aurora Serverless v2 (PostgreSQL)

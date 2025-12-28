@@ -19,7 +19,7 @@ To align with the **Official Azure Cloud Adoption Framework (CAF)**, we use a **
 | **Type**     | 2-4 chars  | `s3`, `iam`, `vpc`, `st`, `kv`, `rg`   |
 | **Org**      | 2-4 chars  | `ndla` (Nedlia)                        |
 | **App**      | 3-6 chars  | `api`, `portal`, `worker`              |
-| **Env**      | 3-4 chars  | `dev`, `test`, `stg`, `prod`           |
+| **Env**      | 3-4 chars  | `dev`, `qa`, `stg`, `prod`             |
 | **Region**   | 3-4 chars  | `use1` (us-east-1), `euw1` (eu-west-1) |
 | **Instance** | 2-3 digits | `01`, `001` (Optional)                 |
 
@@ -86,7 +86,7 @@ All taggable resources must include a standard set of tags to assist with cost a
 | Tag Key       | Example Value     | Description                           |
 | ------------- | ----------------- | ------------------------------------- |
 | `Project`     | `nedlia`          | Constant for this project             |
-| `Environment` | `production`      | `dev`, `testing`, `staging`, `prod`   |
+| `Environment` | `prod`            | `dev`, `qa`, `stg`, `prod`            |
 | `Component`   | `api`, `database` | The subsystem the resource belongs to |
 | `ManagedBy`   | `terraform`       | Tool used to manage the resource      |
 

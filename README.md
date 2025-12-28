@@ -158,6 +158,19 @@ nx run placement-service:serve   # Service     → http://localhost:8001
 
 ---
 
+## 📈 Environment Strategy
+
+Nedlia follows a standardized **multi-stage environment lifecycle** to ensure reliability and safety at scale. Our Infrastructure as Code (IaC) is organized into four distinct tiers:
+
+| Env    | Purpose           | Characteristics                                           |
+| :----- | :---------------- | :-------------------------------------------------------- |
+| `dev`  | Development       | Features-in-progress, frequent updates, reduced scale.    |
+| `qa`   | Quality Assurance | Integration testing, bug bashing, and user acceptance.    |
+| `stg`  | Staging           | Pre-production parity, final validation of deployments.   |
+| `prod` | Production        | Live production traffic, high availability, and security. |
+
+---
+
 ## 📚 Documentation
 
 <table width="100%">

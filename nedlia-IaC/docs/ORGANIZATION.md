@@ -8,9 +8,9 @@ Nedlia uses a **Terraform + Terragrunt** architecture to manage infrastructure a
 nedlia-IaC/
 ├── environments/         # Environmental configurations (Terragrunt)
 │   ├── dev/             # Development environment
-│   ├── testing/         # CI/Test environment
-│   ├── staging/         # Pre-production environment
-│   └── production/      # Live production environment
+│   ├── qa/              # QA/Testing environment
+│   ├── stg/             # Staging environment
+│   └── prod/            # Production environment
 ├── modules/              # Reusable Terraform modules
 │   ├── vpc/             # Networking infrastructure
 │   ├── aurora/          # Database infrastructure
