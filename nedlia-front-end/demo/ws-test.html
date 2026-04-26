@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WebSocket Chat Tester</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: system-ui, sans-serif; background: #0f172a; color: #e2e8f0; padding: 24px; }
+    h1 { font-size: 1.25rem; margin-bottom: 16px; color: #94a3b8; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; max-width: 1100px; }
+    .panel { background: #1e293b; border-radius: 8px; padding: 16px; }
+    label { display: block; font-size: 0.75rem; color: #94a3b8; margin-bottom: 4px; margin-top: 10px; }
+    label:first-child { margin-top: 0; }
+    input, textarea { width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #334155; background: #0f172a; color: #e2e8f0; font-family: monospace; font-size: 0.85rem; }
+    textarea { resize: vertical; }
+    button { padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer; font-size: 0.85rem; font-weight: 600; margin-top: 10px; margin-right: 6px; }
+    .btn-connect { background: #22c55e; color: #0f172a; }
+    .btn-connect:disabled { background: #334155; color: #64748b; cursor: default; }
+    .btn-disconnect { background: #ef4444; color: white; }
+    .btn-send { background: #3b82f6; color: white; }
+    .btn-send:disabled { background: #334155; color: #64748b; cursor: default; }
+    .btn-hello { background: #a855f7; color: white; }
+    .btn-hello:disabled { background: #334155; color: #64748b; cursor: default; }
+    .btn-clear { background: #64748b; color: white; }
+    .btn-new { background: #f59e0b; color: #0f172a; }
+    .btn-new:disabled { background: #334155; color: #64748b; cursor: default; }
+    .status { font-size: 0.8rem; margin-top: 10px; padding: 6px 10px; border-radius: 4px; }
+    .status.connected { background: #166534; color: #bbf7d0; }
+    .status.disconnected { background: #7f1d1d; color: #fecaca; }
+    .status.connecting { background: #854d0e; color: #fef08a; }
+    #log { background: #0f172a; border: 1px solid #334155; border-radius: 6px; padding: 10px; margin-top: 10px; height: 420px; overflow-y: auto; font-family: monospace; font-size: 0.8rem; line-height: 1.6; }
+    .log-sent { color: #60a5fa; }
+    .log-recv { color: #4ade80; }
+    .log-err { color: #f87171; }
+    .log-sys { color: #94a3b8; }
+    .sep { border-top: 1px solid #334155; margin: 12px 0; }
+  </style>
+</head>
+<body>
+  <h1>WebSocket Chat Tester</h1>
+  <div class="grid">
+    <!-- Left: Config -->
+    <div class="panel">
+      <label>Host</label>
+      <input id="host" value="ws://localhost:8000" />
+
+      <label>Org ID (UUID)</label>
+      <input id="orgId" placeholder="e.g. 550e8400-e29b-41d4-a716-446655440000" />
+
+      <label>Agent ID (UUID)</label>
+      <input id="agentId" placeholder="e.g. 6ba7b810-9dad-11d1-80b4-00c04fd430c8" />
+
+      <div class="sep"></div>
+      <label>Query Params (optional)</label>
+
+      <label>session_id</label>
+      <input id="sessionId" placeholder="optional" />
+
+      <label>user_id</label>
+      <input id="userId" placeholder="optional" />
+
+      <label>display_name</label>
+      <input id="displayName" placeholder="optional" />
+
+      <label>origin</label>
+      <input id="origin" placeholder="optional" />
+
+      <div>
+        <button class="btn-connect" id="btnConnect" onclick="doConnect()">Connect</button>
+        <button class="btn-disconnect" id="btnDisconnect" onclick="doDisconnect()" style="display:none">Disconnect</button>
+      </div>
+
+      <div id="statusBar" class="status disconnected">Disconnected</div>
+
+      <div class="sep"></div>
+
+      <label>Hello payload (sent once after connect)</label>
+      <textarea id="helloPayload" rows="4">{
+  "type": "hello",
+  "session_id": null,
+  "user_id": null,
+  "display_name": null,
+  "origin": null,
+  "meta": null
+}</textarea>
+      <button class="btn-hello" id="btnHello" onclick="sendHello()" disabled>Send Hello</button>
+
+      <div class="sep"></div>
+
+      <label>Chat message</label>
+      <input id="msgInput" placeholder="Type a message..." onkeydown="if(event.key==='Enter')sendMsg()" />
+      <div>
+        <button class="btn-send" id="btnSend" onclick="sendMsg()" disabled>Send Message</button>
+        <button class="btn-new" id="btnNew" onclick="sendNewConv()" disabled>New Conversation</button>
+      </div>
+    </div>
+
+    <!-- Right: Log -->
+    <div class="panel">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <label style="margin:0">Event Log</label>
+        <button class="btn-clear" onclick="clearLog()">Clear</button>
+      </div>
+      <div id="log"></div>
+    </div>
+  </div>
+
+  <script>
+    let ws = null;
+
+    function buildUrl() {
+      const host = document.getElementById('host').value.replace(/\/+$/, '');
+      const orgId = document.getElementById('orgId').value.trim();
+      const agentId = document.getElementById('agentId').value.trim();
+      if (!orgId || !agentId) { alert('Org ID and Agent ID are required'); return null; }
+      let url = `${host}/ws/orgs/${orgId}/agents/${agentId}/chat`;
+      const params = new URLSearchParams();
+      const sid = document.getElementById('sessionId').value.trim();
+      const uid = document.getElementById('userId').value.trim();
+      const dn = document.getElementById('displayName').value.trim();
+      const ori = document.getElementById('origin').value.trim();
+      if (sid) params.set('session_id', sid);
+      if (uid) params.set('user_id', uid);
+      if (dn) params.set('display_name', dn);
+      if (ori) params.set('origin', ori);
+      const qs = params.toString();
+      return qs ? `${url}?${qs}` : url;
+    }
+
+    function log(text, cls) {
+      const el = document.getElementById('log');
+      const ts = new Date().toLocaleTimeString();
+      const div = document.createElement('div');
+      div.className = cls || '';
+      div.textContent = `[${ts}] ${text}`;
+      el.appendChild(div);
+      el.scrollTop = el.scrollHeight;
+    }
+
+    function setStatus(text, cls) {
+      const el = document.getElementById('statusBar');
+      el.textContent = text;
+      el.className = `status ${cls}`;
+    }
+
+    function setButtons(connected) {
+      document.getElementById('btnConnect').style.display = connected ? 'none' : '';
+      document.getElementById('btnDisconnect').style.display = connected ? '' : 'none';
+      document.getElementById('btnSend').disabled = !connected;
+      document.getElementById('btnHello').disabled = !connected;
+      document.getElementById('btnNew').disabled = !connected;
+    }
+
+    function doConnect() {
+      const url = buildUrl();
+      if (!url) return;
+      setStatus('Connecting...', 'connecting');
+      log(`Connecting to ${url}`, 'log-sys');
+      ws = new WebSocket(url);
+      ws.onopen = () => {
+        setStatus('Connected', 'connected');
+        setButtons(true);
+        log('Connected', 'log-sys');
+      };
+      ws.onmessage = (e) => {
+        log(`RECV: ${e.data}`, 'log-recv');
+      };
+      ws.onerror = (e) => {
+        log('Error occurred', 'log-err');
+      };
+      ws.onclose = (e) => {
+        setStatus(`Disconnected (code: ${e.code})`, 'disconnected');
+        setButtons(false);
+        log(`Disconnected: code=${e.code} reason=${e.reason || 'none'}`, 'log-sys');
+        ws = null;
+      };
+    }
+
+    function doDisconnect() {
+      if (ws) ws.close();
+    }
+
+    function sendHello() {
+      if (!ws) return;
+      try {
+        const payload = document.getElementById('helloPayload').value;
+        JSON.parse(payload); // validate
+        ws.send(payload);
+        log(`SENT: ${payload}`, 'log-sent');
+      } catch (e) {
+        log(`Invalid JSON: ${e.message}`, 'log-err');
+      }
+    }
+
+    function sendMsg() {
+      if (!ws) return;
+      const text = document.getElementById('msgInput').value.trim();
+      if (!text) return;
+      const payload = JSON.stringify({ type: 'message', text });
+      ws.send(payload);
+      log(`SENT: ${payload}`, 'log-sent');
+      document.getElementById('msgInput').value = '';
+    }
+
+    function sendNewConv() {
+      if (!ws) return;
+      const payload = JSON.stringify({ type: 'message', text: 'Starting new conversation', new_conversation: true });
+      ws.send(payload);
+      log(`SENT: ${payload}`, 'log-sent');
+    }
+
+    function clearLog() {
+      document.getElementById('log').innerHTML = '';
+    }
+  </script>
+</body>
+</html>

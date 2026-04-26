@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Customer Website — Nedlia Widget Demo</title>
+<style>
+  /* This is a FAKE customer website — just to demo the widget */
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: Georgia, serif; background: #f8f8f6; color: #333; }
+  header { background: white; padding: 20px 40px; border-bottom: 1px solid #e5e5e5; display: flex; align-items: center; justify-content: space-between; }
+  header h1 { font-size: 1.3rem; }
+  header nav a { margin-left: 24px; text-decoration: none; color: #666; font-size: 0.9rem; }
+  .hero { padding: 100px 40px; text-align: center; }
+  .hero h2 { font-size: 2.5rem; margin-bottom: 16px; color: #1a1a1a; }
+  .hero p { font-size: 1.1rem; color: #666; max-width: 500px; margin: 0 auto 40px; line-height: 1.7; }
+  .hero button { padding: 14px 32px; background: #1a1a1a; color: white; border: none; border-radius: 8px; font-size: 1rem; cursor: pointer; }
+  .content { max-width: 800px; margin: 0 auto; padding: 60px 40px; }
+  .content h3 { font-size: 1.5rem; margin-bottom: 16px; }
+  .content p { color: #555; line-height: 1.8; margin-bottom: 20px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; margin: 40px 0; }
+  .card { background: white; border-radius: 12px; padding: 24px; border: 1px solid #e5e5e5; }
+  .card h4 { margin-bottom: 8px; }
+  .card p { font-size: 0.9rem; color: #777; }
+  footer { text-align: center; padding: 40px; color: #aaa; font-size: 0.85rem; border-top: 1px solid #e5e5e5; }
+
+  /* Instructions overlay */
+  .instructions {
+    position: fixed; top: 0; left: 0; right: 0;
+    background: linear-gradient(135deg, #7c3aed, #6d28d9);
+    color: white; padding: 12px 24px; text-align: center;
+    font-family: -apple-system, sans-serif; font-size: 0.85rem; z-index: 999999;
+  }
+  .instructions code { background: rgba(255,255,255,0.2); padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; }
+</style>
+</head>
+<body>
+
+<div class="instructions">
+  This is a demo customer website. The Nedlia chat widget loads from <code>/widget/nedlia-chat.js</code> — look at the bottom-right corner.
+</div>
+
+<header>
+  <h1>Acme Streaming Co.</h1>
+  <nav>
+    <a href="#">Shows</a>
+    <a href="#">Pricing</a>
+    <a href="#">About</a>
+  </nav>
+</header>
+
+<div class="hero">
+  <h2>Watch your favorite shows</h2>
+  <p>Stream thousands of movies and series. Discover products from your favorite scenes.</p>
+  <button>Start Watching</button>
+</div>
+
+<div class="content">
+  <h3>Trending This Week</h3>
+  <div class="grid">
+    <div class="card"><h4>The Morning Light</h4><p>Drama series set in a fashion magazine.</p></div>
+    <div class="card"><h4>Coast Road</h4><p>A road trip thriller with stunning visuals.</p></div>
+    <div class="card"><h4>Studio Sessions</h4><p>Behind the scenes of music production.</p></div>
+  </div>
+  <p>Our platform supports in-scene product discovery powered by Nedlia. When you see a product you love in a scene, just click the shop icon.</p>
+  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque habitant morbi tristique senectus et netus et malesuron fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante.</p>
+</div>
+
+<footer>
+  &copy; 2025 Acme Streaming Co. — This is a demo website showing the Nedlia chat widget.
+</footer>
+
+<!--
+  ============================================================
+  NEDLIA CHAT WIDGET — This is ALL the customer needs to add
+  ============================================================
+-->
+<script
+  src="http://localhost:4200/widget/nedlia-chat.js"
+  data-org-id="00000000-0000-0000-0000-000000000000"
+  data-agent-id="00000000-0000-0000-0000-000000000000"
+></script>
+
+</body>
+</html>

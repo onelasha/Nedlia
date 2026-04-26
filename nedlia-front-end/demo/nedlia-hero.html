@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nedlia — Where Every Scene Becomes a Storefront</title>
+<!--
+  ============================================================
+  CONFIGURATION: Update these before deploying
+  ============================================================
+  WS_HOST     — Your backend WebSocket host
+  ORG_ID      — Your organization UUID
+  AGENT_ID    — Your agent UUID
+  ============================================================
+-->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --purple: #7c3aed; --purple-light: #a855f7; --purple-glow: rgba(124,58,237,0.4);
+    --sky: #38bdf8; --sky-deep: #0ea5e9; --sky-glow: rgba(56,189,248,0.3);
+    --neon: #4ade80; --neon-deep: #22c55e; --neon-glow: rgba(74,222,128,0.35);
+    --gold: #d4a857;
+    --bg: #030014; --surface: #0a0a1a; --surface2: #111127;
+    --border: rgba(255,255,255,0.06); --border-hover: rgba(255,255,255,0.12);
+    --text: #fafafa; --text-muted: #a1a1aa; --text-dim: #52525b;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; overflow-x: hidden; }
+
+  /* ===== NAV ===== */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    padding: 0 48px; height: 72px;
+    display: flex; align-items: center; justify-content: space-between;
+    background: rgba(3,0,20,0.7); backdrop-filter: blur(24px) saturate(1.5);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo {
+    font-family: 'Space Grotesk', sans-serif; font-size: 1.5rem; font-weight: 700;
+    color: white; text-decoration: none; letter-spacing: -0.5px;
+  }
+  .nav-logo span { color: var(--neon); }
+  .nav-links { display: flex; gap: 32px; align-items: center; }
+  .nav-links a { color: var(--text-muted); text-decoration: none; font-size: 0.88rem; font-weight: 400; transition: color 0.2s; }
+  .nav-links a:hover { color: white; }
+  .nav-cta {
+    padding: 9px 22px; border-radius: 10px; border: none;
+    background: var(--purple); color: white; font-size: 0.85rem; font-weight: 600; cursor: pointer;
+    transition: box-shadow 0.2s;
+  }
+  .nav-cta:hover { box-shadow: 0 0 30px var(--purple-glow); }
+
+  /* ===== HERO ===== */
+  .hero {
+    position: relative; min-height: 100vh;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 120px 48px 80px; text-align: center; overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute; inset: 0; z-index: 0;
+    background:
+      radial-gradient(ellipse 70% 50% at 50% 0%, rgba(124,58,237,0.12) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 40% at 15% 80%, rgba(56,189,248,0.08) 0%, transparent 50%),
+      radial-gradient(ellipse 40% 30% at 85% 70%, rgba(74,222,128,0.06) 0%, transparent 50%);
+  }
+  .hero-grain {
+    position: absolute; inset: 0; z-index: 1; opacity: 0.02; pointer-events: none;
+    background: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  .film-perf {
+    position: absolute; top: 0; bottom: 0; width: 28px; z-index: 1; opacity: 0.035;
+    background: repeating-linear-gradient(180deg, #fff 0px, #fff 10px, transparent 10px, transparent 22px);
+  }
+  .film-perf.left { left: 14px; }
+  .film-perf.right { right: 14px; }
+
+  .hero-content { position: relative; z-index: 2; max-width: 900px; }
+
+  .hero-eyebrow {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 8px 20px; border-radius: 100px;
+    background: rgba(124,58,237,0.08); border: 1px solid rgba(124,58,237,0.2);
+    font-size: 0.78rem; color: var(--purple-light); letter-spacing: 0.5px; margin-bottom: 40px;
+  }
+  .hero-eyebrow .pulse { width: 7px; height: 7px; border-radius: 50%; background: var(--neon); animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100% { opacity:1; box-shadow:0 0 0 0 var(--neon-glow); } 50% { opacity:.6; box-shadow:0 0 0 8px transparent; } }
+
+  .hero h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 5rem; font-weight: 800; line-height: 1.02; letter-spacing: -3px; margin-bottom: 32px;
+  }
+  .hero h1 .white { color: white; }
+  .hero h1 .gradient {
+    background: linear-gradient(135deg, var(--purple-light) 0%, var(--sky) 50%, var(--neon) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+
+  .hero-sub {
+    font-size: 1.2rem; line-height: 1.8; color: var(--text-muted); max-width: 640px; margin: 0 auto 48px;
+  }
+  .hero-sub strong { color: #d4d4d8; font-weight: 500; }
+
+  .hero-ctas { display: flex; gap: 16px; justify-content: center; margin-bottom: 72px; }
+  .btn-main {
+    padding: 16px 36px; border-radius: 14px; border: none;
+    background: linear-gradient(135deg, #7c3aed, #6d28d9); color: white;
+    font-weight: 600; font-size: 1rem; cursor: pointer;
+    box-shadow: 0 4px 40px var(--purple-glow), inset 0 1px 0 rgba(255,255,255,0.1);
+    transition: all 0.25s;
+  }
+  .btn-main:hover { transform: translateY(-2px); box-shadow: 0 8px 50px rgba(124,58,237,0.5); }
+  .btn-sec {
+    padding: 16px 36px; border-radius: 14px; border: 1px solid var(--border);
+    background: rgba(255,255,255,0.03); color: var(--text-muted);
+    font-weight: 500; font-size: 1rem; cursor: pointer; transition: all 0.25s;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .btn-sec:hover { border-color: var(--border-hover); background: rgba(255,255,255,0.06); color: white; }
+  .btn-sec .play-icon { width: 20px; height: 20px; border-radius: 50%; background: var(--purple); display: flex; align-items: center; justify-content: center; }
+  .btn-sec .play-icon::after { content:''; width:0; height:0; border-left:7px solid white; border-top:4px solid transparent; border-bottom:4px solid transparent; margin-left:2px; }
+
+  .hero-stats { display: flex; gap: 56px; justify-content: center; padding-top: 48px; border-top: 1px solid var(--border); }
+  .stat { text-align: center; }
+  .stat .num { font-family:'Space Grotesk',sans-serif; font-size:2.2rem; font-weight:700; letter-spacing:-1px; }
+  .stat:nth-child(1) .num { color: var(--purple-light); }
+  .stat:nth-child(2) .num { color: var(--sky); }
+  .stat:nth-child(3) .num { color: var(--neon); }
+  .stat .label { font-size: 0.78rem; color: var(--text-dim); margin-top: 4px; }
+
+  /* ===== SECTION CONNECTOR ===== */
+  .connector-line {
+    height: 100px; display: flex; justify-content: center;
+    background: linear-gradient(180deg, var(--bg), var(--surface));
+  }
+  .connector-line::after { content: ''; width: 1px; height: 100%; background: linear-gradient(180deg, transparent, var(--purple)); }
+
+  /* ===== THE SCENE — CINEMATIC DEMO ===== */
+  .scene-section { position: relative; padding: 80px 48px 120px; background: var(--surface); }
+  .section-header { text-align: center; margin-bottom: 80px; }
+  .section-label {
+    font-size: 0.72rem; letter-spacing: 4px; text-transform: uppercase;
+    color: var(--purple-light); font-weight: 600; margin-bottom: 16px;
+  }
+  .section-header h2 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 3rem; font-weight: 700; letter-spacing: -1.5px; margin-bottom: 16px;
+  }
+  .section-header p { font-size: 1.05rem; color: var(--text-muted); max-width: 620px; margin: 0 auto; line-height: 1.7; }
+
+  /* Cinematic player */
+  .cinema-player {
+    max-width: 1000px; margin: 0 auto; border-radius: 16px; overflow: hidden;
+    background: #0a0a18; border: 1px solid var(--border);
+    box-shadow: 0 40px 120px rgba(0,0,0,0.6), 0 0 80px rgba(124,58,237,0.06);
+  }
+  .cinema-chrome {
+    height: 40px; background: #14142a; display: flex; align-items: center; justify-content: space-between;
+    padding: 0 16px; border-bottom: 1px solid var(--border);
+  }
+  .c-dots { display: flex; gap: 7px; }
+  .c-dots span { width: 10px; height: 10px; border-radius: 50%; }
+  .c-dots span:nth-child(1) { background:#ef4444; } .c-dots span:nth-child(2) { background:#eab308; } .c-dots span:nth-child(3) { background:#22c55e; }
+  .c-title { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--text-dim); }
+
+  .cinema-screen {
+    position: relative; aspect-ratio: 16/7; overflow: hidden;
+    background: linear-gradient(135deg, #0e0a20 0%, #1a1230 30%, #0c1628 60%, #08101e 100%);
+  }
+  .cinema-screen::before {
+    content: ''; position: absolute; right: -5%; top: 0; bottom: 0; width: 50%;
+    background: radial-gradient(ellipse at right center, rgba(212,168,87,0.08), transparent 70%);
+  }
+  .timecode {
+    position: absolute; top: 14px; left: 18px;
+    font-family: 'JetBrains Mono', monospace; font-size: 0.65rem;
+    color: rgba(255,255,255,0.25); letter-spacing: 1px; z-index: 5;
+  }
+  .rec { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #ef4444; margin-right: 6px; animation: rec-blink 1.5s infinite; }
+  @keyframes rec-blink { 0%,100% { opacity:1; } 50% { opacity:0.2; } }
+  .letterbox-top, .letterbox-bottom { position: absolute; left: 0; right: 0; height: 10%; background: #030014; z-index: 3; }
+  .letterbox-top { top: 0; } .letterbox-bottom { bottom: 0; }
+
+  .scene-slate { position: absolute; z-index: 4; bottom: 16%; left: 5%; max-width: 55%; }
+  .scene-direction { font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; color: rgba(255,255,255,0.3); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; }
+  .scene-dialogue { font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.15rem; color: rgba(255,255,255,0.6); line-height: 1.6; }
+  .scene-dialogue strong { color: rgba(255,255,255,0.85); font-weight: 700; font-style: normal; }
+
+  .character-area { position: absolute; right: 8%; top: 15%; bottom: 15%; width: 30%; z-index: 2; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .character-silhouette { width: 140px; height: 180px; border-radius: 50% 50% 45% 45%; background: linear-gradient(180deg, rgba(212,168,87,0.15), rgba(212,168,87,0.05)); border: 1px solid rgba(212,168,87,0.1); position: relative; }
+  .product-highlight { position: absolute; top: 22%; right: -8px; width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--neon); background: rgba(74,222,128,0.1); animation: hl-pulse 2s infinite; }
+  .product-highlight::before { content: ''; position: absolute; top: 50%; right: -40px; width: 35px; height: 1px; background: var(--neon); opacity: 0.5; }
+  @keyframes hl-pulse { 0%,100% { box-shadow: 0 0 0 0 var(--neon-glow); } 50% { box-shadow: 0 0 0 6px transparent; } }
+
+  .shop-icon {
+    position: absolute; z-index: 5; bottom: 16%; right: 5%;
+    width: 52px; height: 52px; border-radius: 14px;
+    background: linear-gradient(135deg, var(--neon), var(--neon-deep));
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 0 30px var(--neon-glow), 0 4px 16px rgba(0,0,0,0.3);
+    animation: shop-pop 4s ease-in-out infinite; cursor: pointer;
+  }
+  .shop-icon svg { width: 24px; height: 24px; fill: #030014; }
+  @keyframes shop-pop { 0% { opacity:0; transform:scale(0.7); } 10% { opacity:1; transform:scale(1.05); } 15% { transform:scale(1); } 80% { opacity:1; } 100% { opacity:0; transform:scale(0.7); } }
+
+  .flyout {
+    position: absolute; z-index: 6; bottom: 16%; right: calc(5% + 64px);
+    width: 280px; border-radius: 14px; overflow: hidden;
+    background: rgba(10,10,26,0.96); border: 1px solid var(--border);
+    backdrop-filter: blur(24px); box-shadow: 0 16px 50px rgba(0,0,0,0.6);
+    animation: flyout-in 4s ease-in-out infinite;
+  }
+  @keyframes flyout-in { 0%,15% { opacity:0; transform:translateX(12px); } 25% { opacity:1; transform:translateX(0); } 75% { opacity:1; } 100% { opacity:0; transform:translateX(12px); } }
+  .flyout-visual { height: 110px; position: relative; overflow: hidden; background: linear-gradient(135deg, #1a1430, #261a40); display: flex; align-items: center; justify-content: center; }
+  .flyout-visual .product-glow { width: 80px; height: 80px; border-radius: 50%; background: radial-gradient(circle, rgba(212,168,87,0.3), transparent 70%); display: flex; align-items: center; justify-content: center; font-size: 2.5rem; }
+  .flyout-visual .verified { position: absolute; top: 10px; right: 10px; font-size: 0.55rem; color: var(--neon); font-weight: 600; display: flex; align-items: center; gap: 4px; background: rgba(74,222,128,0.1); padding: 4px 8px; border-radius: 6px; }
+  .flyout-visual .verified::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: var(--neon); }
+  .flyout-info { padding: 16px; }
+  .flyout-brand { font-size: 0.6rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 6px; }
+  .flyout-name { font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 700; color: white; margin-bottom: 2px; }
+  .flyout-detail { font-size: 0.75rem; color: var(--text-dim); margin-bottom: 10px; }
+  .flyout-price { font-family: 'Space Grotesk', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--gold); margin-bottom: 14px; }
+  .flyout-btn { display: block; width: 100%; padding: 10px; border-radius: 10px; border: none; background: linear-gradient(135deg, var(--purple), #6d28d9); color: white; font-size: 0.8rem; font-weight: 600; cursor: pointer; box-shadow: 0 4px 20px var(--purple-glow); }
+
+  .cinema-timeline { padding: 14px 20px 18px; background: #0a0a18; }
+  .tl-bar { height: 4px; background: #1a1a2e; border-radius: 2px; position: relative; }
+  .tl-progress { height: 100%; width: 0%; border-radius: 2px; background: linear-gradient(90deg, var(--purple), var(--sky)); animation: tl-fill 8s linear infinite; }
+  @keyframes tl-fill { 0% { width:0; } 100% { width:100%; } }
+  .tl-markers { position: absolute; inset: 0; }
+  .tl-mark { position: absolute; top: -5px; width: 14px; height: 14px; border-radius: 4px; background: var(--neon); opacity: 0.7; box-shadow: 0 0 10px var(--neon-glow); }
+  .tl-mark::after { content: attr(data-product); position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%); font-family: 'JetBrains Mono', monospace; font-size: 0.5rem; color: var(--neon); white-space: nowrap; opacity: 0.7; }
+  .tl-mark:nth-child(1) { left: 15%; } .tl-mark:nth-child(2) { left: 34%; } .tl-mark:nth-child(3) { left: 58%; } .tl-mark:nth-child(4) { left: 78%; }
+  .tl-times { display: flex; justify-content: space-between; margin-top: 20px; font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; color: var(--text-dim); }
+
+  /* ===== IMAGINE SECTION ===== */
+  .imagine-section { padding: 120px 48px; position: relative; background: linear-gradient(180deg, var(--surface) 0%, var(--bg) 100%); }
+  .imagine-grid { max-width: 1000px; margin: 60px auto 0; display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .imagine-card { padding: 32px; border-radius: 16px; background: rgba(255,255,255,0.02); border: 1px solid var(--border); transition: border-color 0.3s, transform 0.3s; }
+  .imagine-card:hover { border-color: rgba(255,255,255,0.1); transform: translateY(-4px); }
+  .ic-scene { font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 12px; }
+  .ic-quote { font-family: 'Playfair Display', serif; font-style: italic; font-size: 1rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 16px; }
+  .ic-products { display: flex; gap: 8px; flex-wrap: wrap; }
+  .ic-tag { display: inline-flex; align-items: center; gap: 5px; padding: 5px 12px; border-radius: 8px; font-size: 0.7rem; font-weight: 500; }
+  .ic-tag.luxury { background: rgba(212,168,87,0.1); color: var(--gold); border: 1px solid rgba(212,168,87,0.2); }
+  .ic-tag.fashion { background: rgba(168,85,247,0.1); color: var(--purple-light); border: 1px solid rgba(168,85,247,0.2); }
+  .ic-tag.tech { background: rgba(56,189,248,0.1); color: var(--sky); border: 1px solid rgba(56,189,248,0.2); }
+  .ic-tag.auto { background: rgba(74,222,128,0.1); color: var(--neon); border: 1px solid rgba(74,222,128,0.2); }
+
+  /* ===== THREE ACTS ===== */
+  .acts-section { padding: 120px 48px; position: relative; }
+  .acts-section::before { content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 1px; height: 80px; background: linear-gradient(180deg, transparent, var(--sky)); }
+  .acts { max-width: 1100px; margin: 0 auto; display: flex; flex-direction: column; gap: 100px; }
+  .act { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
+  .act.reverse { direction: rtl; } .act.reverse > * { direction: ltr; }
+  .act-number { font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 12px; }
+  .act:nth-child(1) .act-number { color: var(--purple-light); }
+  .act:nth-child(2) .act-number { color: var(--sky); }
+  .act:nth-child(3) .act-number { color: var(--neon); }
+  .act-title { font-family: 'Space Grotesk', sans-serif; font-size: 2.2rem; font-weight: 700; letter-spacing: -1px; margin-bottom: 8px; line-height: 1.15; }
+  .act-for { font-size: 0.78rem; color: var(--text-dim); margin-bottom: 16px; font-style: italic; }
+  .act-desc { font-size: 0.95rem; color: var(--text-muted); line-height: 1.8; margin-bottom: 24px; }
+  .act-features { list-style: none; display: flex; flex-direction: column; gap: 11px; }
+  .act-features li { display: flex; align-items: flex-start; gap: 10px; font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; }
+  .ck { width: 20px; height: 20px; border-radius: 6px; flex-shrink: 0; margin-top: 1px; display: flex; align-items: center; justify-content: center; font-size: 0.6rem; }
+  .act:nth-child(1) .ck { background: rgba(124,58,237,0.15); color: var(--purple-light); }
+  .act:nth-child(2) .ck { background: rgba(56,189,248,0.15); color: var(--sky); }
+  .act:nth-child(3) .ck { background: rgba(74,222,128,0.15); color: var(--neon); }
+
+  .act-visual { border-radius: 16px; overflow: hidden; background: var(--surface); border: 1px solid var(--border); box-shadow: 0 12px 40px rgba(0,0,0,0.3); }
+  .av-header { padding: 12px 16px; border-bottom: 1px solid var(--border); background: var(--surface2); display: flex; align-items: center; gap: 10px; }
+  .av-icon { width: 26px; height: 26px; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; }
+  .act:nth-child(1) .av-icon { background: rgba(124,58,237,0.15); }
+  .act:nth-child(2) .av-icon { background: rgba(56,189,248,0.15); }
+  .act:nth-child(3) .av-icon { background: rgba(74,222,128,0.15); }
+  .av-title { font-size: 0.72rem; font-weight: 600; color: var(--text-dim); }
+  .av-body { padding: 24px; }
+
+  /* Plugin timeline */
+  .timeline-editor { display: flex; flex-direction: column; gap: 6px; }
+  .track { display: flex; align-items: center; gap: 8px; }
+  .track-label { width: 60px; font-size: 0.6rem; color: var(--text-dim); font-family: 'JetBrains Mono', monospace; text-align: right; flex-shrink: 0; }
+  .track-bar { flex: 1; height: 26px; border-radius: 5px; position: relative; }
+  .track-bar.video { background: linear-gradient(90deg, #1a1a3e, #2a1a4e, #1a2a3e, #1a1a3e); }
+  .track-bar.audio { background: linear-gradient(90deg, #0f1f0f, #152a15, #0f1f0f); }
+  .track-bar.captions { background: #0f0f1a; }
+  .track-bar.products { background: #0a0a14; }
+  .p-block { position: absolute; top: 3px; bottom: 3px; border-radius: 3px; display: flex; align-items: center; padding: 0 6px; font-size: 0.5rem; font-weight: 600; color: white; letter-spacing: 0.3px; }
+  .p-block.b1 { left: 8%; width: 16%; background: linear-gradient(90deg, rgba(212,168,87,0.5), rgba(212,168,87,0.2)); border: 1px solid rgba(212,168,87,0.3); }
+  .p-block.b2 { left: 32%; width: 12%; background: linear-gradient(90deg, rgba(124,58,237,0.5), rgba(124,58,237,0.2)); border: 1px solid rgba(124,58,237,0.3); }
+  .p-block.b3 { left: 52%; width: 20%; background: linear-gradient(90deg, rgba(56,189,248,0.5), rgba(56,189,248,0.2)); border: 1px solid rgba(56,189,248,0.3); }
+  .p-block.b4 { left: 78%; width: 14%; background: linear-gradient(90deg, rgba(74,222,128,0.5), rgba(74,222,128,0.2)); border: 1px solid rgba(74,222,128,0.3); }
+  .caption-block { position: absolute; top: 4px; bottom: 4px; border-radius: 3px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; padding: 0 6px; font-size: 0.45rem; color: var(--text-dim); }
+  .caption-block:nth-child(1) { left: 5%; width: 22%; } .caption-block:nth-child(2) { left: 30%; width: 18%; } .caption-block:nth-child(3) { left: 55%; width: 25%; } .caption-block:nth-child(4) { left: 82%; width: 15%; }
+  .track-separator { margin: 4px 0 4px 68px; height: 1px; background: var(--border); position: relative; }
+  .track-separator::before { content: 'NEDLIA PRODUCT TRACK'; position: absolute; right: 0; top: -8px; font-size: 0.45rem; letter-spacing: 2px; font-family: 'JetBrains Mono', monospace; color: var(--purple-light); }
+
+  /* SDK code */
+  .sdk-code { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; line-height: 1.9; color: var(--text-muted); }
+  .cm { color: var(--text-dim); } .kw { color: var(--purple-light); } .str { color: var(--neon); } .fn { color: var(--sky); }
+
+  /* Portal dashboard */
+  .dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+  .dash-card { padding: 14px; border-radius: 10px; background: rgba(255,255,255,0.02); border: 1px solid var(--border); }
+  .dc-label { font-size: 0.55rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+  .dc-val { font-family: 'Space Grotesk', sans-serif; font-size: 1.2rem; font-weight: 700; }
+  .dash-card:nth-child(1) .dc-val { color: var(--purple-light); } .dash-card:nth-child(2) .dc-val { color: var(--neon); }
+  .dash-card:nth-child(3) .dc-val { color: var(--sky); } .dash-card:nth-child(4) .dc-val { color: var(--gold); }
+  .dash-bars { display: flex; align-items: flex-end; gap: 4px; height: 70px; }
+  .d-bar { flex: 1; border-radius: 3px 3px 0 0; min-height: 6px; }
+  .dash-legend { display: flex; gap: 16px; margin-top: 10px; }
+  .dash-legend span { font-size: 0.55rem; color: var(--text-dim); display: flex; align-items: center; gap: 4px; }
+  .dash-legend span::before { content: ''; width: 8px; height: 8px; border-radius: 2px; }
+  .dash-legend span:nth-child(1)::before { background: var(--purple); } .dash-legend span:nth-child(2)::before { background: var(--sky); } .dash-legend span:nth-child(3)::before { background: var(--neon); }
+
+  /* ===== HOW IT WORKS ===== */
+  .flow-section { padding: 100px 48px; background: linear-gradient(180deg, var(--bg), var(--surface), var(--bg)); }
+  .flow-steps { max-width: 900px; margin: 60px auto 0; display: flex; align-items: flex-start; justify-content: space-between; position: relative; }
+  .flow-steps::before { content: ''; position: absolute; top: 32px; left: 80px; right: 80px; height: 2px; background: linear-gradient(90deg, var(--purple), var(--sky), var(--neon)); opacity: 0.3; }
+  .flow-step { text-align: center; width: 200px; position: relative; }
+  .flow-step-num { width: 64px; height: 64px; border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin: 0 auto 16px; border: 1px solid var(--border); }
+  .flow-step:nth-child(1) .flow-step-num { background: rgba(124,58,237,0.1); border-color: rgba(124,58,237,0.2); }
+  .flow-step:nth-child(2) .flow-step-num { background: rgba(56,189,248,0.1); border-color: rgba(56,189,248,0.2); }
+  .flow-step:nth-child(3) .flow-step-num { background: rgba(74,222,128,0.1); border-color: rgba(74,222,128,0.2); }
+  .flow-step:nth-child(4) .flow-step-num { background: rgba(212,168,87,0.1); border-color: rgba(212,168,87,0.2); }
+  .flow-step h4 { font-size: 0.88rem; font-weight: 600; margin-bottom: 6px; }
+  .flow-step p { font-size: 0.75rem; color: var(--text-dim); line-height: 1.5; }
+
+  /* ===== VISION QUOTE ===== */
+  .vision-section { padding: 120px 48px; text-align: center; background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .vision-quote { font-family: 'Playfair Display', serif; font-size: 2.2rem; font-weight: 400; font-style: italic; color: var(--text-muted); max-width: 800px; margin: 0 auto 20px; line-height: 1.5; }
+  .vision-quote strong { color: white; font-weight: 700; font-style: normal; }
+  .vision-attr { font-size: 0.85rem; color: var(--text-dim); margin-bottom: 50px; }
+  .compat-row { display: flex; gap: 36px; justify-content: center; flex-wrap: wrap; }
+  .compat-item { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .compat-icon { width: 52px; height: 52px; border-radius: 14px; background: rgba(255,255,255,0.03); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 1.3rem; transition: border-color 0.2s; }
+  .compat-icon:hover { border-color: var(--border-hover); }
+  .compat-name { font-size: 0.65rem; color: var(--text-dim); }
+
+  /* ===== FOOTER ===== */
+  footer { padding: 60px 48px 40px; display: flex; justify-content: space-between; align-items: flex-end; }
+  .f-logo { font-family: 'Space Grotesk', sans-serif; font-size: 1.2rem; font-weight: 700; color: white; margin-bottom: 6px; }
+  .f-logo span { color: var(--neon); }
+  .f-sub { font-size: 0.75rem; color: var(--text-dim); line-height: 1.6; }
+  .f-links { display: flex; gap: 24px; }
+  .f-links a { font-size: 0.78rem; color: var(--text-dim); text-decoration: none; transition: color 0.2s; }
+  .f-links a:hover { color: white; }
+
+  /* ===== CHAT WIDGET ===== */
+  .chat-widget { position: fixed; bottom: 28px; right: 28px; z-index: 200; }
+  .chat-toggle {
+    width: 60px; height: 60px; border-radius: 16px; border: none;
+    background: linear-gradient(135deg, var(--purple), #6d28d9);
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 8px 32px var(--purple-glow); transition: all 0.3s; position: relative;
+  }
+  .chat-toggle:hover { transform: scale(1.05); box-shadow: 0 12px 44px rgba(124,58,237,0.5); }
+  .chat-toggle svg { width: 26px; height: 26px; fill: white; transition: opacity 0.2s; }
+  .chat-toggle .close-icon { display: none; }
+  .chat-toggle.open .chat-icon { display: none; }
+  .chat-toggle.open .close-icon { display: block; }
+  .chat-toggle .ring { position: absolute; inset: -5px; border-radius: 20px; border: 2px solid rgba(124,58,237,0.3); animation: ring-p 2.5s infinite; }
+  .chat-toggle.open .ring { display: none; }
+  @keyframes ring-p { 0%,100% { opacity:.8; transform:scale(1); } 50% { opacity:0; transform:scale(1.35); } }
+
+  .chat-tip {
+    position: absolute; bottom: 72px; right: 0;
+    background: var(--surface2); border: 1px solid var(--border);
+    padding: 10px 16px; border-radius: 10px; white-space: nowrap;
+    font-size: 0.8rem; color: var(--text-muted);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4); animation: tip-b 3s ease-in-out infinite;
+    transition: opacity 0.2s;
+  }
+  .chat-tip::after { content: ''; position: absolute; bottom: -6px; right: 24px; width: 12px; height: 12px; background: var(--surface2); border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); transform: rotate(45deg); }
+  @keyframes tip-b { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-4px); } }
+
+  /* Chat panel */
+  .chat-panel {
+    position: absolute; bottom: 72px; right: 0;
+    width: 380px; height: 520px; border-radius: 16px; overflow: hidden;
+    background: var(--surface); border: 1px solid var(--border);
+    box-shadow: 0 20px 80px rgba(0,0,0,0.6), 0 0 40px rgba(124,58,237,0.08);
+    display: none; flex-direction: column;
+  }
+  .chat-panel.open { display: flex; }
+
+  .chat-header {
+    padding: 18px 20px; display: flex; align-items: center; gap: 12px;
+    background: linear-gradient(135deg, #7c3aed, #6d28d9);
+    flex-shrink: 0;
+  }
+  .chat-avatar {
+    width: 38px; height: 38px; border-radius: 12px;
+    background: rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center;
+    font-family: 'Space Grotesk', sans-serif; font-size: 1rem; font-weight: 700; color: white;
+  }
+  .chat-header-info { flex: 1; }
+  .chat-header-name { font-size: 0.9rem; font-weight: 600; color: white; }
+  .chat-header-status { font-size: 0.7rem; color: rgba(255,255,255,0.6); display: flex; align-items: center; gap: 5px; }
+  .chat-header-status::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--neon); }
+
+  .chat-messages {
+    flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 12px;
+  }
+  .chat-messages::-webkit-scrollbar { width: 4px; }
+  .chat-messages::-webkit-scrollbar-thumb { background: #27272a; border-radius: 2px; }
+
+  .msg { max-width: 85%; padding: 12px 16px; border-radius: 14px; font-size: 0.85rem; line-height: 1.6; animation: msg-in 0.3s ease-out; }
+  @keyframes msg-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  .msg.bot { background: var(--surface2); color: var(--text-muted); border-bottom-left-radius: 4px; align-self: flex-start; }
+  .msg.user { background: var(--purple); color: white; border-bottom-right-radius: 4px; align-self: flex-end; }
+  .msg.system { background: transparent; color: var(--text-dim); font-size: 0.72rem; text-align: center; align-self: center; padding: 4px 8px; }
+
+  .typing-indicator { display: none; align-self: flex-start; padding: 12px 16px; background: var(--surface2); border-radius: 14px; border-bottom-left-radius: 4px; }
+  .typing-indicator.show { display: flex; gap: 4px; align-items: center; }
+  .typing-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--text-dim); animation: typing 1.4s infinite; }
+  .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+  .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes typing { 0%,60%,100% { opacity: 0.3; transform: translateY(0); } 30% { opacity: 1; transform: translateY(-4px); } }
+
+  .chat-input-area {
+    padding: 16px; border-top: 1px solid var(--border); display: flex; gap: 10px; align-items: center;
+    flex-shrink: 0; background: var(--surface);
+  }
+  .chat-input {
+    flex: 1; padding: 12px 16px; border-radius: 12px;
+    background: var(--surface2); border: 1px solid var(--border);
+    color: var(--text); font-size: 0.85rem; font-family: 'Inter', sans-serif;
+    outline: none; transition: border-color 0.2s;
+  }
+  .chat-input:focus { border-color: rgba(124,58,237,0.4); }
+  .chat-input::placeholder { color: var(--text-dim); }
+  .chat-send {
+    width: 42px; height: 42px; border-radius: 12px; border: none;
+    background: var(--purple); cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.2s;
+  }
+  .chat-send:hover { background: #6d28d9; }
+  .chat-send:disabled { background: #27272a; cursor: default; }
+  .chat-send svg { width: 18px; height: 18px; fill: white; }
+
+  .chat-connection-bar {
+    padding: 6px 12px; text-align: center; font-size: 0.65rem; font-weight: 500;
+    letter-spacing: 0.5px;
+  }
+  .chat-connection-bar.connected { background: rgba(74,222,128,0.1); color: var(--neon); }
+  .chat-connection-bar.disconnected { background: rgba(239,68,68,0.1); color: #f87171; }
+  .chat-connection-bar.connecting { background: rgba(234,179,8,0.1); color: #fbbf24; }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 900px) {
+    .hero h1 { font-size: 3rem; letter-spacing: -1.5px; }
+    .hero-sub { font-size: 1rem; }
+    .hero-stats { gap: 24px; flex-wrap: wrap; }
+    .act { grid-template-columns: 1fr; gap: 32px; } .act.reverse { direction: ltr; }
+    .section-header h2 { font-size: 2rem; }
+    .imagine-grid { grid-template-columns: 1fr; }
+    .flow-steps { flex-direction: column; gap: 32px; align-items: center; }
+    .flow-steps::before { display: none; }
+    nav { padding: 0 20px; } .nav-links a:not(.nav-cta) { display: none; }
+    .flyout { display: none; }
+    .chat-panel { width: calc(100vw - 56px); height: 70vh; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">nedlia<span>.</span></a>
+  <div class="nav-links">
+    <a href="#scene">The Scene</a>
+    <a href="#products">Products</a>
+    <a href="#flow">How It Works</a>
+    <a href="#">Developers</a>
+    <a href="#">Docs</a>
+    <button class="nav-cta">Get Early Access</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grain"></div>
+  <div class="film-perf left"></div>
+  <div class="film-perf right"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow"><span class="pulse"></span> The future of in-content commerce</div>
+    <h1><span class="white">She Wore the Earrings.</span><br><span class="gradient">12 Million People Bought Them.</span></h1>
+    <p class="hero-sub">Nedlia turns product placements in <strong>film and streaming content</strong> into shoppable, budget-validated, real-time commerce moments. From the editor's timeline at <strong>Warner Bros.</strong> to a viewer's screen on <strong>DramaBox</strong> — every tagged product is one click from a sale.</p>
+    <div class="hero-ctas">
+      <button class="btn-main">Request Early Access</button>
+      <button class="btn-sec"><span class="play-icon"></span> See It In Action</button>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><div class="num">$23B</div><div class="label">Global product placement spend (2023)</div></div>
+      <div class="stat"><div class="num">21M Years</div><div class="label">Of content streamed in the US alone</div></div>
+      <div class="stat"><div class="num">Zero</div><div class="label">Conversion tracking. Until now.</div></div>
+    </div>
+  </div>
+</section>
+
+<div class="connector-line"></div>
+
+<!-- THE SCENE -->
+<section class="scene-section" id="scene">
+  <div class="section-header">
+    <div class="section-label">The Scene That Sells</div>
+    <h2>The camera rolls. The product appears.<br>The viewer shops. The budget validates.</h2>
+    <p>Product placement markers embed in the video timeline like closed captions. When playback reaches a tagged scene, the SDK checks the campaign budget in real time. If valid, a shop icon surfaces.</p>
+  </div>
+  <div class="cinema-player">
+    <div class="cinema-chrome">
+      <div class="c-dots"><span></span><span></span><span></span></div>
+      <div class="c-title">the-morning-scene-final-cut.mov</div>
+    </div>
+    <div class="cinema-screen">
+      <div class="letterbox-top"></div><div class="letterbox-bottom"></div>
+      <div class="timecode"><span class="rec"></span>01:24:37:12</div>
+      <div class="scene-slate">
+        <div class="scene-direction">INT. Penthouse Suite &mdash; Golden Hour</div>
+        <div class="scene-dialogue">She turns from the window, light catching the <strong>Shaun Leane Sabre earrings</strong> as they arc against her jawline. The camera holds for two beats. The audience sees luxury. Nedlia sees <strong>a commerce moment</strong>.</div>
+      </div>
+      <div class="character-area"><div class="character-silhouette"><div class="product-highlight"></div></div></div>
+      <div class="shop-icon"><svg viewBox="0 0 24 24"><path d="M18.6 2.9L17.2 1H6.8L5.4 2.9C4.5 4.1 4 5.5 4 7v1h16V7c0-1.5-.5-2.9-1.4-4.1zM2 10v2c0 .6.4 1 1 1h1v7c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-7h1c.6 0 1-.4 1-1v-2H2zm10 9c-1.7 0-3-1.3-3-3s1.3-3 3-3 3 1.3 3 3-1.3 3-3 3z"/></svg></div>
+      <div class="flyout">
+        <div class="flyout-visual"><div class="product-glow">&#10024;</div><div class="verified">Budget Verified</div></div>
+        <div class="flyout-info">
+          <div class="flyout-brand">Shaun Leane</div>
+          <div class="flyout-name">Sabre Crossover Earrings</div>
+          <div class="flyout-detail">Yellow Gold Vermeil</div>
+          <div class="flyout-price">$500 USD</div>
+          <button class="flyout-btn">Shop This Scene</button>
+        </div>
+      </div>
+    </div>
+    <div class="cinema-timeline">
+      <div class="tl-bar">
+        <div class="tl-progress"></div>
+        <div class="tl-markers">
+          <div class="tl-mark" data-product="Versace"></div>
+          <div class="tl-mark" data-product="Shaun Leane"></div>
+          <div class="tl-mark" data-product="Tom Ford"></div>
+          <div class="tl-mark" data-product="Cartier"></div>
+        </div>
+      </div>
+      <div class="tl-times"><span>00:00:00</span><span>4 product placements tagged in this cut</span><span>02:14:36</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- IMAGINE SECTION -->
+<section class="imagine-section">
+  <div class="section-header">
+    <div class="section-label">Imagine Every Scene</div>
+    <h2>Every frame. Every brand. Every opportunity.</h2>
+    <p>From Parisian cafes to penthouse suites — if a product is on screen, Nedlia can make it shoppable.</p>
+  </div>
+  <div class="imagine-grid">
+    <div class="imagine-card">
+      <div class="ic-scene">INT. Paris Cafe &mdash; Morning</div>
+      <div class="ic-quote">"She laughs over espresso, the Versace chain catching sunlight through the bistro window."</div>
+      <div class="ic-products"><span class="ic-tag luxury">Versace Medusa Necklace</span><span class="ic-tag fashion">Chanel No. 5</span></div>
+    </div>
+    <div class="imagine-card">
+      <div class="ic-scene">EXT. Pacific Coast Highway &mdash; Sunset</div>
+      <div class="ic-quote">"He drops the convertible into third, Ray-Bans reflecting the Pacific as the coast unspools behind him."</div>
+      <div class="ic-products"><span class="ic-tag tech">Ray-Ban Aviator Classic</span><span class="ic-tag auto">Porsche 911 Carrera</span></div>
+    </div>
+    <div class="imagine-card">
+      <div class="ic-scene">INT. Recording Studio &mdash; Late Night</div>
+      <div class="ic-quote">"She adjusts the Beats headphones, closes her eyes, and the first chord fills the room."</div>
+      <div class="ic-products"><span class="ic-tag tech">Beats Studio Pro</span><span class="ic-tag fashion">Nike Air Force 1</span></div>
+    </div>
+    <div class="imagine-card">
+      <div class="ic-scene">INT. Board Room &mdash; Power Meeting</div>
+      <div class="ic-quote">"He sets the Montblanc pen down. The Rolex catches the light. The deal is done."</div>
+      <div class="ic-products"><span class="ic-tag luxury">Rolex Submariner</span><span class="ic-tag luxury">Montblanc Meisterstuck</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- THREE ACTS -->
+<section class="acts-section" id="products">
+  <div class="section-header">
+    <div class="section-label">Three Products. One Ecosystem.</div>
+    <h2>From the editing bay to the earnings report</h2>
+    <p>Nedlia connects studios, streaming platforms, and agencies with purpose-built tools for each.</p>
+  </div>
+  <div class="acts">
+    <div class="act">
+      <div>
+        <div class="act-number">Act I &mdash; The Editing Bay</div>
+        <h3 class="act-title">Nedlia Plugin</h3>
+        <div class="act-for">For production studios and video editors</div>
+        <p class="act-desc">A native plugin for Final Cut Pro, DaVinci Resolve, and LumaFusion. Editors mark product placements directly on the timeline — the same way they add closed captions. Each placement carries the product name, brand, time range, and scene metadata.</p>
+        <ul class="act-features">
+          <li><span class="ck">&#10003;</span> Time-range markers with product metadata on the editing timeline</li>
+          <li><span class="ck">&#10003;</span> Generates a .nedlia placement file embedded alongside the video</li>
+          <li><span class="ck">&#10003;</span> Syncs to Nedlia servers for real-time budget validation downstream</li>
+          <li><span class="ck">&#10003;</span> Scene-level control panel for brand associations and product properties</li>
+        </ul>
+      </div>
+      <div class="act-visual">
+        <div class="av-header"><div class="av-icon">🎬</div><div class="av-title">Final Cut Pro &mdash; Nedlia Product Track</div></div>
+        <div class="av-body">
+          <div class="timeline-editor">
+            <div class="track"><div class="track-label">V1 Video</div><div class="track-bar video"></div></div>
+            <div class="track"><div class="track-label">A1 Audio</div><div class="track-bar audio"></div></div>
+            <div class="track"><div class="track-label">CC Subs</div><div class="track-bar captions"><div class="caption-block">She turns from...</div><div class="caption-block">The light catches...</div><div class="caption-block">He sets the pen...</div><div class="caption-block">The deal is done.</div></div></div>
+            <div class="track-separator"></div>
+            <div class="track"><div class="track-label" style="color:var(--purple-light);font-weight:600;">Products</div><div class="track-bar products"><div class="p-block b1">Shaun Leane</div><div class="p-block b2">Versace</div><div class="p-block b3">Tom Ford Suit</div><div class="p-block b4">Cartier</div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="act reverse">
+      <div>
+        <div class="act-number">Act II &mdash; The Streaming Platform</div>
+        <h3 class="act-title">Nedlia SDK &amp; API</h3>
+        <div class="act-for">For streaming platforms and video players</div>
+        <p class="act-desc">A lightweight SDK for any streaming player. When playback reaches a tagged scene, the SDK queries Nedlia to validate the marketing budget. If active, a shop icon appears. The viewer clicks. A flyout shows the product. Viewers can disable entirely — their screen, their choice.</p>
+        <ul class="act-features">
+          <li><span class="ck">&#10003;</span> Shop icon appears only when the campaign budget is validated live</li>
+          <li><span class="ck">&#10003;</span> Flyout with product details, brand info, and direct purchase link</li>
+          <li><span class="ck">&#10003;</span> Viewer opt-out — the feature respects user preference completely</li>
+          <li><span class="ck">&#10003;</span> Tracks impressions and click conversions for campaign analytics</li>
+        </ul>
+      </div>
+      <div class="act-visual">
+        <div class="av-header"><div class="av-icon">📡</div><div class="av-title">Integration &mdash; Drop-in SDK</div></div>
+        <div class="av-body">
+          <div class="sdk-code">
+            <span class="cm">// Add Nedlia to any streaming player</span><br>
+            <span class="kw">import</span> { <span class="fn">NedliaSDK</span> } <span class="kw">from</span> <span class="str">'@nedlia/player-sdk'</span><br><br>
+            <span class="kw">const</span> nedlia = <span class="kw">new</span> <span class="fn">NedliaSDK</span>({<br>
+            &nbsp;&nbsp;orgId: <span class="str">'warner-bros-2025'</span>,<br>
+            &nbsp;&nbsp;agentId: <span class="str">'morning-scene-final'</span>,<br>
+            &nbsp;&nbsp;theme: <span class="str">'dark'</span><br>
+            })<br><br>
+            <span class="cm">// Attach to your video element</span><br>
+            nedlia.<span class="fn">attach</span>(document.<span class="fn">querySelector</span>(<span class="str">'video'</span>))<br><br>
+            <span class="cm">// Shop icons appear automatically when</span><br>
+            <span class="cm">// tagged scenes play. Budget validation</span><br>
+            <span class="cm">// happens server-side via Nedlia API.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="act">
+      <div>
+        <div class="act-number">Act III &mdash; The Agency War Room</div>
+        <h3 class="act-title">Nedlia Portal</h3>
+        <div class="act-for">For marketing agencies and advertisers</div>
+        <p class="act-desc">The command center at nedlia.com. Set campaign budgets per product, per scene, per show. Watch impressions and conversions in real time. Get alerts before budgets expire. See which scenes drive the most engagement across DramaBox, ReelShort, FlexTV, and every platform running the SDK.</p>
+        <ul class="act-features">
+          <li><span class="ck">&#10003;</span> Campaign budget management with expiry and overspend alerts</li>
+          <li><span class="ck">&#10003;</span> Real-time impression and conversion tracking per scene per platform</li>
+          <li><span class="ck">&#10003;</span> Performance reports by product, video, agency, and time period</li>
+          <li><span class="ck">&#10003;</span> Multi-agency access with role-based permissions</li>
+        </ul>
+      </div>
+      <div class="act-visual">
+        <div class="av-header"><div class="av-icon">📊</div><div class="av-title">Campaign Dashboard &mdash; Shaun Leane Q1</div></div>
+        <div class="av-body">
+          <div class="dash-grid">
+            <div class="dash-card"><div class="dc-label">Impressions</div><div class="dc-val">3.09M</div></div>
+            <div class="dash-card"><div class="dc-label">Conversions</div><div class="dc-val">30.9K</div></div>
+            <div class="dash-card"><div class="dc-label">Active Scenes</div><div class="dc-val">847</div></div>
+            <div class="dash-card"><div class="dc-label">Budget Used</div><div class="dc-val">$18.4K</div></div>
+          </div>
+          <div class="dash-bars">
+            <div class="d-bar" style="height:35%;background:var(--purple);opacity:.5;"></div>
+            <div class="d-bar" style="height:48%;background:var(--purple);opacity:.6;"></div>
+            <div class="d-bar" style="height:42%;background:var(--purple);opacity:.7;"></div>
+            <div class="d-bar" style="height:65%;background:var(--purple);"></div>
+            <div class="d-bar" style="height:55%;background:var(--sky);opacity:.6;"></div>
+            <div class="d-bar" style="height:72%;background:var(--sky);opacity:.7;"></div>
+            <div class="d-bar" style="height:88%;background:var(--sky);"></div>
+            <div class="d-bar" style="height:60%;background:var(--neon);opacity:.6;"></div>
+            <div class="d-bar" style="height:78%;background:var(--neon);opacity:.7;"></div>
+            <div class="d-bar" style="height:92%;background:var(--neon);"></div>
+            <div class="d-bar" style="height:95%;background:var(--neon);"></div>
+            <div class="d-bar" style="height:70%;background:var(--purple);opacity:.5;"></div>
+          </div>
+          <div class="dash-legend"><span>DramaBox</span><span>ReelShort</span><span>FlexTV</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="flow-section" id="flow">
+  <div class="section-header">
+    <div class="section-label">The Workflow</div>
+    <h2>Four steps from set to sale</h2>
+  </div>
+  <div class="flow-steps">
+    <div class="flow-step"><div class="flow-step-num">🎬</div><h4>Tag</h4><p>Editor marks product placements on the timeline using the Nedlia plugin</p></div>
+    <div class="flow-step"><div class="flow-step-num">📤</div><h4>Publish</h4><p>Placement data syncs to Nedlia servers alongside the video export</p></div>
+    <div class="flow-step"><div class="flow-step-num">📺</div><h4>Stream</h4><p>SDK validates budgets live and shows shop icons during tagged scenes</p></div>
+    <div class="flow-step"><div class="flow-step-num">💰</div><h4>Convert</h4><p>Viewer clicks, shops the product, and the agency sees the conversion instantly</p></div>
+  </div>
+</section>
+
+<!-- VISION QUOTE -->
+<section class="vision-section">
+  <div class="vision-quote">"A <strong>$23 billion</strong> industry with <strong>zero</strong> real-time analytics, <strong>zero</strong> budget validation, and <strong>zero</strong> conversion tracking. Product placement is the last frontier of advertising that can't prove its own ROI. <strong>We're changing that.</strong>"</div>
+  <p class="vision-attr">Nedlia Technologies, LLC &mdash; Irvine, California</p>
+  <div class="compat-row">
+    <div class="compat-item"><div class="compat-icon">🎬</div><div class="compat-name">Final Cut Pro</div></div>
+    <div class="compat-item"><div class="compat-icon">🎨</div><div class="compat-name">DaVinci Resolve</div></div>
+    <div class="compat-item"><div class="compat-icon">📱</div><div class="compat-name">LumaFusion</div></div>
+    <div class="compat-item"><div class="compat-icon">📺</div><div class="compat-name">DramaBox</div></div>
+    <div class="compat-item"><div class="compat-icon">🎞</div><div class="compat-name">ReelShort</div></div>
+    <div class="compat-item"><div class="compat-icon">📡</div><div class="compat-name">FlexTV</div></div>
+    <div class="compat-item"><div class="compat-icon">🎭</div><div class="compat-name">Short Short</div></div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div><div class="f-logo">nedlia<span>.</span></div><div class="f-sub">&copy; 2025 Nedlia Technologies, LLC<br>Irvine, California</div></div>
+  <div class="f-links"><a href="#">Plugin</a><a href="#">SDK &amp; API</a><a href="#">Portal</a><a href="#">Docs</a><a href="#">Contact</a></div>
+</footer>
+
+<!-- CHAT WIDGET -->
+<div class="chat-widget">
+  <div class="chat-tip" id="chatTip">Have a question? Talk to Nedlia</div>
+
+  <div class="chat-panel" id="chatPanel">
+    <div class="chat-header">
+      <div class="chat-avatar">N</div>
+      <div class="chat-header-info">
+        <div class="chat-header-name">Nedlia Assistant</div>
+        <div class="chat-header-status">Online</div>
+      </div>
+    </div>
+    <div class="chat-connection-bar connecting" id="connBar">Connecting...</div>
+    <div class="chat-messages" id="chatMessages">
+      <div class="msg bot">Hi! I'm the Nedlia assistant. Ask me anything about product placements, our SDK, or how the platform works.</div>
+    </div>
+    <div class="typing-indicator" id="typingIndicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>
+    <div class="chat-input-area">
+      <input type="text" class="chat-input" id="chatInput" placeholder="Ask about Nedlia..." disabled>
+      <button class="chat-send" id="chatSend" disabled>
+        <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <button class="chat-toggle" id="chatToggle">
+    <div class="ring"></div>
+    <svg class="chat-icon" viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/></svg>
+    <svg class="close-icon" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+  </button>
+</div>
+
+<script>
+// ============================================================
+// CONFIGURATION — Update these values
+// ============================================================
+const WS_HOST = 'ws://localhost:8000';
+const ORG_ID  = '7c8e380a-4725-4ecb-897e-0c0f8c75a038';  // <-- Replace with your org UUID
+const AGENT_ID = '22087ef4-2036-41d2-84d6-fc0362472013'; // <-- Replace with your agent UUID
+// ============================================================
+
+const chatToggle = document.getElementById('chatToggle');
+const chatPanel = document.getElementById('chatPanel');
+const chatTip = document.getElementById('chatTip');
+const chatInput = document.getElementById('chatInput');
+const chatSend = document.getElementById('chatSend');
+const chatMessages = document.getElementById('chatMessages');
+const connBar = document.getElementById('connBar');
+const typingIndicator = document.getElementById('typingIndicator');
+
+let ws = null;
+let isOpen = false;
+let sessionId = null;
+
+// Toggle chat panel
+chatToggle.addEventListener('click', () => {
+  isOpen = !isOpen;
+  chatPanel.classList.toggle('open', isOpen);
+  chatToggle.classList.toggle('open', isOpen);
+  chatTip.style.display = isOpen ? 'none' : '';
+
+  if (isOpen && !ws) {
+    connectWS();
+  }
+  if (isOpen) {
+    chatInput.focus();
+  }
+});
+
+// Send message
+chatSend.addEventListener('click', sendMessage);
+chatInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
+});
+
+function sendMessage() {
+  const text = chatInput.value.trim();
+  if (!text || !ws || ws.readyState !== WebSocket.OPEN) return;
+
+  addMessage(text, 'user');
+  chatInput.value = '';
+
+  ws.send(JSON.stringify({ type: 'message', text }));
+  typingIndicator.classList.add('show');
+  scrollToBottom();
+}
+
+function addMessage(text, type) {
+  const div = document.createElement('div');
+  div.className = `msg ${type}`;
+  div.textContent = text;
+  chatMessages.appendChild(div);
+  scrollToBottom();
+}
+
+function scrollToBottom() {
+  requestAnimationFrame(() => {
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  });
+}
+
+function setConnectionStatus(status) {
+  connBar.className = `chat-connection-bar ${status}`;
+  const labels = { connected: 'Connected', disconnected: 'Disconnected — click to retry', connecting: 'Connecting...' };
+  connBar.textContent = labels[status] || status;
+
+  const connected = status === 'connected';
+  chatInput.disabled = !connected;
+  chatSend.disabled = !connected;
+  if (connected) chatInput.focus();
+}
+
+function connectWS() {
+  if (ws && (ws.readyState === WebSocket.OPEN || ws.readyState === WebSocket.CONNECTING)) return;
+
+  const url = `${WS_HOST}/ws/orgs/${ORG_ID}/agents/${AGENT_ID}/chat`;
+  setConnectionStatus('connecting');
+
+  ws = new WebSocket(url);
+
+  ws.onopen = () => {
+    setConnectionStatus('connected');
+    // Send hello with session persistence
+    const hello = { type: 'hello', session_id: sessionId };
+    ws.send(JSON.stringify(hello));
+  };
+
+  ws.onmessage = (e) => {
+    try {
+      const data = JSON.parse(e.data);
+      typingIndicator.classList.remove('show');
+
+      if (data.type === 'ready') {
+        sessionId = data.session_id;
+      } else if (data.type === 'answer') {
+        addMessage(data.text, 'bot');
+      } else if (data.type === 'error') {
+        addMessage(`Error: ${data.error}`, 'system');
+      }
+    } catch (err) {
+      // Non-JSON message
+    }
+  };
+
+  ws.onerror = () => {
+    typingIndicator.classList.remove('show');
+  };
+
+  ws.onclose = (e) => {
+    setConnectionStatus('disconnected');
+    typingIndicator.classList.remove('show');
+    ws = null;
+
+    // Auto-reconnect after 3 seconds if panel is still open
+    if (isOpen) {
+      setTimeout(() => {
+        if (isOpen && !ws) connectWS();
+      }, 3000);
+    }
+  };
+}
+
+// Click on disconnected bar to reconnect
+connBar.addEventListener('click', () => {
+  if (connBar.classList.contains('disconnected')) {
+    connectWS();
+  }
+});
+</script>
+
+</body>
+</html>
