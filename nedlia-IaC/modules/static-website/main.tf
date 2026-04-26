@@ -1,38 +1,6 @@
 # Static Website Module
 # Creates S3 bucket, CloudFront distribution, ACM certificate, and Route 53 records
 
-terraform {
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 5.0"
-    }
-  }
-}
-
-# Variables
-variable "domain_name" {
-  type        = string
-  description = "Primary domain name (e.g., nedlia.com)"
-}
-
-variable "hosted_zone_id" {
-  type        = string
-  description = "Route 53 hosted zone ID"
-}
-
-variable "environment" {
-  type        = string
-  description = "Environment name"
-  default     = "production"
-}
-
-variable "price_class" {
-  type        = string
-  description = "CloudFront price class"
-  default     = "PriceClass_All"
-}
-
 # S3 Bucket for website content
 resource "aws_s3_bucket" "website" {
   bucket = "www.${var.domain_name}"
@@ -249,30 +217,4 @@ resource "aws_route53_record" "www_ipv6" {
     zone_id                = aws_cloudfront_distribution.website.hosted_zone_id
     evaluate_target_health = false
   }
-}
-
-# Outputs
-output "bucket_name" {
-  value       = aws_s3_bucket.website.id
-  description = "S3 bucket name"
-}
-
-output "bucket_arn" {
-  value       = aws_s3_bucket.website.arn
-  description = "S3 bucket ARN"
-}
-
-output "cloudfront_distribution_id" {
-  value       = aws_cloudfront_distribution.website.id
-  description = "CloudFront distribution ID"
-}
-
-output "cloudfront_domain_name" {
-  value       = aws_cloudfront_distribution.website.domain_name
-  description = "CloudFront distribution domain name"
-}
-
-output "website_url" {
-  value       = "https://${var.domain_name}"
-  description = "Website URL"
 }
