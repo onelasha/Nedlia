@@ -1,6 +1,12 @@
 {
+  "permissions": {
+    "allow": [
+      "Bash(pnpm --version)",
+      "Bash(grep -E \"^  [a-zA-Z@'\\\\\"][^:]*:$\" pnpm-lock.yaml)"
+    ]
+  },
+  "enableAllProjectMcpServers": true,
   "enabledMcpjsonServers": [
     "nx-mcp"
-  ],
-  "enableAllProjectMcpServers": true
+  ]
 }
