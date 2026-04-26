@@ -1,6 +1,3 @@
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
-
 # =============================================================================
 # Cross-project check: Block commits that touch multiple project directories
 # =============================================================================
