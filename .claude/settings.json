@@ -3,7 +3,8 @@
     "allow": [
       "Bash(awk '/^packages:/{section=\"pkg\"; next} /^snapshots:/{section=\"snap\"; next} section && /^  [a-zA-Z@'\\\\''\"][^:]*:$/{print section, $0}' pnpm-lock.yaml)",
       "Bash(pnpm install *)",
-      "Bash(awk 'prev ~ /:$/ && /^  [^ ].*:$/ {print prev_n\": \"prev; print NR\": \"$0; print \"---\"} {prev=$0; prev_n=NR}' pnpm-lock.yaml)"
+      "Bash(awk 'prev ~ /:$/ && /^  [^ ].*:$/ {print prev_n\": \"prev; print NR\": \"$0; print \"---\"} {prev=$0; prev_n=NR}' pnpm-lock.yaml)",
+      "Bash(pnpm exec *)"
     ]
   }
 }
