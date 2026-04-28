@@ -33,7 +33,7 @@
     "husky": "^9.1.7",
     "lint-staged": "^16.2.7",
     "nx": "^22.7.0",
-    "prettier": "^3.7.4",
+    "prettier": "^3.8.3",
     "project": "^0.1.6"
   }
 }
