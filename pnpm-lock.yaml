@@ -61,7 +61,7 @@ importers:
     dependencies:
       '@hookform/resolvers':
         specifier: ^5.2.2
-        version: 5.2.2(react-hook-form@7.69.0(react@19.2.3))
+        version: 5.2.2(react-hook-form@7.74.0(react@19.2.3))
       '@tanstack/react-query':
         specifier: ^5.90.16
         version: 5.90.16(react@19.2.3)
@@ -87,8 +87,8 @@ importers:
         specifier: ^19.2.3
         version: 19.2.3(react@19.2.3)
       react-hook-form:
-        specifier: ^7.53.0
-        version: 7.69.0(react@19.2.3)
+        specifier: ^7.74.0
+        version: 7.74.0(react@19.2.3)
       react-router-dom:
         specifier: ^7.11.0
         version: 7.11.0(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
@@ -4051,8 +4051,8 @@ packages:
     peerDependencies:
       react: ^19.2.3
 
-  react-hook-form@7.69.0:
-    resolution: {integrity: sha512-yt6ZGME9f4F6WHwevrvpAjh42HMvocuSnSIHUGycBqXIJdhqGSPQzTpGF+1NLREk/58IdPxEMfPcFCjlMhclGw==}
+  react-hook-form@7.74.0:
+    resolution: {integrity: sha512-yR6wHr99p9wFv686jhRWVSFhUvDvNbdUf2dKlbno8/VKOCuoNobDGC6S+M2dua9A9Yo8vpcrp8assIYbsZCQ9g==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       react: ^16.8.0 || ^17 || ^18 || ^19
@@ -6585,10 +6585,10 @@ snapshots:
 
   '@exodus/bytes@1.8.0': {}
 
-  '@hookform/resolvers@5.2.2(react-hook-form@7.69.0(react@19.2.3))':
+  '@hookform/resolvers@5.2.2(react-hook-form@7.74.0(react@19.2.3))':
     dependencies:
       '@standard-schema/utils': 0.3.0
-      react-hook-form: 7.69.0(react@19.2.3)
+      react-hook-form: 7.74.0(react@19.2.3)
 
   '@humanfs/core@0.19.1': {}
 
@@ -9637,7 +9637,7 @@ snapshots:
       react: 19.2.3
       scheduler: 0.27.0
 
-  react-hook-form@7.69.0(react@19.2.3):
+  react-hook-form@7.74.0(react@19.2.3):
     dependencies:
       react: 19.2.3
 
