@@ -14,19 +14,30 @@
 
 ---
 
-**Documentation**: <a href="docs/getting-started.md" target="_blank">https://nedlia.io/docs</a>
+> 🚧 **Alpha** – Under active development
 
-**Source Code**: <a href="https://github.com/onelasha/Nedlia" target="_blank">https://github.com/onelasha/Nedlia</a>
+## 👋 New to the project?
+
+**Start with [ONBOARDING.md](ONBOARDING.md)** — a single-page walkthrough that takes you from cloning the repo to opening your first PR. Everything else on this page is reference material.
 
 ---
 
-> 🚧 **Alpha** – Under active development
+## Table of Contents
+
+- [What is Nedlia?](#-what-is-nedlia)
+- [Quick Start](#-quick-start)
+- [Repository Structure](#-repository-structure)
+- [Projects](#-projects)
+- [Tech Stack](#-tech-stack)
+- [Documentation](#-documentation) — indexed by role
+- [Environments](#-environment-strategy)
+- [Contributing](#-contributing)
 
 ---
 
 ## 🎯 What is Nedlia?
 
-Nedlia is an end-to-end platform that helps **brands** and **content creators** manage, validate, and track product placements in video content. Whether you're a filmmaker integrating sponsored products or a brand ensuring your placements meet contractual requirements, Nedlia streamlines the entire workflow.
+Nedlia is an end-to-end platform that helps **brands** and **content creators** manage, validate, and track product placements in video content. Whether you're a filmmaker integrating sponsored products or a brand ensuring placements meet contractual requirements, Nedlia streamlines the entire workflow.
 
 ### The Problem
 
@@ -41,11 +52,11 @@ Product placement in video content is a **$23B+ industry**, yet the process rema
 Nedlia provides:
 
 - **🎬 Video Editor Plugins** – Mark placements directly in Final Cut Pro, DaVinci Resolve, and LumaFusion
-- **✅ Automated Validation** – AI-powered verification that placements meet contractual specs (duration, visibility, context)
+- **✅ Automated Validation** – AI-powered verification that placements meet contractual specs
 - **📊 Analytics Dashboard** – Real-time tracking of placement performance across content
 - **🔗 SDK Integration** – Embed placement tracking in video players for live viewership data
 - **📋 Contract Management** – Centralized hub for placement agreements and compliance
-- **🏗️ Infrastructure as Code** – Automated cloud provisioning using Terraform and Terragrunt for consistent, reproducible environments
+- **🏗️ Infrastructure as Code** – Automated cloud provisioning using Terraform and Terragrunt
 
 ### Who It's For
 
@@ -58,61 +69,18 @@ Nedlia provides:
 
 ---
 
-## Table of Contents
+## 🚀 Quick Start
 
-- [Developer Setup](#-developer-setup)
-- [Quick Start](#-quick-start)
-- [Projects](#-projects)
-- [Tech Stack](#-tech-stack)
-- [Documentation](#-documentation)
-- [Repository Structure](#-repository-structure)
-- [Roadmap](#-roadmap)
-
----
-
-## 🛠️ Developer Setup
-
-> **⚠️ Complete this section before running any project.**
-
-### 1. Prerequisites
-
-| Tool    | Version | Install                                                      |
-| ------- | ------- | ------------------------------------------------------------ |
-| Node.js | 20.x    | `nvm install 20 or higher`                                   |
-| pnpm    | 10.x    | `corepack enable && corepack prepare pnpm@latest --activate` |
-| Python  | 3.13.5  | `pyenv install 3.13.5`                                       |
-| uv      | latest  | `curl -LsSf https://astral.sh/uv/install.sh \| sh`           |
-
-### 2. Verify Tools
-
-```bash
-node -v && pnpm -v && python -V && uv --version
-```
-
-### 3. Clone & Install
+> First time? Use [ONBOARDING.md](ONBOARDING.md) instead — it walks you through prerequisites and setup.
 
 ```bash
 git clone https://github.com/onelasha/Nedlia.git
 cd Nedlia
 pnpm install
-cp .env.example .env
-
-# Note: For Python projects, always use `uv sync --extra dev` to install linting tools.
+pnpm verify-hooks       # ✅ must show: Git hooks installed
 ```
 
-### 4. Verify Git Hooks ⚠️
-
-```bash
-pnpm verify-hooks   # Must show: ✅ Git hooks installed
-```
-
-> **🔒 Git hooks are MANDATORY.** All commits are validated with **Shift-Left Parity**: the pre-commit hook runs the exact same linting, type-checking, and tests as the CI. This ensures a green build before you even push.
-
-📖 **Detailed guides:** [Getting Started](docs/getting-started.md) • [Local Development](docs/local-development.md)
-
----
-
-## 🚀 Quick Start
+Run a project:
 
 ```bash
 nx run portal:serve              # Frontend    → http://localhost:5173
@@ -130,6 +98,24 @@ nx run placement-service:serve   # Service     → http://localhost:8001
 | `nx run-many -t build`   | Build all projects             |
 | `nx affected -t lint`    | Lint changed projects only     |
 | `nx graph`               | Visualize project dependencies |
+
+---
+
+## 📁 Repository Structure
+
+```
+nedlia/
+├── tools/                    # Shared tooling configs (eslint, ruff, gitleaks)
+├── nedlia-back-end/          # FastAPI api, workers, Fargate services, shared domain
+├── nedlia-front-end/         # React portal (Vite, Tailwind)
+├── nedlia-sdk/               # Client SDKs: js, python, swift
+├── nedlia-plugin/            # Video editor plugins: finalcut, davinci, lumafusion
+├── nedlia-IaC/               # Terraform + Terragrunt
+├── docs/                     # Architecture, style guides, runbooks (see below)
+└── releases/                 # Release manifests
+```
+
+Each top-level directory has its own `README.md` describing what's inside.
 
 ---
 
@@ -158,119 +144,116 @@ nx run placement-service:serve   # Service     → http://localhost:8001
 
 ---
 
-## 📈 Environment Strategy
-
-Nedlia follows a standardized **multi-stage environment lifecycle** to ensure reliability and safety at scale. Our Infrastructure as Code (IaC) is organized into four distinct tiers:
-
-| Env    | Purpose           | Characteristics                                           |
-| :----- | :---------------- | :-------------------------------------------------------- |
-| `dev`  | Development       | Features-in-progress, frequent updates, reduced scale.    |
-| `qa`   | Quality Assurance | Integration testing, bug bashing, and user acceptance.    |
-| `stg`  | Staging           | Pre-production parity, final validation of deployments.   |
-| `prod` | Production        | Live production traffic, high availability, and security. |
-
----
-
 ## 📚 Documentation
 
-<table width="100%">
-<tr>
-<td width="50%" valign="top">
+Docs are organized by **what you're trying to do**. Pick the row that matches.
 
-### 🚀 Getting Started
+### 🆕 I'm new here
 
-- [Getting Started](docs/getting-started.md)
-- [Local Development](docs/local-development.md)
+| Doc                                                                | What's in it                                                   |
+| ------------------------------------------------------------------ | -------------------------------------------------------------- |
+| [ONBOARDING.md](ONBOARDING.md)                                     | **Start here.** Day-1 walkthrough: clone → install → first PR. |
+| [docs/getting-started.md](docs/getting-started.md)                 | Detailed prerequisite install (Node, pnpm, Python, uv).        |
+| [docs/local-development.md](docs/local-development.md)             | Run services locally (db, api, workers, portal).               |
+| [CONTRIBUTING.md](CONTRIBUTING.md)                                 | How to contribute, commit conventions.                         |
+| [docs/branching-strategy.md](docs/branching-strategy.md)           | Trunk-based development.                                       |
+| [docs/pull-request-guidelines.md](docs/pull-request-guidelines.md) | What a good PR looks like.                                     |
 
-### 🏗️ Architecture
+### 🏛️ I want to understand the architecture
 
-- [Architecture Overview](ARCHITECTURE.md)
-- [Frontend Architecture](docs/frontend-architecture.md)
-- [Domain Model](docs/domain-model.md)
-- [API Standards](docs/api-standards.md)
-- [Security Architecture](docs/security-architecture.md)
+| Doc                                                            | What's in it                                                         |
+| -------------------------------------------------------------- | -------------------------------------------------------------------- |
+| [ARCHITECTURE.md](ARCHITECTURE.md)                             | Layer model, dependency rules, AWS event-driven design.              |
+| [docs/domain-model.md](docs/domain-model.md)                   | Placement, Video, Campaign, Product entities.                        |
+| [docs/data-architecture.md](docs/data-architecture.md)         | Storage strategy, schemas, data flow.                                |
+| [docs/security-architecture.md](docs/security-architecture.md) | Auth, secrets, threat model.                                         |
+| [docs/adr/](docs/adr/)                                         | Architecture Decision Records (clean arch, AWS, event-driven, etc.). |
 
-### 📐 Design Principles
+### 🐍 Backend (Python: api, workers, services)
 
-- [SOLID Principles](docs/SOLID-PRINCIPLES.md)
-- [DRY Principles](docs/dry-principles.md)
+| Doc                                                                | What's in it                                     |
+| ------------------------------------------------------------------ | ------------------------------------------------ |
+| [nedlia-back-end/README.md](nedlia-back-end/README.md)             | Backend overview, lambda vs fargate.             |
+| [docs/python-style-guide.md](docs/python-style-guide.md)           | Python conventions, type hints, project layout.  |
+| [docs/api-standards.md](docs/api-standards.md)                     | REST conventions, status codes, response shapes. |
+| [docs/error-handling.md](docs/error-handling.md)                   | RFC 9457 problem details — core guide.           |
+| [docs/error-handling-strategy.md](docs/error-handling-strategy.md) | Per-project-type error handling.                 |
+| [docs/database-migrations.md](docs/database-migrations.md)         | How migrations work.                             |
+| [docs/idempotency.md](docs/idempotency.md)                         | Idempotency keys for handlers.                   |
+| [docs/event-schema-versioning.md](docs/event-schema-versioning.md) | Versioning EventBridge events.                   |
 
-</td>
-<td width="50%" valign="top">
+### ⚛️ Frontend (React portal)
 
-### 🛠️ Development
+| Doc                                                                    | What's in it                           |
+| ---------------------------------------------------------------------- | -------------------------------------- |
+| [nedlia-front-end/portal/README.md](nedlia-front-end/portal/README.md) | Portal setup and tech stack.           |
+| [docs/frontend-architecture.md](docs/frontend-architecture.md)         | Layer structure, state, data fetching. |
+| [docs/typescript-style-guide.md](docs/typescript-style-guide.md)       | TypeScript conventions.                |
+| [docs/accessibility.md](docs/accessibility.md)                         | A11y standards (WCAG).                 |
+| [docs/internationalization.md](docs/internationalization.md)           | i18n approach.                         |
 
-- [Python Style Guide](docs/python-style-guide.md)
-- [TypeScript Style Guide](docs/typescript-style-guide.md)
-- [Error Handling](docs/error-handling.md)
-- [Logging Standards](docs/logging-standards.md)
+### ✅ Code quality, testing, principles
 
-### ⚙️ Operations
+| Doc                                                          | What's in it                            |
+| ------------------------------------------------------------ | --------------------------------------- |
+| [docs/code-quality.md](docs/code-quality.md)                 | SonarCloud, linters, formatters, hooks. |
+| [docs/SOLID-PRINCIPLES.md](docs/SOLID-PRINCIPLES.md)         | ESLint rules mapped to SOLID.           |
+| [docs/dry-principles.md](docs/dry-principles.md)             | DRY philosophy and pitfalls.            |
+| [docs/dependency-injection.md](docs/dependency-injection.md) | DI patterns across stacks.              |
+| [docs/testing-strategy.md](docs/testing-strategy.md)         | Test pyramid, fixtures, integration.    |
 
-- [Deployment](docs/deployment.md)
-- [Branching Strategy](docs/branching-strategy.md)
-- [Testing Strategy](docs/testing-strategy.md)
-- [IaC Naming Conventions](nedlia-IaC/docs/NAMING_CONVENTIONS.md)
-- [IaC Organization](nedlia-IaC/docs/ORGANIZATION.md)
+### ⚙️ Operations & infrastructure
 
-### 🤝 Contributing
+| Doc                                                                            | What's in it                                   |
+| ------------------------------------------------------------------------------ | ---------------------------------------------- |
+| [docs/deployment.md](docs/deployment.md)                                       | CI/CD pipeline, environments, deployment flow. |
+| [docs/deployment-orchestration.md](docs/deployment-orchestration.md)           | Multi-team monorepo deployment strategy.       |
+| [docs/release-management.md](docs/release-management.md)                       | Tagging, release notes, hotfixes.              |
+| [docs/versioning-strategy.md](docs/versioning-strategy.md)                     | SemVer across packages and SDKs.               |
+| [docs/observability.md](docs/observability.md)                                 | Metrics, logs, traces — what to instrument.    |
+| [docs/distributed-tracing.md](docs/distributed-tracing.md)                     | X-Ray and OpenTelemetry.                       |
+| [docs/logging-standards.md](docs/logging-standards.md)                         | Structured logging conventions.                |
+| [docs/incident-response.md](docs/incident-response.md)                         | On-call runbook.                               |
+| [nedlia-IaC/README.md](nedlia-IaC/README.md)                                   | Terraform/Terragrunt usage.                    |
+| [nedlia-IaC/docs/NAMING_CONVENTIONS.md](nedlia-IaC/docs/NAMING_CONVENTIONS.md) | IaC resource naming.                           |
+| [nedlia-IaC/docs/ORGANIZATION.md](nedlia-IaC/docs/ORGANIZATION.md)             | IaC module organization.                       |
 
-- [Contributing Guide](CONTRIBUTING.md)
-- [Code of Conduct](CODE_OF_CONDUCT.md)
+### 🛡️ Resilience & performance
 
-</td>
-</tr>
-</table>
+| Doc                                                              | What's in it                         |
+| ---------------------------------------------------------------- | ------------------------------------ |
+| [docs/resilience-patterns.md](docs/resilience-patterns.md)       | Retries, circuit breakers, timeouts. |
+| [docs/rate-limiting.md](docs/rate-limiting.md)                   | API rate limits.                     |
+| [docs/caching-strategy.md](docs/caching-strategy.md)             | When and where to cache.             |
+| [docs/performance-guidelines.md](docs/performance-guidelines.md) | Frontend and backend perf targets.   |
+| [docs/feature-flags.md](docs/feature-flags.md)                   | Feature flag conventions.            |
+| [docs/data-retention.md](docs/data-retention.md)                 | Retention policies.                  |
+
+### 📋 Project meta
+
+| Doc                                      | What's in it                  |
+| ---------------------------------------- | ----------------------------- |
+| [CHANGELOG.md](CHANGELOG.md)             | What changed in each release. |
+| [SECURITY.md](SECURITY.md)               | Reporting vulnerabilities.    |
+| [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) | Community guidelines.         |
+| [LICENSE](LICENSE)                       | MIT.                          |
+
+---
+
+## 📈 Environment Strategy
+
+| Env    | Purpose           | Characteristics                                         |
+| :----- | :---------------- | :------------------------------------------------------ |
+| `dev`  | Development       | Features-in-progress, frequent updates, reduced scale.  |
+| `qa`   | Quality Assurance | Integration testing, bug bashing, user acceptance.      |
+| `stg`  | Staging           | Pre-production parity, final validation of deployments. |
+| `prod` | Production        | Live production traffic, high availability, security.   |
 
 ---
 
-## 📁 Repository Structure
+## 🤝 Contributing
 
-```
-nedlia/
-├── tools/                    # Tooling configuration
-│   ├── js/                   # ESLint, Prettier, TSConfig
-│   ├── python/               # Ruff, MyPy configs
-│   └── security/             # Gitleaks config
-│
-├── nedlia-back-end/
-│   ├── api/                  # FastAPI REST API
-│   ├── workers/              # Background workers
-│   ├── services/
-│   │   └── placement-service/
-│   └── shared/               # Shared domain models
-│
-├── nedlia-front-end/
-│   └── portal/               # React web portal
-│
-├── nedlia-sdk/
-│   ├── js/                   # Web SDK
-│   ├── python/               # Server SDK
-│   └── swift/                # iOS/macOS SDK
-│
-├── nedlia-plugin/            # Video editor plugins
-│   ├── finalcut/
-│   ├── davinci/
-│   └── lumafusion/
-│
-└── nedlia-IaC/               # Terraform infrastructure
-```
-
----
-
-## 🗺️ Roadmap
-
-- [x] Monorepo with clean architecture
-- [x] Nx build orchestration
-- [x] Git hooks & conventional commits
-- [x] CI/CD pipeline
-- [x] Infrastructure as Code
-- [ ] FastAPI backend
-- [ ] React portal
-- [ ] Video editor plugins
-- [ ] SDKs
-
----
+See [CONTRIBUTING.md](CONTRIBUTING.md) and [ONBOARDING.md](ONBOARDING.md). All commits are validated with **Shift-Left Parity** — the pre-commit hook runs the same checks as CI, so a green commit means a green build.
 
 ## 📄 License
 
