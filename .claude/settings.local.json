@@ -2,7 +2,19 @@
   "permissions": {
     "allow": [
       "Bash(pnpm --version)",
-      "Bash(grep -E \"^  [a-zA-Z@'\\\\\"][^:]*:$\" pnpm-lock.yaml)"
+      "Bash(grep -E \"^  [a-zA-Z@'\\\\\"][^:]*:$\" pnpm-lock.yaml)",
+      "Bash(pnpm outdated *)",
+      "Bash(git checkout *)",
+      "Bash(pnpm nx *)",
+      "Bash(pnpm update *)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git check-ignore *)",
+      "Bash(git reset *)",
+      "Bash(pnpm view *)",
+      "Bash(uv sync *)",
+      "Read(//Users/lavrentidelavrenti/Documents/ProjectsLocal/**)",
+      "Read(//Users/lavrentidelavrenti/Documents/ProjectsLocal/services/**)"
     ]
   },
   "enableAllProjectMcpServers": true,
